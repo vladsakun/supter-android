@@ -2,6 +2,8 @@ package com.supter.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.supter.R
+import com.supter.utils.SystemUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -15,6 +17,13 @@ abstract class ScopedActivity : AppCompatActivity(), CoroutineScope {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if(SystemUtils.isNightMode(this)){
+            setTheme(R.style.AppTheme_Dark)
+        }else{
+            setTheme(R.style.AppTheme_Light)
+        }
+
         job = Job()
     }
 

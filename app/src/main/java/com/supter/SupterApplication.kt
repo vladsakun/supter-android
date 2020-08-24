@@ -1,6 +1,9 @@
 package com.supter
 
 import android.app.Application
+import android.content.res.Configuration
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.appcompat.app.AppCompatDelegate
 import com.supter.data.db.PurchaseDatabase
 import com.supter.data.network.*
 import com.supter.data.repository.PurchaseRepository
@@ -42,5 +45,11 @@ class SupterApplication : Application(), KodeinAware {
         //ViewModelFactories
         bind() from provider {  MovieListViewModelFactory(instance()) }
         bind() from provider {  MovieDetailViewModelFactory(instance()) }
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
     }
 }
