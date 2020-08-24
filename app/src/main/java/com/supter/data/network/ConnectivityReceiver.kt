@@ -3,7 +3,7 @@ package com.supter.data.network
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.supter.isOnline
+import com.supter.utils.isOnline
 
 
 //Connectivity status receiver for offline message (snackbar)

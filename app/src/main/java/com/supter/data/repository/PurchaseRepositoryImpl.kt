@@ -2,7 +2,7 @@ package com.supter.data.repository
 
 import android.content.Context
 import androidx.lifecycle.LiveData
-import com.supter.convertMovieListResponseToListOfEntities
+import com.supter.utils.convertMovieListResponseToListOfEntities
 import com.supter.data.db.dao.PurchaseDao
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.network.PurchaseNetworkDataSource
@@ -37,7 +37,11 @@ class PurchaseRepositoryImpl(
     //Add new movies to local db
     private fun persistFetchedMovies(newMovieResponse: MovieListResponse) {
         GlobalScope.launch(Dispatchers.IO) {
-            movieDao.upsert(convertMovieListResponseToListOfEntities(newMovieResponse))
+            movieDao.upsert(
+                convertMovieListResponseToListOfEntities(
+                    newMovieResponse
+                )
+            )
         }
     }
 

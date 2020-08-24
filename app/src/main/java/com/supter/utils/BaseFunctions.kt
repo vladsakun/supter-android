@@ -1,4 +1,4 @@
-package com.supter
+package com.supter.utils
 
 import android.content.Context
 import android.net.ConnectivityManager

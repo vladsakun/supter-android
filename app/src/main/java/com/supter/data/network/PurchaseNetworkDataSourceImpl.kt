@@ -3,7 +3,7 @@ package com.supter.data.network
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.supter.convertMovieListResponseToListOfEntities
+import com.supter.utils.convertMovieListResponseToListOfEntities
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.exceptions.NoConnectivityException
 import com.supter.data.response.MovieDetailResponse
@@ -37,7 +37,11 @@ class PurchaseNetworkDataSourceImpl(
     override suspend fun searchMovie(query: String) {
         try {
             val fetchedMovies = purchaseApi.serchMovie(query).await()
-            _searchedMovieList.postValue(convertMovieListResponseToListOfEntities(fetchedMovies))
+            _searchedMovieList.postValue(
+                convertMovieListResponseToListOfEntities(
+                    fetchedMovies
+                )
+            )
         } catch (e: NoConnectivityException) {
             Log.e(CONNECTIVITY_TAG, "No internet connection: ", e)
         }
