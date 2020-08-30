@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#6200EE</color>
     <color name="colorPrimaryDark">#000000</color>
-    <color name="colorAccent">#00CC99</color>
+    <color name="colorAccent">#38A1F1</color>
 
     <color name="toolBarColorNight">#0C0E22</color>
     <color name="toolBarColorLight">#5EB5F7</color>
@@ -17,5 +17,5 @@
     <color name="black">#000</color>
     <color name="lightGray">#e6e6e6</color>
 
-    <color name="lineColor">#393939</color>
+    <color name="lineColor">#0E1726</color>
 </resources>

@@ -10,16 +10,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <include
-                android:id="@+id/toolbar"
-                layout="@layout/toolbar" />
+            <TextView
+                android:id="@+id/sign_up_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="30dp"
+                android:text="@string/sign_in"
+                android:textColor="?android:attr/textColorSecondary"
+                android:textSize="20sp" />
 
             <LinearLayout
                 android:id="@+id/edit_text_container"
                 android:layout_width="wrap_content"
-                android:layout_centerHorizontal="true"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="100dp"
+                android:layout_below="@+id/sign_up_text"
+                android:layout_centerHorizontal="true"
                 android:background="@drawable/sign_in_background"
                 android:orientation="vertical">
 
@@ -32,8 +39,8 @@
                     android:hint="@string/email"
                     android:imeActionLabel="@string/email"
                     android:inputType="textEmailAddress"
-                    android:minWidth="250dp"
                     android:maxWidth="300dp"
+                    android:minWidth="250dp"
                     android:padding="15dp"
                     android:textColor="?android:attr/textColorSecondary"
                     android:textColorHint="?android:attr/textColorSecondary" />
@@ -48,8 +55,8 @@
                     android:background="@android:color/transparent"
                     android:hint="@string/password"
                     android:inputType="textPassword"
-                    android:minWidth="250dp"
                     android:maxWidth="300dp"
+                    android:minWidth="250dp"
                     android:padding="15dp"
                     android:textColor="?android:attr/textColorSecondary"
                     android:textColorHint="?android:attr/textColorSecondary" />

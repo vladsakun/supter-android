@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/windowBackground">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/sign_in_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="30dp"
+                android:text="@string/sign_in"
+                android:textColor="?android:attr/textColorSecondary"
+                android:textSize="20sp" />
+
+            <LinearLayout
+                android:layout_below="@+id/sign_in_text"
+                android:id="@+id/edit_text_container"
+                android:layout_width="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_height="wrap_content"
+                android:background="@drawable/sign_in_background"
+                android:orientation="vertical">
+
+                <EditText
+                    android:id="@+id/login"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:autofillHints="Enter your email"
+                    android:background="@android:color/transparent"
+                    android:hint="@string/email"
+                    android:imeActionLabel="@string/email"
+                    android:inputType="textEmailAddress"
+                    android:minWidth="250dp"
+                    android:maxWidth="300dp"
+                    android:padding="15dp"
+                    android:textColor="?android:attr/textColorSecondary"
+                    android:textColorHint="?android:attr/textColorSecondary" />
+
+                <include layout="@layout/line" />
+
+                <EditText
+                    android:id="@+id/password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints="Enter your email"
+                    android:background="@android:color/transparent"
+                    android:hint="@string/password"
+                    android:inputType="textPassword"
+                    android:minWidth="250dp"
+                    android:maxWidth="300dp"
+                    android:padding="15dp"
+                    android:textColor="?android:attr/textColorSecondary"
+                    android:textColorHint="?android:attr/textColorSecondary" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/edit_text_container"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/sign_in_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:background="?attr/btnColor"
+                    android:minWidth="200dp"
+                    android:padding="15dp"
+                    android:text="@string/sign_in"
+                    android:textColor="?android:attr/textColorSecondary"
+                    android:textSize="16sp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        android:text="@string/new_to_supter"
+                        android:textColor="?android:attr/textColorHint"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/sign_up_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/join_now"
+                        android:textColor="@color/btnColoLight"
+                        android:textSize="16sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </RelativeLayout>
+    </androidx.core.widget.NestedScrollView>
+</layout>
