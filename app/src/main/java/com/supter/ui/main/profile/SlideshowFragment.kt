@@ -1,4 +1,4 @@
-package com.supter.ui.main.ui.slideshow
+package com.supter.ui.main.profile
 
 import android.os.Bundle
 import android.view.LayoutInflater

@@ -3,23 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@+id/nav_dashboard">
 
     <fragment
-        android:id="@+id/nav_home"
-        android:name="com.supter.ui.main.ui.home.HomeFragment"
-        android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" />
+        android:id="@+id/nav_dashboard"
+        android:name="com.supter.ui.main.dashboard.DashboardFragment"
+        android:label="@string/menu_dashboard"
+        tools:layout="@layout/fragment_dashboard" />
 
     <fragment
-        android:id="@+id/nav_gallery"
-        android:name="com.supter.ui.main.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
+        android:id="@+id/nav_settings"
+        android:name="com.supter.ui.main.gallery.GalleryFragment"
+        android:label="@string/menu_settings"
         tools:layout="@layout/fragment_gallery" />
 
     <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="com.supter.ui.main.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
+        android:id="@+id/nav_profile"
+        android:name="com.supter.ui.main.profile.SlideshowFragment"
+        android:label="@string/menu_profile"
         tools:layout="@layout/fragment_slideshow" />
 </navigation>

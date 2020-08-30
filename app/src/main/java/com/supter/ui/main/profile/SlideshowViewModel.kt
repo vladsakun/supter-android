@@ -1,13 +1,13 @@
-package com.supter.ui.main.ui.gallery
+package com.supter.ui.main.profile
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class GalleryViewModel : ViewModel() {
+class SlideshowViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is gallery Fragment"
+        value = "This is slideshow Fragment"
     }
     val text: LiveData<String> = _text
 }
