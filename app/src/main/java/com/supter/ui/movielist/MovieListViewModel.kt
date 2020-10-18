@@ -12,17 +12,6 @@ class MovieListViewModel(
 
     //Get movie list from db
     val movieList by lazyDeferred {
-        movieRepository.getMovieList()
-    }
-
-    //Get searched movies list from api
-    val searchedMovies by lazyDeferred {
-        movieRepository.getSearchedMovies()
-    }
-
-    fun searchMovie(query: String) {
-        GlobalScope.launch {
-            movieRepository.searchMovies(query)
-        }
+        movieRepository.getPurchaseList()
     }
 }

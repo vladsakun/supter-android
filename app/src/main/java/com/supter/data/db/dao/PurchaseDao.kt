@@ -11,8 +11,11 @@ import com.supter.data.db.entity.PurchaseEntity
 interface PurchaseDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun upsert(movieEntity: List<PurchaseEntity>)
+    fun upsert(purchaseEntity: List<PurchaseEntity>)
 
-    @Query("SELECT * FROM purchase_db")
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    fun insertOneItem(purchaseEntity: PurchaseEntity)
+
+    @Query("SELECT * FROM supter_db")
     fun getListOfMovies(): LiveData<List<PurchaseEntity>>
 }

@@ -1,6 +1,6 @@
 package com.supter.data.response
 
-data class MovieDetailResponse(
+data class PurchaseDetailResponse(
     val adult: Boolean,
     val backdrop_path: String,
     val belongs_to_collection: Any,

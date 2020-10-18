@@ -1,13 +1,14 @@
 package com.supter.data.repository
 
 import android.content.Context
+import android.graphics.BitmapFactory
 import androidx.lifecycle.LiveData
-import com.supter.utils.convertMovieListResponseToListOfEntities
+import com.supter.R
 import com.supter.data.db.dao.PurchaseDao
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.network.PurchaseNetworkDataSource
-import com.supter.data.response.MovieDetailResponse
-import com.supter.data.response.MovieListResponse
+import com.supter.utils.Status
+import com.supter.utils.getBytesFromBitmap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -16,7 +17,7 @@ import kotlinx.coroutines.withContext
 
 class PurchaseRepositoryImpl(
     private var context: Context,
-    private val movieDao: PurchaseDao,
+    private val purchaseDao: PurchaseDao,
     private val movieNetworkDataSource: PurchaseNetworkDataSource
 
 ) : PurchaseRepository {
@@ -26,30 +27,28 @@ class PurchaseRepositoryImpl(
 
         movieNetworkDataSource.apply {
 
-            //Set observer on fetched popular movies
-            downloadedMovieList.observeForever { newMovieResponse ->
-                persistFetchedMovies(newMovieResponse)
+            //Set observer on fetched purchases
+            fetchedPurchaseList.observeForever { newPurchaseResponse ->
+                persistFetchedPurchases(newPurchaseResponse)
             }
 
         }
+
+        insertDefaultPurchase()
     }
 
     //Add new movies to local db
-    private fun persistFetchedMovies(newMovieResponse: MovieListResponse) {
+    private fun persistFetchedPurchases(newPurchaseList: List<PurchaseEntity>) {
         GlobalScope.launch(Dispatchers.IO) {
-            movieDao.upsert(
-                convertMovieListResponseToListOfEntities(
-                    newMovieResponse
-                )
-            )
+            purchaseDao.upsert(newPurchaseList)
         }
     }
 
     //Select all movies from db and return them
-    override suspend fun getMovieList(): LiveData<List<PurchaseEntity>> {
+    override suspend fun getPurchaseList(): LiveData<List<PurchaseEntity>> {
         return withContext(Dispatchers.IO) {
             initMovieData()
-            return@withContext movieDao.getListOfMovies()
+            return@withContext purchaseDao.getListOfMovies()
         }
     }
 
@@ -59,26 +58,14 @@ class PurchaseRepositoryImpl(
 
     //Fetch movies from api
     private suspend fun fetchMovies() {
-        movieNetworkDataSource.fetchMovieList()
+        movieNetworkDataSource.fetchPurchaseList()
     }
 
-    override suspend fun searchMovies(query: String) {
-        movieNetworkDataSource.searchMovie(query)
-    }
+    private fun insertDefaultPurchase() {
+        GlobalScope.launch(Dispatchers.IO) {
 
-    override suspend fun fetchMovie(movieId: Double){
-        movieNetworkDataSource.getMovie(movieId)
-    }
-
-    override suspend fun getMovie(): LiveData<out MovieDetailResponse> {
-        return withContext(Dispatchers.IO) {
-            movieNetworkDataSource.movie
-        }
-    }
-
-    override suspend fun getSearchedMovies(): LiveData<out List<PurchaseEntity>> {
-        return withContext(Dispatchers.IO) {
-            return@withContext movieNetworkDataSource.searchedMovieList
+            val DEFAULT_PURCHASE = PurchaseEntity(1, Status.WISH.ordinal, 8500.0, "Toyota Camry", null)
+            purchaseDao.insertOneItem(DEFAULT_PURCHASE)
         }
     }
 }

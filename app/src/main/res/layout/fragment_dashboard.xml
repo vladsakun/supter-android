@@ -1,20 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="?attr/windowBackground"
-        tools:context=".ui.main.dashboard.DashboardFragment">
+        android:layout_height="match_parent">
 
-        <com.allyants.boardview.BoardView
+        <ProgressBar
+            android:id="@+id/progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <com.woxthebox.draglistview.BoardView
             android:id="@+id/board_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentBottom="true" />
+            android:layout_height="match_parent"
+            app:boardEdges="@dimen/boardEdges"
+            app:columnSpacing="@dimen/columnSpacing" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </RelativeLayout>
 </layout>

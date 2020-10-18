@@ -5,24 +5,20 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.io.Serializable
 
-@Entity(tableName = "purchase_db")
-class PurchaseEntity(
+@Entity(tableName = "supter_db")
+data class PurchaseEntity(
 
-    @PrimaryKey(autoGenerate = false)
-    val id: Double,
-
-    val popularity: Double?,
-    val adult: Boolean?,
-    val original_title: String?,
-    var title: String,
-    var overview: String?,
-    var release_date: String?,
-    val poster_path: String?,
-    val vote_average: Double?,
+    val priority:Int,
+    val status:Int,
+    val cost:Double,
+    val name:String,
 
     @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
     val image: ByteArray?
 
-) : Serializable
+) : Serializable{
+    @PrimaryKey(autoGenerate = true)
+    var id: Int = 0
+}
 
 

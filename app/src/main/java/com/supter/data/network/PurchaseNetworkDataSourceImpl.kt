@@ -6,8 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import com.supter.utils.convertMovieListResponseToListOfEntities
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.exceptions.NoConnectivityException
-import com.supter.data.response.MovieDetailResponse
-import com.supter.data.response.MovieListResponse
+import com.supter.data.response.PurchaseDetailResponse
+import com.supter.data.response.PurchaseListResponse
 
 class PurchaseNetworkDataSourceImpl(
     private val purchaseApi: PurchaseApiService
@@ -15,15 +15,23 @@ class PurchaseNetworkDataSourceImpl(
 
     val CONNECTIVITY_TAG = "Connectivity"
 
-    private val _downloadedMovieList = MutableLiveData<MovieListResponse>()
-    override val downloadedMovieList: LiveData<MovieListResponse>
-        get() = _downloadedMovieList
+    private val _fetchedPurchaseList = MutableLiveData<List<PurchaseEntity>>()
+    override val fetchedPurchaseList: LiveData<List<PurchaseEntity>>
+        get() = _fetchedPurchaseList
 
     //Fetch popular movie list
-    override suspend fun fetchMovieList() {
+    override suspend fun fetchPurchaseList() {
         try {
-            val fetchedSunInfo = purchaseApi.getTrendingMovies().await()
-            _downloadedMovieList.postValue(fetchedSunInfo)
+            val list = ArrayList<PurchaseEntity>()
+//
+//            list.add(PurchaseEntity(1, 2000.0, "Laptop", null))
+//            list.add(PurchaseEntity(2, 1000.0, "Chair", null))
+//            list.add(PurchaseEntity(3, 1500.0, "Table", null))
+//            list.add(PurchaseEntity(1, 2000.0, "Smartphone", null))
+//            list.add(PurchaseEntity(3, 2500.0, "Car", null))
+
+            _fetchedPurchaseList.postValue(list)
+
         } catch (e: NoConnectivityException) {
             Log.e(CONNECTIVITY_TAG, "No internet connection", e)
         }
@@ -47,8 +55,8 @@ class PurchaseNetworkDataSourceImpl(
         }
     }
 
-    private val _movie = MutableLiveData<MovieDetailResponse>()
-    override val movie: LiveData<out MovieDetailResponse>
+    private val _movie = MutableLiveData<PurchaseDetailResponse>()
+    override val movie: LiveData<out PurchaseDetailResponse>
         get() = _movie
 
     //Get movie

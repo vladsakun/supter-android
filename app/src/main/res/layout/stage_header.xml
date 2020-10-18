@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/windowBackground">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        app:cardElevation="@dimen/cardElevation"
+        app:cardUseCompatPadding="true"
+        app:cardBackgroundColor="?attr/boardHeaderColor"
+        app:cardCornerRadius="@dimen/cardCornerRadius">
+
+        <TextView
+            android:id="@+id/stage_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/cardPadding"
+            android:text="First stage"
+            android:textColor="?android:attr/textColorSecondary"
+            android:textSize="@dimen/titleTextSize" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+</RelativeLayout>

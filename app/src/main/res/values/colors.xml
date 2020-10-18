@@ -13,9 +13,23 @@
     <color name="btnColorNight">#0E1726</color>
     <color name="btnColoLight">#38A1F1</color>
 
+    <color name="boardHeaderColorNight">#0E1726</color>
+    <color name="boardHeaderColorLight">#288CD8</color>
+
+    <color name="columnBackgroundNight">#273348</color>
+    <color name="columnBackgroundLight">#F5F5F5</color>
+
+    <color name="imageBackgroundNight">#C4C4C4</color>
+    <color name="imageBackgroundLight">#C4C4C4</color>
+
     <color name="white">#fff</color>
-    <color name="black">#000</color>
+    <color name="black">#121212</color>
+    <color name="red">#FF5252</color>
+    <color name="boardBackground">#273348</color>
+
     <color name="lightGray">#e6e6e6</color>
+    <color name="darkGray">#909090</color>
 
     <color name="lineColor">#0E1726</color>
+    <color name="app_color">#8EAE3C</color>
 </resources>

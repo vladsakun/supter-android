@@ -1,13 +1,14 @@
 package com.supter.ui.main.dashboard
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.supter.data.repository.PurchaseRepository
+import com.supter.internal.lazyDeferred
 
-class DashboardViewModel : ViewModel() {
+class DashboardViewModel(
+    private val purchaseRepository: PurchaseRepository
+) : ViewModel() {
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is home Fragment"
+    val purchaseList by lazyDeferred {
+        purchaseRepository.getPurchaseList()
     }
-    val text: LiveData<String> = _text
 }

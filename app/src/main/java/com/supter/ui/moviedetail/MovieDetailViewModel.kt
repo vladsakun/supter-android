@@ -10,13 +10,13 @@ class MovieDetailViewModel(
     private  val purchaseRepository: PurchaseRepository
 ) : ViewModel() {
 
-    val movie by lazyDeferred {
-        purchaseRepository.getMovie()
-    }
-
-    fun fetchMovie(movieId: Double){
-        GlobalScope.launch {
-            purchaseRepository.fetchMovie(movieId)
-        }
-    }
+//    val movie by lazyDeferred {
+//        purchaseRepository.getMovie()
+//    }
+//
+//    fun fetchMovie(movieId: Double){
+//        GlobalScope.launch {
+//            purchaseRepository.fetchMovie(movieId)
+//        }
+//    }
 }

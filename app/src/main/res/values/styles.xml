@@ -17,7 +17,10 @@
 
         <item name="windowBackground">@color/windowBackgroundNight</item>
         <item name="toolBarColor">@color/toolBarColorNight</item>
-        <item name="btnColor">@color/btnColorNight</item>
+        <item name="primaryElementColor">@color/btnColorNight</item>
+        <item name="boardHeaderColor">@color/boardHeaderColorNight</item>
+        <item name="columnColor">@color/columnBackgroundNight</item>
+        <item name="imageBackground">@color/imageBackgroundNight</item>
 
         <item name="android:textColorSecondary">@color/white</item>
         <item name="android:textColorHint">@color/lightGray</item>
@@ -30,7 +33,10 @@
 
         <item name="windowBackground">@color/windowBackgroundLight</item>
         <item name="toolBarColor">@color/toolBarColorLight</item>
-        <item name="btnColor">@color/btnColoLight</item>
+        <item name="primaryElementColor">@color/btnColoLight</item>
+        <item name="boardHeaderColor">@color/boardHeaderColorLight</item>
+        <item name="columnColor">@color/columnBackgroundLight</item>
+        <item name="imageBackground">@color/imageBackgroundLight</item>
 
         <item name="android:textColorSecondary">@color/black</item>
         <item name="android:textColorHint">@color/lightGray</item>

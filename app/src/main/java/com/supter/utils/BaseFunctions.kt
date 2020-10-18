@@ -1,11 +1,16 @@
 package com.supter.utils
 
 import android.content.Context
+import android.content.res.Resources.Theme
+import android.graphics.Bitmap
+import android.graphics.Bitmap.CompressFormat
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.util.Log
+import android.util.TypedValue
+import androidx.annotation.ColorInt
 import com.supter.data.db.entity.PurchaseEntity
-import com.supter.data.response.MovieListResponse
+import com.supter.data.response.PurchaseListResponse
 import java.io.BufferedInputStream
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
@@ -59,26 +64,41 @@ fun getByteArrayImage(url: String?): ByteArray? {
 }
 
 //Convert movies response to list of movie entities for db
-fun convertMovieListResponseToListOfEntities(newMovieResponse: MovieListResponse): List<PurchaseEntity> {
+fun convertMovieListResponseToListOfEntities(newMovieResponse: PurchaseListResponse): List<PurchaseEntity> {
     val movieEntityList: ArrayList<PurchaseEntity> = arrayListOf()
 
     for (movie in newMovieResponse.results) {
 
-        movieEntityList.add(
-            PurchaseEntity(
-                movie.id,
-                movie.popularity,
-                movie.adult,
-                movie.original_title,
-                movie.title,
-                movie.overview,
-                movie.release_date,
-                movie.poster_path,
-                movie.vote_average,
-                null
-            )
-        )
+//        movieEntityList.add(
+//            PurchaseEntity(
+//                movie.id,
+//                movie.popularity,
+//                movie.adult,
+//                movie.original_title,
+//                movie.title,
+//                movie.overview,
+//                movie.release_date,
+//                movie.poster_path,
+//                movie.vote_average,
+//                null
+//            )
+//        )
 
     }
     return movieEntityList
+}
+
+// convert from bitmap to byte array
+fun getBytesFromBitmap(bitmap: Bitmap): ByteArray? {
+    val stream = ByteArrayOutputStream()
+    bitmap.compress(CompressFormat.JPEG, 70, stream)
+    return stream.toByteArray()
+}
+
+fun getAttrColor(attrId: Int, applicationContext: Context): Int{
+    val typedValue = TypedValue()
+    val theme: Theme = applicationContext.theme
+    theme.resolveAttribute(attrId, typedValue, true)
+    @ColorInt val color = typedValue.data
+    return color
 }

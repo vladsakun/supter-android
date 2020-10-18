@@ -4,16 +4,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.view.Menu
+import android.view.MenuItem
 import androidx.annotation.Nullable
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
+import androidx.navigation.ui.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
@@ -21,6 +19,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.supter.R
 import com.supter.ui.ScopedActivity
 import com.supter.ui.login.LoginActivity
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : ScopedActivity() {
@@ -30,33 +29,40 @@ class MainActivity : ScopedActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if(!isLoggedIn()){
+        if (!isLoggedIn()) {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
         }
 
         setContentView(R.layout.activity_main)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
+
         setSupportActionBar(toolbar)
+
+        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
+        val navView: NavigationView = findViewById(R.id.nav_view)
+        val navController = Navigation.findNavController(this, R.id.nav_host_fragment)
+
+        appBarConfiguration = AppBarConfiguration(navController.graph) //configure nav controller
+
+        NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout)
+        NavigationUI.setupWithNavController(navView, navController)
 
         val fab: FloatingActionButton = findViewById(R.id.fab)
         fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
         }
-
-        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
-        val navView: NavigationView = findViewById(R.id.nav_view)
-        val navController = Navigation.findNavController(this, R.id.nav_host_fragment)
-
-        NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout)
-        NavigationUI.setupWithNavController(navView, navController)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.main, menu)
-        return true
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        //I need to open the drawer onClick
+        when (item.itemId) {
+            android.R.id.home ->
+                drawer_layout.openDrawer(GravityCompat.START)
+        }
+        return item.onNavDestinationSelected(findNavController(R.id.nav_host_fragment))
+                || super.onOptionsItemSelected(item)
     }
 
     override fun onSupportNavigateUp(): Boolean {

@@ -1,28 +1,25 @@
 package com.supter
 
 import android.app.Application
-import android.content.res.Configuration
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.appcompat.app.AppCompatDelegate
 import com.supter.data.db.PurchaseDatabase
 import com.supter.data.network.*
 import com.supter.data.repository.PurchaseRepository
 import com.supter.data.repository.PurchaseRepositoryImpl
+import com.supter.ui.main.dashboard.DashboardViewModelFactory
 import com.supter.ui.moviedetail.MovieDetailViewModelFactory
 import com.supter.ui.movielist.MovieListViewModelFactory
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
+import org.kodein.di.*
 import org.kodein.di.android.x.androidXModule
-import org.kodein.di.generic.bind
-import org.kodein.di.generic.instance
-import org.kodein.di.generic.provider
-import org.kodein.di.generic.singleton
 
-class SupterApplication : Application(), KodeinAware {
+class SupterApplication : Application(), DIAware {
 
-    override val kodein = Kodein.lazy {
+    companion object{
+        lateinit var instance:SupterApplication
+    }
 
-        //AndroidX module
+    override val di by DI.lazy {
+
         import(androidXModule(this@SupterApplication))
 
         //Database
@@ -45,11 +42,12 @@ class SupterApplication : Application(), KodeinAware {
         //ViewModelFactories
         bind() from provider {  MovieListViewModelFactory(instance()) }
         bind() from provider {  MovieDetailViewModelFactory(instance()) }
+        bind() from provider {  DashboardViewModelFactory(instance()) }
     }
 
     override fun onCreate() {
         super.onCreate()
-
+        instance = this
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
     }
 }

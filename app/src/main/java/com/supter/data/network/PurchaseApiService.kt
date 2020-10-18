@@ -1,8 +1,8 @@
 package com.supter.data.network
 
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
-import com.supter.data.response.MovieDetailResponse
-import com.supter.data.response.MovieListResponse
+import com.supter.data.response.PurchaseDetailResponse
+import com.supter.data.response.PurchaseListResponse
 import kotlinx.coroutines.Deferred
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -20,16 +20,16 @@ interface PurchaseApiService {
 
     //Get popular movies
     @GET("popular")
-    fun getMoviesList(): Deferred<MovieListResponse>
+    fun getMoviesList(): Deferred<PurchaseListResponse>
 
     @GET("trending/movie/week")
-    fun getTrendingMovies(): Deferred<MovieListResponse>
+    fun getTrendingMovies(): Deferred<PurchaseListResponse>
 
     @GET("search/movie")
-    fun serchMovie(@Query("query") query: String): Deferred<MovieListResponse>
+    fun serchMovie(@Query("query") query: String): Deferred<PurchaseListResponse>
 
     @GET("movie/{movie_id}")
-    fun getMovie(@Path("movie_id") movie_id: Double): Deferred<MovieDetailResponse>
+    fun getMovie(@Path("movie_id") movie_id: Double): Deferred<PurchaseDetailResponse>
 
     @GET
     fun loadImage(@Url url:String): Call<ResponseBody>
