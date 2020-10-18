@@ -1,7 +1,9 @@
 package com.supter.utils
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.content.res.Configuration
+import com.supter.SupterApplication
 
 class SystemUtils {
 
@@ -22,6 +24,15 @@ class SystemUtils {
                     true
                 }
             }
+        }
+
+        fun saveToken(applicationContext:Context, token:String){
+
+            val sharedPreferences = applicationContext.getSharedPreferences(TOKEN_SPRF_NAME, Context.MODE_PRIVATE)
+            val editor = sharedPreferences.edit()
+            editor.putString(TOKEN_NAME, token)
+            editor.apply()
+
         }
     }
 }

@@ -1,14 +1,11 @@
 package com.supter.data.repository
 
 import android.content.Context
-import android.graphics.BitmapFactory
 import androidx.lifecycle.LiveData
-import com.supter.R
-import com.supter.data.db.dao.PurchaseDao
+import com.supter.data.db.dao.Dao
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.network.PurchaseNetworkDataSource
 import com.supter.utils.Status
-import com.supter.utils.getBytesFromBitmap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -17,7 +14,7 @@ import kotlinx.coroutines.withContext
 
 class PurchaseRepositoryImpl(
     private var context: Context,
-    private val purchaseDao: PurchaseDao,
+    private val purchaseDao: Dao,
     private val movieNetworkDataSource: PurchaseNetworkDataSource
 
 ) : PurchaseRepository {
@@ -34,7 +31,6 @@ class PurchaseRepositoryImpl(
 
         }
 
-        insertDefaultPurchase()
     }
 
     //Add new movies to local db

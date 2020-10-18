@@ -1,4 +1,4 @@
-package com.supter.ui.login
+package com.supter.ui.auth
 
 import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import com.supter.R
 import com.supter.databinding.LoginActivityBinding
 import com.supter.ui.ScopedActivity
+import com.supter.ui.auth.login.LoginFragment
 
 class LoginActivity : ScopedActivity() {
 

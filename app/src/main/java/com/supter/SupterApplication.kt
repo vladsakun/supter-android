@@ -4,8 +4,11 @@ import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import com.supter.data.db.PurchaseDatabase
 import com.supter.data.network.*
+import com.supter.data.repository.AuthRepository
+import com.supter.data.repository.AuthRepositoryImpl
 import com.supter.data.repository.PurchaseRepository
 import com.supter.data.repository.PurchaseRepositoryImpl
+import com.supter.ui.auth.signup.SignUpViewModelFactory
 import com.supter.ui.main.dashboard.DashboardViewModelFactory
 import com.supter.ui.moviedetail.MovieDetailViewModelFactory
 import com.supter.ui.movielist.MovieListViewModelFactory
@@ -38,11 +41,13 @@ class SupterApplication : Application(), DIAware {
 
         //Repository
         bind<PurchaseRepository>() with singleton { PurchaseRepositoryImpl(instance(), instance(), instance()) }
+        bind<AuthRepository>() with singleton { AuthRepositoryImpl(instance(), instance(), instance()) }
 
         //ViewModelFactories
         bind() from provider {  MovieListViewModelFactory(instance()) }
         bind() from provider {  MovieDetailViewModelFactory(instance()) }
         bind() from provider {  DashboardViewModelFactory(instance()) }
+        bind() from provider {  SignUpViewModelFactory(instance()) }
     }
 
     override fun onCreate() {

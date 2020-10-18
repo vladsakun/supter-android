@@ -1,14 +1,14 @@
 package com.supter.data.db.dao
 
 import androidx.lifecycle.LiveData
+import androidx.room.*
 import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
 import com.supter.data.db.entity.PurchaseEntity
 
 @Dao
-interface PurchaseDao {
+interface Dao {
+
+    //Purchase
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun upsert(purchaseEntity: List<PurchaseEntity>)

@@ -3,17 +3,17 @@ package com.supter.data.network
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.supter.utils.convertMovieListResponseToListOfEntities
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.exceptions.NoConnectivityException
-import com.supter.data.response.PurchaseDetailResponse
-import com.supter.data.response.PurchaseListResponse
+import com.supter.data.body.UserParams
+import com.supter.data.response.Resp
 
 class PurchaseNetworkDataSourceImpl(
     private val purchaseApi: PurchaseApiService
 ) : PurchaseNetworkDataSource {
 
     val CONNECTIVITY_TAG = "Connectivity"
+    private val TAG = "PurchaseNetworkDataSour"
 
     private val _fetchedPurchaseList = MutableLiveData<List<PurchaseEntity>>()
     override val fetchedPurchaseList: LiveData<List<PurchaseEntity>>
@@ -37,35 +37,21 @@ class PurchaseNetworkDataSourceImpl(
         }
     }
 
-    private val _searchedMovieList = MutableLiveData<List<PurchaseEntity>>()
-    override val searchedMovieList: LiveData<out List<PurchaseEntity>>
-        get() = _searchedMovieList
+    private val _registrationResp = MutableLiveData<Resp>()
+    override val registrationResp: LiveData<Resp>
+        get() = _registrationResp
 
-    //Search movie
-    override suspend fun searchMovie(query: String) {
+    override suspend fun register(name: String, email: String, password: String) {
         try {
-            val fetchedMovies = purchaseApi.serchMovie(query).await()
-            _searchedMovieList.postValue(
-                convertMovieListResponseToListOfEntities(
-                    fetchedMovies
-                )
-            )
-        } catch (e: NoConnectivityException) {
-            Log.e(CONNECTIVITY_TAG, "No internet connection: ", e)
-        }
-    }
+            val fetchedRegistrationResp =
+                purchaseApi.registerAsync(UserParams(name, email, password)).await()
 
-    private val _movie = MutableLiveData<PurchaseDetailResponse>()
-    override val movie: LiveData<out PurchaseDetailResponse>
-        get() = _movie
+            if (fetchedRegistrationResp.isSuccessful) {
+                _registrationResp.postValue(fetchedRegistrationResp.body())
+            }
 
-    //Get movie
-    override suspend fun getMovie(movieId: Double) {
-        try {
-            val fetchedMovie = purchaseApi.getMovie(movieId).await()
-            _movie.postValue(fetchedMovie)
         } catch (e: NoConnectivityException) {
-            Log.e(CONNECTIVITY_TAG, "No internet connection: ", e)
+            Log.e(CONNECTIVITY_TAG, "register: ", e)
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.supter.ui.login
+package com.supter.ui.auth.login
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,11 +8,12 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import com.supter.R
 import com.supter.databinding.LoginFragmentBinding
-import com.supter.databinding.SignupFragmentBinding
+import com.supter.ui.auth.LoginActivity
+import com.supter.ui.auth.signup.SignUpFragment
 
-class SignupFragment : Fragment() {
+class LoginFragment : Fragment() {
 
-    lateinit var mBinding: SignupFragmentBinding
+    lateinit var mBinding: LoginFragmentBinding
     lateinit var mActivity: LoginActivity
 
     override fun onCreateView(
@@ -20,10 +21,15 @@ class SignupFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        mBinding = DataBindingUtil.inflate(inflater, R.layout.signup_fragment, container, false)
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.login_fragment, container, false)
 
         mActivity = requireActivity() as LoginActivity
+        mBinding.signUpBtn.setOnClickListener(signUpClickListener)
 
         return mBinding.root
+    }
+
+    var signUpClickListener: View.OnClickListener = View.OnClickListener {
+        mActivity.presentFragment(SignUpFragment(), "SignupFragment")
     }
 }
