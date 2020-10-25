@@ -37,7 +37,7 @@ class SupterApplication : Application(), DIAware {
         bind<PurchaseNetworkDataSource>() with singleton { PurchaseNetworkDataSourceImpl(instance()) }
 
         //Api service
-        bind() from singleton { PurchaseApiService(instance()) }
+        bind() from singleton { Api(instance()) }
 
         //Repository
         bind<PurchaseRepository>() with singleton { PurchaseRepositoryImpl(instance(), instance(), instance()) }

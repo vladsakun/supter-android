@@ -9,7 +9,7 @@ import com.supter.data.body.UserParams
 import com.supter.data.response.Resp
 
 class PurchaseNetworkDataSourceImpl(
-    private val purchaseApi: PurchaseApiService
+    private val purchaseApi: Api
 ) : PurchaseNetworkDataSource {
 
     val CONNECTIVITY_TAG = "Connectivity"

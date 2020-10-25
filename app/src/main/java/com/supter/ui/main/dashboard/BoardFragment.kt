@@ -12,7 +12,6 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.supter.R
@@ -31,12 +30,13 @@ import org.kodein.di.android.x.di
 import org.kodein.di.instance
 import java.util.*
 
-class BoardFragment : ScopedFragment(), DIAware{
+class BoardFragment : ScopedFragment(), DIAware {
 
-    override val di by  di()
+    override val di by di()
 
     private lateinit var mBoardView: BoardView
-    private lateinit var mBinding: FragmentDashboardBinding
+    private var _binding: FragmentDashboardBinding? = null
+    private val mBinding get() = _binding!!
 
     private val viewModelFactory: DashboardViewModelFactory by instance()
 
@@ -49,9 +49,9 @@ class BoardFragment : ScopedFragment(), DIAware{
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_dashboard, container, false)
-
-        return mBinding.root
+        _binding = FragmentDashboardBinding.inflate(inflater, container, false)
+        val view = mBinding.root
+        return view
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -73,7 +73,7 @@ class BoardFragment : ScopedFragment(), DIAware{
         }
     }
 
-    private fun hideProgress(){
+    private fun hideProgress() {
         mBinding.progress.visibility = View.GONE
     }
 
@@ -152,7 +152,7 @@ class BoardFragment : ScopedFragment(), DIAware{
         val purchaseList = viewModel.purchaseList.await()
 
         purchaseList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            if(it != null) {
+            if (it != null) {
                 resetBoard(it)
                 hideProgress()
             }
@@ -160,12 +160,13 @@ class BoardFragment : ScopedFragment(), DIAware{
 
     }
 
-    private fun addColumn(purchaseList:List<PurchaseEntity>) {
+    private fun addColumn(purchaseList: List<PurchaseEntity>) {
         if (context != null) {
             val mItemArray = ArrayList<Pair<Long, String>>()
             val addItems = 15
 
-            val listAdapter = ItemAdapter(purchaseList, R.layout.column_item, R.id.item_layout, true)
+            val listAdapter =
+                ItemAdapter(purchaseList, R.layout.column_item, R.id.item_layout, true)
             val header = View.inflate(activity, R.layout.column_header, null)
 
             (header.findViewById<View>(R.id.header_title) as TextView).text =
@@ -243,5 +244,10 @@ class BoardFragment : ScopedFragment(), DIAware{
 
     companion object {
         private var sCreatedItems = 0
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
