@@ -7,23 +7,14 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
-import com.supter.R
-import com.supter.data.body.UserParams
-import com.supter.data.network.Api
 import com.supter.data.network.Status
 import com.supter.data.response.Resp
 import com.supter.databinding.SignupFragmentBinding
 import com.supter.ui.ScopedFragment
 import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
 import org.kodein.di.DIAware
 import org.kodein.di.instance
 import org.kodein.di.android.x.di
-import retrofit2.Call
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class SignUpFragment : ScopedFragment(), DIAware {
 
@@ -41,8 +32,7 @@ class SignUpFragment : ScopedFragment(), DIAware {
     ): View? {
         // Inflate the layout for this fragment
         _binding = SignupFragmentBinding.inflate(inflater, container, false)
-        val view = binding.root
-        return view
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

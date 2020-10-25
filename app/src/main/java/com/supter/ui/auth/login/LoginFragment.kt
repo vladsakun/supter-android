@@ -35,7 +35,7 @@ class LoginFragment : Fragment() {
         binding.signUpBtn.setOnClickListener(signUpClickListener)
     }
 
-    var signUpClickListener: View.OnClickListener = View.OnClickListener {
+    private var signUpClickListener: View.OnClickListener = View.OnClickListener {
         mActivity.presentFragment(SignUpFragment(), "SignupFragment")
     }
 
