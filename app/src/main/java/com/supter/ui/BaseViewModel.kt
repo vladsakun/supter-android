@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.supter.data.network.Api
+import com.supter.data.network.Api2
 import com.supter.data.network.Event
 import com.supter.data.network.NetworkService
 import com.supter.data.response.ResponseWrapper
@@ -12,7 +13,7 @@ import kotlinx.coroutines.launch
 
 abstract class BaseViewModel : ViewModel() {
 
-    var api: Api = NetworkService.retrofitService()
+    var api: Api2 = NetworkService.retrofitService()
 
     // У нас будут две базовые функции requestWithLiveData и
     // requestWithCallback, в зависимости от ситуации мы будем

@@ -29,7 +29,7 @@ interface Api {
 
     companion object {
 
-        const val BASE_URL = "http://192.168.1.115:3000/api/"
+        const val BASE_URL = "https://supter-api.demyan.net/"
 
         operator fun invoke(
             connectivityInterceptor: ConnectivityInterceptor

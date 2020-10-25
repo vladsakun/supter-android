@@ -91,6 +91,6 @@ class MainActivity : ScopedActivity() {
     }
 
     private fun isLoggedIn(): Boolean {
-        return true
+        return false
     }
 }

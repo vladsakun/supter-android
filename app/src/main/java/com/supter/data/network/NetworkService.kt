@@ -1,12 +1,14 @@
 package com.supter.data.network
 
+import okhttp3.Interceptor
+import okhttp3.Interceptor.Companion.invoke
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object NetworkService {
-    private const val BASE_URL = "http://192.168.1.115:3000/api/"
+    private const val BASE_URL = "https://supter-api.demyan.net/api/"
 
     // HttpLoggingInterceptor выводит подробности сетевого запроса в логи
     private val loggingInterceptor = run {
@@ -16,18 +18,36 @@ object NetworkService {
         }
     }
 
+    private val baseInterceptor: Interceptor = invoke { chain ->
+        val newUrl = chain
+            .request()
+            .url
+            .newBuilder()
+            .build()
+
+        val request = chain
+            .request()
+            .newBuilder()
+            .url(newUrl)
+            .build()
+
+        return@invoke chain.proceed(request)
+    }
+
     private val client: OkHttpClient = OkHttpClient
         .Builder()
         .addInterceptor(loggingInterceptor)
+        .addInterceptor(baseInterceptor)
         .build()
 
-    fun retrofitService(): Api {
+
+    fun retrofitService(): Api2 {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build()
-            .create(Api::class.java)
+            .create(Api2::class.java)
     }
 
 }

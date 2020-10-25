@@ -1,6 +1,7 @@
 package com.supter.ui.auth.signup
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,8 @@ import org.kodein.di.instance
 import org.kodein.di.android.x.di
 
 class SignUpFragment : ScopedFragment(), DIAware {
+
+    private val TAG = "SignUpFragment"
 
     override val di by di()
     private val signUpViewModelFactory: SignUpViewModelFactory by instance()
@@ -41,7 +44,10 @@ class SignUpFragment : ScopedFragment(), DIAware {
         viewModel = ViewModelProvider(this, signUpViewModelFactory).get(SignUpViewModel::class.java)
 
         observeAuth()
-        bindViews()
+
+        binding.signUpBtn.setOnClickListener{
+            registerUser()
+        }
     }
 
     private fun observeAuth() {
@@ -55,21 +61,19 @@ class SignUpFragment : ScopedFragment(), DIAware {
     }
 
     private fun registerUser(){
-        viewModel.registerUser("test", "huko@email.com", "1234567")
+        viewModel.registerUser("test", "sakun8@email.com", "1234567")
     }
 
     private fun viewOneError(error: Error?) {
+        Toast.makeText(requireContext(), error?.message, Toast.LENGTH_LONG).show()
     }
 
     private fun viewOneSuccess(data: Resp?) {
-        Toast.makeText(requireContext(), "Success", Toast.LENGTH_LONG).show()
+        Log.d(TAG, "viewOneSuccess: ")
     }
 
     private fun viewOneLoading() {
 
-    }
-
-    private fun bindViews() = launch {
     }
 
     override fun onDestroyView() {

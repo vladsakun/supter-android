@@ -7,7 +7,7 @@ import com.supter.data.repository.AuthRepository
 import com.supter.data.response.Resp
 import com.supter.ui.BaseViewModel
 
-class SignUpViewModel(val repository: AuthRepository) : BaseViewModel() {
+class SignUpViewModel : BaseViewModel() {
 
     val user = MutableLiveData<Event<Resp>>()
 
