@@ -4,6 +4,7 @@ import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterF
 import com.supter.data.body.UserParams
 import com.supter.data.response.Resp
 import com.supter.data.response.ResponseWrapper
+import com.supter.data.response.ResultWrapper
 import kotlinx.coroutines.Deferred
 import okhttp3.OkHttpClient
 import retrofit2.Call
@@ -21,15 +22,15 @@ interface Api {
 
     //Register
     @POST("auth/register")
-    fun register(@Body user: UserParams): Call<Resp>
+    fun register(@Body user: UserParams): Call<ResponseWrapper<Resp>>
 
     //Register
     @POST("auth/register")
-    suspend fun registerUser(@Body user: UserParams): ResponseWrapper<Resp>
+    suspend fun registerUser(@Body user: UserParams): Resp
 
     companion object {
 
-        const val BASE_URL = "https://supter-api.demyan.net/"
+        const val BASE_URL = "https://supter-api.demyan.net/api/"
 
         operator fun invoke(
             connectivityInterceptor: ConnectivityInterceptor

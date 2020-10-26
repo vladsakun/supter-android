@@ -47,7 +47,7 @@ class SupterApplication : Application(), DIAware {
         bind() from provider {  MovieListViewModelFactory(instance()) }
         bind() from provider {  MovieDetailViewModelFactory(instance()) }
         bind() from provider {  DashboardViewModelFactory(instance()) }
-        bind() from provider {  SignUpViewModelFactory() }
+        bind() from provider {  SignUpViewModelFactory(instance()) }
     }
 
     override fun onCreate() {

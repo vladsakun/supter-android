@@ -4,13 +4,23 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.squareup.moshi.Moshi
+import com.supter.data.body.UserParams
 import com.supter.data.db.dao.Dao
+import com.supter.data.network.Api
+import com.supter.data.network.Event
+import com.supter.data.network.NetworkService
 import com.supter.data.network.PurchaseNetworkDataSource
+import com.supter.data.response.ErrorResponse
 import com.supter.data.response.Resp
+import com.supter.data.response.ResultWrapper
 import com.supter.utils.SystemUtils
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.HttpException
+import retrofit2.Response
+import java.io.IOException
 
 class AuthRepositoryImpl(
     private var context: Context,
@@ -27,39 +37,35 @@ class AuthRepositoryImpl(
 
             //Set observer on fetched access token
             registrationResp.observeForever { newUser ->
-                if (newUser != null) {
-                    Log.d(TAG, "New User: $newUser")
-                    persistFetchedToken(newUser)
-                }
+                persistFetchedToken(newUser)
             }
 
         }
     }
 
-    private fun persistFetchedToken(newUser: Resp) {
+    private fun persistFetchedToken(newUser: Event<Resp>) {
         GlobalScope.launch(Dispatchers.IO) {
-            SystemUtils.saveToken(context, newUser.data.access_token)
-            _isAuthSuccessful.postValue(true)
+            newUser.data?.data?.access_token?.let { SystemUtils.saveToken(context, it) }
         }
     }
 
-    val _isAuthSuccessful = MutableLiveData<Boolean>()
-    override val isAuthSuccessful: LiveData<Boolean>
-        get() = _isAuthSuccessful
+    override val registrationEventLiveData: LiveData<Event<Resp>>
+        get() = networkDataSource.registrationResp
 
-    override fun registerUser(
+    override fun registerUser(name: String, email: String, password: String) {
+        networkDataSource.register(name, email, password)
+    }
+
+    override suspend fun getRegisteredUser(
         name: String,
         email: String,
-        password: String,
-    ) {
-        GlobalScope.launch(Dispatchers.IO) {
-            networkDataSource.register(name, email, password)
-        }
-
+        password: String
+    ): ResultWrapper<Resp> {
+        return networkDataSource.registerWithCoroutines(name, email, password)
     }
 
     override suspend fun login(email: String, password: String) {
-        TODO("Not yet implemented")
+
     }
 
 }

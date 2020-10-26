@@ -41,13 +41,13 @@ object NetworkService {
         .build()
 
 
-    fun retrofitService(): Api2 {
+    fun retrofitService(): Api {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build()
-            .create(Api2::class.java)
+            .create(Api::class.java)
     }
 
 }

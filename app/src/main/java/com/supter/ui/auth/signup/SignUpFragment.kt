@@ -1,7 +1,6 @@
 package com.supter.ui.auth.signup
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,12 +9,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.supter.data.network.Status
 import com.supter.data.response.Resp
+import com.supter.data.response.ResultWrapper
 import com.supter.databinding.SignupFragmentBinding
 import com.supter.ui.ScopedFragment
-import kotlinx.coroutines.launch
 import org.kodein.di.DIAware
-import org.kodein.di.instance
 import org.kodein.di.android.x.di
+import org.kodein.di.instance
 
 class SignUpFragment : ScopedFragment(), DIAware {
 
@@ -45,7 +44,7 @@ class SignUpFragment : ScopedFragment(), DIAware {
 
         observeAuth()
 
-        binding.signUpBtn.setOnClickListener{
+        binding.signUpBtn.setOnClickListener {
             registerUser()
         }
     }
@@ -56,12 +55,13 @@ class SignUpFragment : ScopedFragment(), DIAware {
                 Status.LOADING -> viewOneLoading()
                 Status.SUCCESS -> viewOneSuccess(it.data)
                 Status.ERROR -> viewOneError(it.error)
+                Status.GENERIC_ERROR -> viewOneGenericError(it.message)
             }
         })
     }
 
-    private fun registerUser(){
-        viewModel.registerUser("test", "sakun8@email.com", "1234567")
+    private fun registerUser() {
+        viewModel.registerUser("test", "sakun11@email.com", "1234567")
     }
 
     private fun viewOneError(error: Error?) {
@@ -69,11 +69,15 @@ class SignUpFragment : ScopedFragment(), DIAware {
     }
 
     private fun viewOneSuccess(data: Resp?) {
-        Log.d(TAG, "viewOneSuccess: ")
+        Toast.makeText(requireContext(), "Success", Toast.LENGTH_LONG).show()
     }
 
     private fun viewOneLoading() {
 
+    }
+
+    private fun viewOneGenericError(message: String?) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
     }
 
     override fun onDestroyView() {
