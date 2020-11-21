@@ -18,14 +18,6 @@ interface Api {
 
     //Register
     @POST("auth/register")
-    fun registerAsync(@Body user: UserParams): Deferred<Response<Resp>>
-
-    //Register
-    @POST("auth/register")
-    fun register(@Body user: UserParams): Call<ResponseWrapper<Resp>>
-
-    //Register
-    @POST("auth/register")
     suspend fun registerUser(@Body user: UserParams): Resp
 
     companion object {

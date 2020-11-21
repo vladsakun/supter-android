@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import com.supter.utils.isOnline
 
-
 //Connectivity status receiver for offline message (snackbar)
 class ConnectivityReceiver : BroadcastReceiver() {
 

@@ -7,9 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.supter.data.network.Status
 import com.supter.data.response.Resp
-import com.supter.data.response.ResultWrapper
 import com.supter.databinding.SignupFragmentBinding
 import com.supter.ui.ScopedFragment
 import org.kodein.di.DIAware
@@ -42,26 +40,13 @@ class SignUpFragment : ScopedFragment(), DIAware {
 
         viewModel = ViewModelProvider(this, signUpViewModelFactory).get(SignUpViewModel::class.java)
 
-        observeAuth()
-
         binding.signUpBtn.setOnClickListener {
             registerUser()
         }
     }
 
-    private fun observeAuth() {
-        viewModel.user.observe(viewLifecycleOwner, Observer {
-            when (it.status) {
-                Status.LOADING -> viewOneLoading()
-                Status.SUCCESS -> viewOneSuccess(it.data)
-                Status.ERROR -> viewOneError(it.error)
-                Status.GENERIC_ERROR -> viewOneGenericError(it.message)
-            }
-        })
-    }
-
     private fun registerUser() {
-        viewModel.registerUser("test", "sakun11@email.com", "1234567")
+        viewModel.registerUser("test", "sakun12@email.com", "1234567")
     }
 
     private fun viewOneError(error: Error?) {

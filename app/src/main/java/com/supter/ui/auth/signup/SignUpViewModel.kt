@@ -1,17 +1,16 @@
 package com.supter.ui.auth.signup
 
 import android.util.Log
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.supter.data.repository.AuthRepository
 import com.supter.data.response.Resp
 import com.supter.data.response.ResultWrapper
-import com.supter.ui.BaseViewModel
 import kotlinx.coroutines.launch
 
-class SignUpViewModel(val repository: AuthRepository) : BaseViewModel() {
+class SignUpViewModel(val repository: AuthRepository) : ViewModel() {
 
     private val TAG = "SignUpViewModel"
-    val user = repository.registrationEventLiveData
 
     fun registerUser(
         name: String,
@@ -19,10 +18,10 @@ class SignUpViewModel(val repository: AuthRepository) : BaseViewModel() {
         password: String,
     ) {
 
-//        repository.registerUser(name, email, password)
-
         viewModelScope.launch {
-            val response = repository.getRegisteredUser(name, email, password)
+
+            val response = repository.register(name, email, password)
+
             when (response) {
                 is ResultWrapper.NetworkError -> showNetworkError()
                 is ResultWrapper.GenericError -> showGenericError(response)
@@ -30,9 +29,6 @@ class SignUpViewModel(val repository: AuthRepository) : BaseViewModel() {
             }
         }
 
-//        requestWithLiveData(user) {
-//            api.registerUser(UserParams(name, email, password))
-//        }
     }
 
     private fun showSuccess(value: Resp) {

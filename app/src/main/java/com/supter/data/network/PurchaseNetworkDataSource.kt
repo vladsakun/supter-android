@@ -10,10 +10,5 @@ interface PurchaseNetworkDataSource {
     val fetchedPurchaseList: LiveData<List<PurchaseEntity>>
     suspend fun fetchPurchaseList()
 
-    val registrationResp: LiveData<Event<Resp>>
-    fun register(name: String, email: String, password: String)
-
     suspend fun registerWithCoroutines(name: String, email: String, password: String) : ResultWrapper<Resp>
-
-
 }
