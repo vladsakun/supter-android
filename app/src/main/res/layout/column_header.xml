@@ -10,7 +10,7 @@
     card_view:cardUseCompatPadding="true"
     card_view:cardElevation="1dp"
     card_view:cardCornerRadius="0dp"
-    card_view:cardBackgroundColor="?attr/boardHeaderColor">
+    card_view:cardBackgroundColor="@color/toolBar">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textSize="20sp"
-            android:textColor="?android:attr/textColorSecondary"
+            android:textColor="@android:color/white"
             tools:text="Start stage"/>
 
         <TextView
@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:textColor="?android:attr/textColorSecondary"
+            android:textColor="@android:color/white"
             tools:text="20"/>
 
     </LinearLayout>

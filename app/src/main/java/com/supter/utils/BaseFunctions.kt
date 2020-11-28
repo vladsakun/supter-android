@@ -37,64 +37,6 @@ fun isOnline(context: Context): Boolean {
     return isOnline
 }
 
-//Download image from url and convert it to byte array
-fun getByteArrayImage(url: String?): ByteArray? {
-    if (url != null) {
-        try {
-            val imageUrl = URL(url)
-            val ucon: URLConnection = imageUrl.openConnection()
-            val `is`: InputStream = ucon.getInputStream()
-            val bis = BufferedInputStream(`is`)
-            val buffer = ByteArrayOutputStream()
-            //We create an array of bytes
-            val data = ByteArray(50)
-            var current = 0
-
-            while (bis.read(data, 0, data.size).also { current = it } != -1) {
-                buffer.write(data, 0, current)
-            }
-            return buffer.toByteArray()
-        } catch (e: Exception) {
-            Log.d("ImageManager", "Error: $e")
-        }
-
-    }
-    // If could not download image from url return default poster
-    return null
-}
-
-//Convert movies response to list of movie entities for db
-fun convertMovieListResponseToListOfEntities(newMovieResponse: PurchaseListResponse): List<PurchaseEntity> {
-    val movieEntityList: ArrayList<PurchaseEntity> = arrayListOf()
-
-    for (movie in newMovieResponse.results) {
-
-//        movieEntityList.add(
-//            PurchaseEntity(
-//                movie.id,
-//                movie.popularity,
-//                movie.adult,
-//                movie.original_title,
-//                movie.title,
-//                movie.overview,
-//                movie.release_date,
-//                movie.poster_path,
-//                movie.vote_average,
-//                null
-//            )
-//        )
-
-    }
-    return movieEntityList
-}
-
-// convert from bitmap to byte array
-fun getBytesFromBitmap(bitmap: Bitmap): ByteArray? {
-    val stream = ByteArrayOutputStream()
-    bitmap.compress(CompressFormat.JPEG, 70, stream)
-    return stream.toByteArray()
-}
-
 fun getAttrColor(attrId: Int, applicationContext: Context): Int{
     val typedValue = TypedValue()
     val theme: Theme = applicationContext.theme

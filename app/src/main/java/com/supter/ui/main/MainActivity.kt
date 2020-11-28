@@ -1,8 +1,11 @@
 package com.supter.ui.main
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.MenuItem
+import android.widget.ImageButton
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -18,6 +21,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.supter.R
+import com.supter.databinding.ActivityMainBinding
 import com.supter.ui.ScopedActivity
 import com.supter.ui.auth.LoginActivity
 
@@ -28,6 +32,7 @@ class MainActivity : ScopedActivity() {
     private lateinit var navView: NavigationView
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,13 +42,16 @@ class MainActivity : ScopedActivity() {
             finish()
         }
 
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = binding.root
+
+        setContentView(view)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
 
         setSupportActionBar(toolbar)
 
-        drawerLayout = findViewById(R.id.drawer_layout)
-        navView = findViewById(R.id.nav_view)
+        drawerLayout = binding.drawerLayout
+        navView = binding.navView
         navController = Navigation.findNavController(this, R.id.nav_host_fragment)
 
         appBarConfiguration = AppBarConfiguration(navController.graph) //configure nav controller
@@ -51,10 +59,27 @@ class MainActivity : ScopedActivity() {
         setupActionBar(navController)
         setupNavigationMenu(navController)
 
-        val fab: FloatingActionButton = findViewById(R.id.fab)
+        val fab = binding.appBarMain.fab
         fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
+        }
+
+        val changeThemeBtn =
+            navView.getHeaderView(0).findViewById<ImageButton>(R.id.change_theme_button)
+
+        changeThemeBtn.setOnClickListener {
+            val currentNightMode =
+                resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+
+            when (currentNightMode) {
+                Configuration.UI_MODE_NIGHT_NO -> {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                }
+                Configuration.UI_MODE_NIGHT_YES -> {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                }
+            }
         }
     }
 
@@ -91,6 +116,6 @@ class MainActivity : ScopedActivity() {
     }
 
     private fun isLoggedIn(): Boolean {
-        return false
+        return true
     }
 }

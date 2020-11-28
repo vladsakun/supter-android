@@ -171,8 +171,7 @@ class BoardFragment : ScopedFragment(), DIAware {
                 ItemAdapter(purchaseList, R.layout.column_item, R.id.item_layout, true)
             val header = View.inflate(activity, R.layout.column_header, null)
 
-            (header.findViewById<View>(R.id.header_title) as TextView).text =
-                "Column " + (mColumns + 1)
+            (header.findViewById<View>(R.id.header_title) as TextView).text = "Column " + (mColumns + 1)
             (header.findViewById<View>(R.id.item_count) as TextView).text = "" + addItems
             header.setOnClickListener { v ->
                 val id = sCreatedItems++.toLong()
@@ -186,7 +185,7 @@ class BoardFragment : ScopedFragment(), DIAware {
             val columnProperties = ColumnProperties.Builder.newBuilder(listAdapter)
                 .setLayoutManager(layoutManager)
                 .setHasFixedItemSize(false) //                .setColumnBackgroundColor(BaseFunctionsKt.getAttrColor(R.attr.columnColor, getContext().getApplicationContext()))
-                .setItemsSectionBackgroundColor(getAttrColor(R.attr.columnColor, requireContext()))
+                .setItemsSectionBackgroundColor(ContextCompat.getColor(requireContext(), R.color.columnBackground))
                 .setHeader(header)
                 .setFooter(null)
                 .setColumnDragView(null)

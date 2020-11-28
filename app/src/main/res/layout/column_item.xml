@@ -16,7 +16,7 @@
         android:layout_gravity="center"
         android:duplicateParentState="true"
         android:foreground="@drawable/card_view_selector"
-        card_view:cardBackgroundColor="?attr/primaryElementColor"
+        card_view:cardBackgroundColor="@color/button"
         card_view:cardCornerRadius="4dp"
         card_view:cardElevation="2dp"
         card_view:cardPreventCornerOverlap="true"

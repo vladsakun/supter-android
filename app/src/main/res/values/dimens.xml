@@ -17,9 +17,13 @@
     <!--  Text  -->
     <dimen name="hintTextSize">15sp</dimen>
     <dimen name="titleTextSize">20sp</dimen>
+    <dimen name="buttonTextSize">15sp</dimen>
 
     <!--  BoardView  -->
     <dimen name="boardEdges">0dp</dimen>
     <dimen name="columnSpacing">10dp</dimen>
+
+    <!-- Button-->
+    <dimen name="buttonMinWidth">150dp</dimen>
 
 </resources>

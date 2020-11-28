@@ -26,7 +26,6 @@ class LoginFragment : Fragment() {
         val view = binding.root
         mActivity = requireActivity() as LoginActivity
 
-
         return view
     }
 

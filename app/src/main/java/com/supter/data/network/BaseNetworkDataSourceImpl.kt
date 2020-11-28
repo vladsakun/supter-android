@@ -1,5 +1,6 @@
 package com.supter.data.network
 
+import android.util.Log
 import com.google.gson.Gson
 import com.supter.data.response.ErrorResponse
 import com.supter.data.response.ResultWrapper
@@ -24,9 +25,8 @@ open class BaseNetworkDataSourceImpl : BaseNetworkDataSource {
                     val code = result.code()
                     val errorResponse = convertErrorResponseBody(result.errorBody())
                     ResultWrapper.GenericError(code, errorResponse)
-
                 } else {
-                    ResultWrapper.Success(apiCall.invoke())
+                    ResultWrapper.Success(result)
                 }
 
             } catch (throwable: Throwable) {

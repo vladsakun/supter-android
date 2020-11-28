@@ -26,13 +26,24 @@ class SystemUtils {
             }
         }
 
-        fun saveToken(applicationContext:Context, token:String){
+        fun saveToken(applicationContext: Context, token: String) {
 
-            val sharedPreferences = applicationContext.getSharedPreferences(TOKEN_SPRF_NAME, Context.MODE_PRIVATE)
-            val editor = sharedPreferences.edit()
-            editor.putString(TOKEN_NAME, token)
-            editor.apply()
+            val sharedPreferences =
+                applicationContext.getSharedPreferences(TOKEN_SPRF_NAME, Context.MODE_PRIVATE)
+            sharedPreferences.edit().putString(TOKEN_NAME, token).apply()
 
+        }
+
+        fun getToken(applicationContext: Context): String {
+            val sharedPreferences =
+                applicationContext.getSharedPreferences(TOKEN_SPRF_NAME, Context.MODE_PRIVATE)
+            return sharedPreferences.getString(TOKEN_NAME, "")!!
+        }
+
+        fun deleteToken(applicationContext: Context) {
+            val sharedPreferences =
+                applicationContext.getSharedPreferences(TOKEN_SPRF_NAME, Context.MODE_PRIVATE)
+            sharedPreferences.edit().remove(TOKEN_NAME).apply()
         }
     }
 }

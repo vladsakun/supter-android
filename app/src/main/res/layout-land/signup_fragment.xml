@@ -2,7 +2,7 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/windowBackground">
+    android:background="@color/windowBackground">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -68,17 +68,13 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <com.google.android.material.button.MaterialButton
+            <Button
                 android:id="@+id/sign_in_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:background="?attr/primaryElementColor"
-                android:minWidth="200dp"
-                android:padding="15dp"
                 android:text="@string/sign_in"
-                android:textColor="?android:attr/textColorSecondary"
-                android:textSize="16sp" />
+                style="@style/AuthButton" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -100,7 +96,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/join_now"
-                    android:textColor="@color/btnColoLight"
+                    android:textColor="@color/button"
                     android:textSize="16sp" />
             </LinearLayout>
         </LinearLayout>

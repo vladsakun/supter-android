@@ -16,10 +16,6 @@ class AuthRepositoryImpl(
 
     init {
         context = context.applicationContext
-
-        networkDataSource.apply {
-
-        }
     }
 
     override suspend fun register(
