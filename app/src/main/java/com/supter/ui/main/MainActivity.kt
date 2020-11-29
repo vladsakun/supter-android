@@ -35,6 +35,7 @@ class MainActivity : ScopedActivity() {
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
 
         if (!isLoggedIn()) {
