@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.supter.data.body.UserParams
 import com.supter.data.db.entity.PurchaseEntity
-import com.supter.data.exceptions.NoConnectivityException
+import com.supter.utils.exceptions.NoConnectivityException
 import com.supter.data.response.Resp
 import com.supter.data.response.ResultWrapper
 import kotlinx.coroutines.Dispatchers

@@ -9,9 +9,10 @@ import java.io.Serializable
 data class PurchaseEntity(
 
     val priority:Int,
-    val status:Int,
+    var status:String,
     val cost:Double,
     val name:String,
+    val questionsJSON:String?,
 
     @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
     val image: ByteArray?

@@ -1,4 +1,4 @@
-package com.supter.data.exceptions
+package com.supter.utils.exceptions
 
 import java.io.IOException
 

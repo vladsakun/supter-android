@@ -7,7 +7,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <shape>
         <stroke
-            android:color="@color/app_color"
+            android:color="@color/lineColor"
             android:width="2dp"/>
         <corners android:radius="3dp"/>
     </shape>

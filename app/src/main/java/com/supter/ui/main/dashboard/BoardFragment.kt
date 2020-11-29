@@ -3,15 +3,16 @@ package com.supter.ui.main.dashboard
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
-import androidx.core.util.Pair
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.supter.R
@@ -28,8 +29,11 @@ import org.kodein.di.DIAware
 import org.kodein.di.android.x.di
 import org.kodein.di.instance
 import java.util.*
+import kotlin.reflect.typeOf
 
 class BoardFragment : ScopedFragment(), DIAware {
+
+    private val TAG = "BoardFragment"
 
     override val di by di()
 
@@ -41,8 +45,6 @@ class BoardFragment : ScopedFragment(), DIAware {
 
     private lateinit var viewModel: DashboardViewModel
 
-    private var mColumns = 0
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -50,12 +52,16 @@ class BoardFragment : ScopedFragment(), DIAware {
     ): View? {
         _binding = FragmentDashboardBinding.inflate(inflater, container, false)
 
-        val view = mBinding.root
-        return view
+        return mBinding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this, viewModelFactory).get(DashboardViewModel::class.java)
 
         bindViews()
@@ -63,13 +69,24 @@ class BoardFragment : ScopedFragment(), DIAware {
 
     private fun resetBoard(purchaseList: List<PurchaseEntity>) {
         if (context != null) {
+
             mBoardView.clearBoard()
             mBoardView.setCustomDragItem(MyDragItem(requireContext(), R.layout.column_item))
-            addColumn(purchaseList)
-            addColumn(purchaseList)
-            addColumn(purchaseList)
-            addColumn(purchaseList)
-            addColumn(purchaseList)
+
+            val sortedPurchaseMap = linkedMapOf(
+                "Wish" to arrayListOf<PurchaseEntity>(),
+                "Process" to arrayListOf(),
+                "Done" to arrayListOf()
+            )
+
+            for (purchase in purchaseList) {
+                sortedPurchaseMap[purchase.status.capitalize(Locale.ROOT)]?.add(purchase)
+            }
+
+            for ((key, value) in sortedPurchaseMap) {
+                addColumn(key, value)
+            }
+
         }
     }
 
@@ -87,14 +104,18 @@ class BoardFragment : ScopedFragment(), DIAware {
         mBoardView.setSnapToColumnInLandscape(false)
         mBoardView.setColumnSnapPosition(BoardView.ColumnSnapPosition.CENTER)
 
+        var dragItem: PurchaseEntity? = null
+
         mBoardView.setBoardListener(object : BoardListener {
             override fun onItemDragStarted(column: Int, row: Int) {
-                //Toast.makeText(getContext(), "Start - column: " + column + " row: " + row, Toast.LENGTH_SHORT).show();
+                dragItem = mBoardView.getAdapter(column).itemList[row] as PurchaseEntity
             }
 
             override fun onItemDragEnded(fromColumn: Int, fromRow: Int, toColumn: Int, toRow: Int) {
-                if (fromColumn != toColumn || fromRow != toRow) {
-                    //Toast.makeText(getContext(), "End - column: " + toColumn + " row: " + toRow, Toast.LENGTH_SHORT).show();
+                if ((fromColumn != toColumn || fromRow != toRow) && dragItem != null) {
+                    viewModel.updatePurchase(dragItem!!, toColumn)
+                    dragItem = null
+//                    Toast.makeText(requireContext(), "End - column: " + toColumn + " row: " + toRow, Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -151,7 +172,7 @@ class BoardFragment : ScopedFragment(), DIAware {
 
         val purchaseList = viewModel.purchaseList.await()
 
-        purchaseList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        purchaseList.observe(viewLifecycleOwner, {
             if (it != null) {
                 resetBoard(it)
                 hideProgress()
@@ -160,36 +181,33 @@ class BoardFragment : ScopedFragment(), DIAware {
 
     }
 
-    private fun addColumn(purchaseList: List<PurchaseEntity>) {
+    private fun addColumn(columnName: String, purchaseList: List<PurchaseEntity>) {
         if (context != null) {
-            val mItemArray = ArrayList<Pair<Long, String>>()
-            val addItems = 15
 
             val listAdapter =
                 ItemAdapter(purchaseList, R.layout.column_item, R.id.item_layout, true)
             val header = View.inflate(activity, R.layout.column_header, null)
 
-            (header.findViewById<View>(R.id.header_title) as TextView).text = "Column " + (mColumns + 1)
-            (header.findViewById<View>(R.id.item_count) as TextView).text = "" + addItems
-            header.setOnClickListener { v ->
-                val id = sCreatedItems++.toLong()
-                val item: Pair<*, *> = Pair(id, "Test $id")
-                mBoardView.addItem(mBoardView.getColumnOfHeader(v), 0, item, true)
+            (header.findViewById<View>(R.id.header_title) as TextView).text = columnName
+            (header.findViewById<View>(R.id.item_count) as TextView).text =
+                purchaseList.size.toString()
 
-                (header.findViewById<View>(R.id.item_count) as TextView).text =
-                    mItemArray.size.toString()
-            }
             val layoutManager = LinearLayoutManager(context)
             val columnProperties = ColumnProperties.Builder.newBuilder(listAdapter)
                 .setLayoutManager(layoutManager)
-                .setHasFixedItemSize(false) //                .setColumnBackgroundColor(BaseFunctionsKt.getAttrColor(R.attr.columnColor, getContext().getApplicationContext()))
-                .setItemsSectionBackgroundColor(ContextCompat.getColor(requireContext(), R.color.columnBackground))
+                .setHasFixedItemSize(false)
+                .setItemsSectionBackgroundColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.columnBackground
+                    )
+                )
                 .setHeader(header)
                 .setFooter(null)
                 .setColumnDragView(null)
                 .build()
+
             mBoardView.addColumn(columnProperties)
-            mColumns++
         }
     }
 
@@ -197,12 +215,15 @@ class BoardFragment : ScopedFragment(), DIAware {
         DragItem(context, layoutId) {
 
         override fun onBindDragView(clickedView: View, dragView: View) {
-            val text = (clickedView.findViewById<View>(R.id.purchase_title) as TextView).text
-            (dragView.findViewById<View>(R.id.purchase_title) as TextView).text = text
+            val name = (clickedView.findViewById<View>(R.id.purchase_title) as TextView).text
+            val cost = (clickedView.findViewById<View>(R.id.purchase_cost) as TextView).text
+            (dragView.findViewById<View>(R.id.purchase_title) as TextView).text = name
+            (dragView.findViewById<View>(R.id.purchase_cost) as TextView).text = cost
             val dragCard: CardView = dragView.findViewById(R.id.card)
             val clickedCard: CardView = clickedView.findViewById(R.id.card)
             dragCard.maxCardElevation = 40f
             dragCard.cardElevation = clickedCard.cardElevation
+
             // I know the dragView is a FrameLayout and that is why I can use setForeground below api level 23
             dragCard.foreground =
                 ContextCompat.getDrawable(context, R.drawable.card_view_drag_foreground)
@@ -241,12 +262,5 @@ class BoardFragment : ScopedFragment(), DIAware {
         }
     }
 
-    companion object {
-        private var sCreatedItems = 0
-    }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
 }

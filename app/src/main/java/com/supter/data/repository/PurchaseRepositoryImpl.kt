@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import com.supter.data.db.dao.Dao
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.network.PurchaseNetworkDataSource
-import com.supter.utils.Status
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -15,14 +14,14 @@ import kotlinx.coroutines.withContext
 class PurchaseRepositoryImpl(
     private var context: Context,
     private val purchaseDao: Dao,
-    private val movieNetworkDataSource: PurchaseNetworkDataSource
+    private val networkDataSource: PurchaseNetworkDataSource
 
 ) : PurchaseRepository {
 
     init {
         context = context.applicationContext
 
-        movieNetworkDataSource.apply {
+        networkDataSource.apply {
 
             //Set observer on fetched purchases
             fetchedPurchaseList.observeForever { newPurchaseResponse ->
@@ -43,25 +42,22 @@ class PurchaseRepositoryImpl(
     //Select all movies from db and return them
     override suspend fun getPurchaseList(): LiveData<List<PurchaseEntity>> {
         return withContext(Dispatchers.IO) {
-            initMovieData()
-            return@withContext purchaseDao.getListOfMovies()
+            initPurchaseData()
+            return@withContext purchaseDao.getPurchaseLiveDataList()
         }
     }
 
-    private suspend fun initMovieData() {
-        fetchMovies()
+    override suspend fun upsertPurchase(purchaseEntity: PurchaseEntity) {
+        purchaseDao.upsertOneItem(purchaseEntity)
+    }
+
+    private suspend fun initPurchaseData() {
+        fetchPurchaseList()
     }
 
     //Fetch movies from api
-    private suspend fun fetchMovies() {
-        movieNetworkDataSource.fetchPurchaseList()
+    private suspend fun fetchPurchaseList() {
+        networkDataSource.fetchPurchaseList()
     }
 
-    private fun insertDefaultPurchase() {
-        GlobalScope.launch(Dispatchers.IO) {
-
-            val DEFAULT_PURCHASE = PurchaseEntity(1, Status.WISH.ordinal, 8500.0, "Toyota Camry", null)
-            purchaseDao.insertOneItem(DEFAULT_PURCHASE)
-        }
-    }
 }
