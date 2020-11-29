@@ -1,6 +1,7 @@
 package com.supter.ui.main.profile
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
@@ -10,11 +11,13 @@ import com.supter.ui.auth.LoginActivity
 import com.supter.utils.SystemUtils
 
 class ProfileFragment : Fragment() {
+    private val TAG = "ProfileFragment"
 
     private var _binding: FragmentProfileBinding? = null
     private val binding: FragmentProfileBinding get() = _binding!!
 
     private lateinit var viewModel: ProfileViewModel
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +50,7 @@ class ProfileFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.logout -> logout()
+            16908332 -> requireActivity().onBackPressed() // Back button
         }
         return true
     }

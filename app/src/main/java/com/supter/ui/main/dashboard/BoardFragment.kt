@@ -18,8 +18,6 @@ import com.supter.R
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.databinding.FragmentDashboardBinding
 import com.supter.ui.ScopedFragment
-import com.supter.ui.main.MainActivity
-import com.supter.utils.getAttrColor
 import com.woxthebox.draglistview.BoardView
 import com.woxthebox.draglistview.BoardView.BoardCallback
 import com.woxthebox.draglistview.BoardView.BoardListener

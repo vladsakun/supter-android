@@ -9,17 +9,35 @@
         android:id="@+id/nav_dashboard"
         android:name="com.supter.ui.main.dashboard.BoardFragment"
         android:label="@string/menu_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_dashboard" >
+        <action
+            android:id="@+id/action_to_add_purchase"
+            app:destination="@id/add_purchase" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_settings"
         android:name="com.supter.ui.main.gallery.GalleryFragment"
         android:label="@string/menu_settings"
-        tools:layout="@layout/fragment_gallery" />
+        tools:layout="@layout/fragment_gallery" >
+        <action
+            android:id="@+id/action_to_add_purchase"
+            app:destination="@id/add_purchase" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_profile"
         android:name="com.supter.ui.main.profile.ProfileFragment"
         android:label="@string/menu_profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_to_add_purchase"
+            app:destination="@id/add_purchase" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/add_purchase"
+        android:name="com.supter.ui.main.purchase.add.AddPurchaseFragment"
+        android:label="@string/add_purchase"
+        tools:layout="@layout/add_purchase_fragment" />
 </navigation>

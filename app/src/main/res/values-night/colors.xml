@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="toolBar">#0C0E22</color>
-    <color name="windowBackground">#060818</color>
-    <color name="button">#0E1726</color>
+    <color name="toolBar">#060B18</color>
+    <color name="windowBackground">#0B132B</color>
+    <color name="button">#1C2541</color>
     <color name="columnBackground">#273348</color>
     <color name="imageBackground">#C4C4C4</color>
-    <color name="textColorPrimary">#ffffff</color>
+
+    <color name="textColorPrimary">#e6e6e6</color>
+    <color name="textColorHint">#909090</color>
+
 </resources>

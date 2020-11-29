@@ -5,7 +5,7 @@
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
 
-        <item name="colorPrimary">@color/toolBar</item>
+        <item name="colorPrimary">@color/button</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
 
@@ -15,12 +15,18 @@
         <item name="android:windowBackground">@drawable/splash_screen</item>
     </style>
 
-    <style name="AuthButton" parent="Widget.MaterialComponents.Button">
+    <style name="AuthButton" parent="Widget.AppCompat.Button">
         <item name="android:minWidth">@dimen/buttonMinWidth</item>
         <item name="android:padding">5dp</item>
         <item name="android:textSize">@dimen/buttonTextSize</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:background">@color/button</item>
+    </style>
+
+    <style name="PurchaseEditText" parent="Widget.AppCompat.EditText">
+        <item name="android:textColorHint">@color/textColorHint</item>
+        <item name="android:textColor">@color/textColorPrimary</item>
+        <item name="android:minWidth"></item>
     </style>
 
 </resources>

@@ -15,6 +15,7 @@ import com.supter.databinding.SignupFragmentBinding
 import com.supter.ui.ScopedFragment
 import com.supter.ui.main.MainActivity
 import com.supter.utils.SystemUtils
+import com.supter.utils.logException
 import es.dmoral.toasty.Toasty
 import org.kodein.di.DIAware
 import org.kodein.di.android.x.di
@@ -23,15 +24,15 @@ import java.lang.Exception
 
 class SignUpFragment : ScopedFragment(), DIAware {
 
+    private var _binding: SignupFragmentBinding? = null
+    private val binding: SignupFragmentBinding get() = _binding!!
+
     private val TAG = "SignUpFragment"
 
     override val di by di()
     private val signUpViewModelFactory: SignUpViewModelFactory by instance()
 
     private lateinit var viewModel: SignUpViewModel
-
-    private var _binding: SignupFragmentBinding? = null
-    private val binding: SignupFragmentBinding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -78,16 +79,19 @@ class SignUpFragment : ScopedFragment(), DIAware {
     }
 
     private fun showError(errorMessage: String) {
-        Log.d(TAG, "showError: ")
         try {
             Toasty.error(requireContext(), errorMessage, Toast.LENGTH_SHORT, true).show()
         } catch (e: Exception) {
-            Log.e(TAG, "showError: ", e)
+            logException(e)
         }
     }
 
     private fun registerUser() {
-        viewModel.registerUser("alexander", "vladsakun4@gmail.com", "123456789")
+        viewModel.registerUser(
+            binding.name?.text.toString(),
+            binding.email.text.toString(),
+            binding.password.text.toString()
+        )
     }
 
     private fun successSignUp(result: ResultWrapper.Success<Resp>) {

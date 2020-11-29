@@ -9,26 +9,31 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/sign_up_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="100dp"
-            android:layout_marginBottom="30dp"
-            android:text="@string/sign_up"
-            android:textColor="?android:attr/textColorSecondary"
-            android:textSize="20sp" />
-
         <LinearLayout
             android:id="@+id/edit_text_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/sign_up_text"
             android:layout_marginLeft="40dp"
+            android:layout_marginTop="100dp"
             android:layout_marginRight="40dp"
             android:background="@drawable/sign_in_background"
             android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="Enter your email"
+                android:background="@android:color/transparent"
+                android:hint="@string/name"
+                android:imeActionLabel="@string/name"
+                android:inputType="textEmailAddress"
+                android:minWidth="300dp"
+                android:padding="15dp"
+                android:textColor="?android:attr/textColorSecondary"
+                android:textColorHint="?android:attr/textColorSecondary" />
+
+            <include layout="@layout/line" />
 
             <EditText
                 android:id="@+id/email"
@@ -85,11 +90,11 @@
 
             <Button
                 android:id="@+id/sign_up_btn"
+                style="@style/AuthButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="@string/sign_up"
-                style="@style/AuthButton" />
+                android:text="@string/sign_up" />
 
         </LinearLayout>
     </RelativeLayout>

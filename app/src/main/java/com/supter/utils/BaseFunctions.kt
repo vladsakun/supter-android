@@ -1,24 +1,14 @@
 package com.supter.utils
 
 import android.content.Context
-import android.content.res.Resources.Theme
-import android.graphics.Bitmap
-import android.graphics.Bitmap.CompressFormat
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.util.Log
-import android.util.TypedValue
-import androidx.annotation.ColorInt
-import com.supter.data.db.entity.PurchaseEntity
-import com.supter.data.response.PurchaseListResponse
-import java.io.BufferedInputStream
-import java.io.ByteArrayOutputStream
-import java.io.InputStream
-import java.net.URL
-import java.net.URLConnection
+import com.supter.BuildConfig
+import java.util.*
 
 
-private val TAG = "BaseFunctions"
+private val TAG = "Supter"
 
 fun isOnline(context: Context): Boolean {
     var isOnline = false
@@ -37,10 +27,24 @@ fun isOnline(context: Context): Boolean {
     return isOnline
 }
 
-fun getAttrColor(attrId: Int, applicationContext: Context): Int{
-    val typedValue = TypedValue()
-    val theme: Theme = applicationContext.theme
-    theme.resolveAttribute(attrId, typedValue, true)
-    @ColorInt val color = typedValue.data
-    return color
+fun logException(e: Exception) {
+    val stackTraceElement = Thread.currentThread().stackTrace[3]
+
+    val fullClassName = stackTraceElement.className
+    val className = fullClassName.substring(fullClassName.lastIndexOf(".") + 1)
+
+    val message = """
+     Data: ${Date()}
+     File name: ${stackTraceElement.fileName}
+     Class name: $className
+     Method Name: ${stackTraceElement.methodName}
+     Line Number: ${stackTraceElement.lineNumber}
+     =======
+         """.trimIndent()
+
+    if (BuildConfig.DEBUG) {
+        Log.e(TAG, message, e)
+    }
+
 }
+

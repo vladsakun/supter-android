@@ -1,9 +1,9 @@
 package com.supter.ui.main
 
-import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
@@ -12,19 +12,14 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.NavigationUI.navigateUp
 import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
-import com.google.android.material.snackbar.Snackbar
 import com.supter.R
 import com.supter.databinding.ActivityMainBinding
 import com.supter.ui.ScopedActivity
-import com.supter.ui.auth.LoginActivity
-
 
 class MainActivity : ScopedActivity() {
 
@@ -35,13 +30,7 @@ class MainActivity : ScopedActivity() {
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
-
-        if (!isLoggedIn()) {
-            startActivity(Intent(this, LoginActivity::class.java))
-            finish()
-        }
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
@@ -62,8 +51,7 @@ class MainActivity : ScopedActivity() {
 
         val fab = binding.appBarMain.fab
         fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+            navController.navigate(R.id.action_to_add_purchase)
         }
 
         val changeThemeBtn =
@@ -116,7 +104,12 @@ class MainActivity : ScopedActivity() {
         }
     }
 
-    private fun isLoggedIn(): Boolean {
-        return true
+    fun showAddBtn() {
+        binding.appBarMain.fab.visibility = View.VISIBLE
     }
+
+    fun hideAddBtn() {
+        binding.appBarMain.fab.visibility = View.GONE
+    }
+
 }

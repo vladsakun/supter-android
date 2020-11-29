@@ -5,6 +5,7 @@
     android:background="@color/windowBackground">
 
     <RelativeLayout
+        android:layout_marginTop="50dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

@@ -25,7 +25,7 @@ class LoginActivity : ScopedActivity() {
         setContentView(view)
         setSupportActionBar(mBinding.toolbar.toolbar as Toolbar)
 
-        presentFragment(LoginFragment(), "LoginFragment")
+        presentFragment(LoginFragment(), LoginFragment::class.java.simpleName)
     }
 
     fun presentFragment(fragment: Fragment, tag: String) {
