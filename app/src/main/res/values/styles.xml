@@ -15,18 +15,17 @@
         <item name="android:windowBackground">@drawable/splash_screen</item>
     </style>
 
-    <style name="AuthButton" parent="Widget.AppCompat.Button">
+    <style name="AuthButton" parent="Widget.MaterialComponents.Button">
         <item name="android:minWidth">@dimen/buttonMinWidth</item>
-        <item name="android:padding">5dp</item>
+        <item name="android:padding">10dp</item>
         <item name="android:textSize">@dimen/buttonTextSize</item>
         <item name="android:textColor">@android:color/white</item>
-        <item name="android:background">@color/button</item>
+        <item name="android:backgroundTint">@color/button</item>
     </style>
 
     <style name="PurchaseEditText" parent="Widget.AppCompat.EditText">
         <item name="android:textColorHint">@color/textColorHint</item>
         <item name="android:textColor">@color/textColorPrimary</item>
-        <item name="android:minWidth"></item>
     </style>
 
 </resources>

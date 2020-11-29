@@ -27,6 +27,6 @@
     <!-- Button-->
     <dimen name="buttonMinWidth">150dp</dimen>
 
-    
-
+    <!-- EditText-->
+    <dimen name="editTextMarginTop">15dp</dimen>
 </resources>

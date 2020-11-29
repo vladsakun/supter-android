@@ -24,4 +24,7 @@
     <string name="no_internet_connection">No internet connection</string>
     <string name="logout">Logout</string>
     <string name="purchase_name">Purchase name</string>
+    <string name="purchase_cost">Purchase cost</string>
+    <string name="save">Save</string>
+    <string name="how_would_the_purchase_be_useful">How would the purchase be useful?</string>
 </resources>
