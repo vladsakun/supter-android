@@ -13,6 +13,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.core.view.doOnPreDraw
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.supter.R
@@ -62,6 +63,8 @@ class BoardFragment : ScopedFragment(), DIAware {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        postponeEnterTransition()
+        view.doOnPreDraw { startPostponedEnterTransition() }
         viewModel = ViewModelProvider(this, viewModelFactory).get(DashboardViewModel::class.java)
 
         bindViews()

@@ -9,25 +9,34 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.navigateUp
 import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
+import com.google.android.material.transition.MaterialElevationScale
 import com.supter.R
 import com.supter.databinding.ActivityMainBinding
 import com.supter.ui.ScopedActivity
+import com.supter.ui.main.purchase.add.AddPurchaseFragmentDirections
 
 class MainActivity : ScopedActivity() {
 
+    private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
     private lateinit var navView: NavigationView
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var binding: ActivityMainBinding
+
+    val currentNavigationFragment: Fragment?
+        get() = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
+            ?.childFragmentManager
+            ?.fragments
+            ?.first()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,17 +51,19 @@ class MainActivity : ScopedActivity() {
 
         drawerLayout = binding.drawerLayout
         navView = binding.navView
-        navController = Navigation.findNavController(this, R.id.nav_host_fragment)
+        navController = this.findNavController(R.id.nav_host_fragment)
 
         appBarConfiguration = AppBarConfiguration(navController.graph) //configure nav controller
 
         setupActionBar(navController)
         setupNavigationMenu(navController)
 
-        val fab = binding.appBarMain.fab
-        fab.setOnClickListener { view ->
-            navController.navigate(R.id.action_to_add_purchase)
+        binding.appBarMain.fab.apply {
+                setOnClickListener {
+                    navigateToAddPurchase()
+                }
         }
+
 
         val changeThemeBtn =
             navView.getHeaderView(0).findViewById<ImageButton>(R.id.change_theme_button)
@@ -72,6 +83,21 @@ class MainActivity : ScopedActivity() {
         }
     }
 
+    private fun navigateToAddPurchase() {
+
+        currentNavigationFragment?.apply {
+            exitTransition = MaterialElevationScale(false).apply {
+                duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+            }
+            reenterTransition = MaterialElevationScale(true).apply {
+                duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+            }
+        }
+
+        val direction = AddPurchaseFragmentDirections.actionGlobalAddPurchase()
+        findNavController(R.id.nav_host_fragment).navigate(direction)
+    }
+
     private fun setupNavigationMenu(navController: NavController) {
         val navigationView = findViewById<NavigationView>(R.id.nav_view)
         navigationView.setupWithNavController(navController)
@@ -85,6 +111,7 @@ class MainActivity : ScopedActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
+        val navController = this.findNavController(R.id.nav_host_fragment)
         return navigateUp(navController, drawerLayout)
     }
 
@@ -109,7 +136,7 @@ class MainActivity : ScopedActivity() {
     }
 
     fun hideAddBtn() {
-        binding.appBarMain.fab.visibility = View.GONE
+        binding.appBarMain.fab.visibility = View.INVISIBLE
     }
 
 }

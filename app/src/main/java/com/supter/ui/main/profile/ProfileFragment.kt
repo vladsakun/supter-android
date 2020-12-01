@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import com.supter.R
 import com.supter.databinding.FragmentProfileBinding
 import com.supter.ui.auth.LoginActivity
@@ -18,18 +19,13 @@ class ProfileFragment : Fragment() {
 
     private lateinit var viewModel: ProfileViewModel
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
+        setHasOptionsMenu(true)
         return binding.root
     }
 
@@ -43,14 +39,14 @@ class ProfileFragment : Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.profile, menu)
         super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.profile, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.logout -> logout()
-            16908332 -> requireActivity().onBackPressed() // Back button
+            16908332 -> findNavController().navigateUp()
         }
         return true
     }

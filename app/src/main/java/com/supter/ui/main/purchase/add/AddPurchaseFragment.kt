@@ -1,18 +1,28 @@
 package com.supter.ui.main.purchase.add
 
+import android.graphics.Color
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.transition.ArcMotion
+import androidx.transition.Explode
+import androidx.transition.Fade
+import androidx.transition.Slide
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.transition.MaterialArcMotion
+import com.google.android.material.transition.MaterialContainerTransform
 import com.supter.R
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.databinding.AddPurchaseFragmentBinding
 import com.supter.ui.main.MainActivity
 import com.supter.utils.enums.Priority
 import com.supter.utils.enums.Status
+import com.supter.utils.themeColor
 import org.json.JSONObject
 import org.kodein.di.DIAware
 import org.kodein.di.instance
@@ -50,8 +60,34 @@ class AddPurchaseFragment : Fragment(), DIAware {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(AddPurchaseViewModel::class.java)
+
+        binding.run {
+            enterTransition = MaterialContainerTransform().apply {
+                // Manually tell the container transform which Views to transform between.
+                startView = requireActivity().findViewById(R.id.fab)
+                endView = addPurchaseCardView
+
+                addTarget(addPurchaseCardView)
+
+                setPathMotion(MaterialArcMotion())
+
+                duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+
+                scrimColor = Color.TRANSPARENT
+
+                containerColor = requireContext().themeColor(R.attr.colorSurface)
+                startContainerColor = requireContext().themeColor(R.attr.colorSecondary)
+                endContainerColor = requireContext().themeColor(R.attr.colorSurface)
+            }
+
+            returnTransition = Slide(Gravity.BOTTOM).apply {
+                duration = resources.getInteger(R.integer.reply_motion_duration_medium).toLong()
+                addTarget(R.id.add_purchase_card_view)
+            }
+        }
+
+        viewModel =
+            ViewModelProvider(this, viewModelFactory).get(AddPurchaseViewModel::class.java)
         bindViews()
     }
 
