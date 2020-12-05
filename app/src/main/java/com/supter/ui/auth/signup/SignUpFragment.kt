@@ -2,17 +2,16 @@ package com.supter.ui.auth.signup
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.supter.R
 import com.supter.data.response.Resp
 import com.supter.data.response.ResultWrapper
 import com.supter.databinding.SignupFragmentBinding
-import com.supter.ui.ScopedFragment
 import com.supter.ui.main.MainActivity
 import com.supter.utils.SystemUtils
 import com.supter.utils.logException
@@ -20,9 +19,8 @@ import es.dmoral.toasty.Toasty
 import org.kodein.di.DIAware
 import org.kodein.di.android.x.di
 import org.kodein.di.instance
-import java.lang.Exception
 
-class SignUpFragment : ScopedFragment(), DIAware {
+class SignUpFragment : Fragment(), DIAware {
 
     private var _binding: SignupFragmentBinding? = null
     private val binding: SignupFragmentBinding get() = _binding!!
@@ -89,7 +87,7 @@ class SignUpFragment : ScopedFragment(), DIAware {
     private fun registerUser() {
         viewModel.registerUser(
             binding.name?.text.toString(),
-            binding.email.text.toString(),
+            binding.username.text.toString(),
             binding.password.text.toString()
         )
     }

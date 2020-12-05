@@ -1,5 +1,6 @@
 package com.supter.data.repository
 
+import com.supter.data.response.LoginResponse
 import com.supter.data.response.Resp
 import com.supter.data.response.ResultWrapper
 
@@ -12,7 +13,7 @@ interface AuthRepository {
     ): ResultWrapper<Resp>
 
     suspend fun login(
-        email: String,
+        username: String,
         password: String
-    )
+    ): ResultWrapper<LoginResponse>
 }

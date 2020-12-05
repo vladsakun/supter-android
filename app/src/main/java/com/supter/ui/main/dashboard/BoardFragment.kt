@@ -20,6 +20,7 @@ import com.supter.R
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.databinding.FragmentDashboardBinding
 import com.supter.ui.ScopedFragment
+import com.supter.utils.themeColor
 import com.woxthebox.draglistview.BoardView
 import com.woxthebox.draglistview.BoardView.BoardCallback
 import com.woxthebox.draglistview.BoardView.BoardListener
@@ -179,6 +180,7 @@ class BoardFragment : ScopedFragment(), DIAware {
             if (it != null) {
                 resetBoard(it)
                 hideProgress()
+                purchaseList.removeObservers(viewLifecycleOwner)
             }
         })
 
@@ -200,10 +202,7 @@ class BoardFragment : ScopedFragment(), DIAware {
                 .setLayoutManager(layoutManager)
                 .setHasFixedItemSize(false)
                 .setItemsSectionBackgroundColor(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.columnBackground
-                    )
+                    ContextCompat.getColor(requireContext(), R.color.columnBackground)
                 )
                 .setHeader(header)
                 .setFooter(null)

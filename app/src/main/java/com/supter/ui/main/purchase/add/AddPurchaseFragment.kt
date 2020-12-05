@@ -69,14 +69,12 @@ class AddPurchaseFragment : Fragment(), DIAware {
 
                 addTarget(addPurchaseCardView)
 
-                setPathMotion(MaterialArcMotion())
-
                 duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
 
                 scrimColor = Color.TRANSPARENT
 
                 containerColor = requireContext().themeColor(R.attr.colorSurface)
-                startContainerColor = requireContext().themeColor(R.attr.colorSecondary)
+                startContainerColor = requireContext().themeColor(R.attr.colorPrimary)
                 endContainerColor = requireContext().themeColor(R.attr.colorSurface)
             }
 
@@ -96,15 +94,15 @@ class AddPurchaseFragment : Fragment(), DIAware {
 
             val questionsMap = mapOf(
                 requireContext().getString(R.string.how_would_the_purchase_be_useful)
-                        to binding.purchaseUsability.text.toString()
+                        to binding.purchaseUsability.editText?.text.toString()
             )
 
             viewModel.upsertPurchase(
                 PurchaseEntity(
                     Priority.LOW.ordinal,
                     "wish",
-                    binding.purchaseCost.text.toString().toDouble(),
-                    binding.purchaseName.text.toString(),
+                    binding.purchaseCost.editText?.text.toString().toDouble(),
+                    binding.purchaseName.editText?.text.toString(),
                     JSONObject(questionsMap).toString(),
                     null
                 )

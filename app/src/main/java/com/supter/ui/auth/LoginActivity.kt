@@ -3,16 +3,14 @@ package com.supter.ui.auth
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import androidx.appcompat.widget.Toolbar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.supter.R
 import com.supter.databinding.LoginActivityBinding
-import com.supter.ui.ScopedActivity
 import com.supter.ui.auth.login.LoginFragment
 import com.supter.ui.auth.signup.SignUpFragment
 
-class LoginActivity : ScopedActivity() {
+class LoginActivity : AppCompatActivity() {
 
     lateinit var mBinding: LoginActivityBinding
     private var isLoginFragmentActive = true
@@ -23,7 +21,7 @@ class LoginActivity : ScopedActivity() {
         mBinding = LoginActivityBinding.inflate(layoutInflater)
         val view = mBinding.root
         setContentView(view)
-        setSupportActionBar(mBinding.toolbar.toolbar as Toolbar)
+        setSupportActionBar(mBinding.toolbar.toolbar)
 
         presentFragment(LoginFragment(), LoginFragment::class.java.simpleName)
     }

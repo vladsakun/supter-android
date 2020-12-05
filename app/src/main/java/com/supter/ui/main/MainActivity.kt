@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageButton
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
@@ -21,10 +22,9 @@ import com.google.android.material.navigation.NavigationView
 import com.google.android.material.transition.MaterialElevationScale
 import com.supter.R
 import com.supter.databinding.ActivityMainBinding
-import com.supter.ui.ScopedActivity
 import com.supter.ui.main.purchase.add.AddPurchaseFragmentDirections
 
-class MainActivity : ScopedActivity() {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController

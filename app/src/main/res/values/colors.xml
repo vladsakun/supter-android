@@ -10,7 +10,7 @@
 
     <color name="button">#5BC0BE</color>
 
-    <color name="columnBackground">#F5F5F5</color>
+    <color name="columnBackground">#f5f5f5</color>
 
     <color name="imageBackground">#C4C4C4</color>
 
@@ -27,4 +27,33 @@
 
     <color name="lineColor">#5BC0BE</color>
     <color name="app_color">#8EAE3C</color>
+
+    <!--Color palette-->
+    <color name="purple_200">#bb86fc</color> <!--Color primary (dark)-->
+    <color name="purple_500">#6200ee</color> <!--Color primary (light)-->
+
+    <color name="orange_200">#FFCC80 </color> <!--Color primary (dark)-->
+    <color name="orange_500">#FF9800</color> <!--Color primary (light)-->
+
+    <color name="orange_600">#F39100</color> <!--Color primary variant (dark)-->
+    <color name="orange_700">#E38800</color> <!--Color primary variant (light)-->
+
+    <color name="green_200">#03dac6</color> <!--Color secondary-->
+    <color name="green_500">#018786</color> <!--Color secondary variant-->
+
+    <color name="red_200">#cf6679</color> <!--Color error (dark)-->
+    <color name="red_600">#b00020</color> <!--Color error (light)-->
+
+    <!--Color surface (light), color on error (light), -->
+    <!--color on surface (dark), color on surface (dark)-->
+    <color name="white_50">#ffffff</color>
+    <color name="white_100">#f5f5f5</color>
+
+    <color name="black_800">#121212</color> <!--Color surface (dark)-->
+    <!--Color on secondary (light), color on background (light),-->
+    <!--color on surface (light)-->
+    <color name="black_900">#000000</color>
+
+    <color name="indigo">#37469C</color>
+    <color name="indigo_dark">#2A378A</color>
 </resources>

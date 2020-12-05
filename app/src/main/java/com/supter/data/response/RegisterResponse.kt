@@ -1,6 +1,6 @@
 package com.supter.data.response
 
-data class Data(
+data class RegisterResponse(
     val access_token: String,
     val user: User
 )

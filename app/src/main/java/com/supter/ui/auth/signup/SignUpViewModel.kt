@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.supter.data.repository.AuthRepository
 import com.supter.data.response.Resp
 import com.supter.data.response.ResultWrapper
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class SignUpViewModel(val repository: AuthRepository) : ViewModel() {
@@ -22,7 +23,7 @@ class SignUpViewModel(val repository: AuthRepository) : ViewModel() {
         password: String,
     ) {
 
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
 
             val response = repository.register(name, email, password)
             signUpResultMutableLiveData.postValue(response)

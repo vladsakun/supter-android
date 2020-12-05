@@ -3,8 +3,10 @@ package com.supter.data.network
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.supter.data.body.UserAuthParams
 import com.supter.data.body.UserParams
 import com.supter.data.db.entity.PurchaseEntity
+import com.supter.data.response.LoginResponse
 import com.supter.utils.exceptions.NoConnectivityException
 import com.supter.data.response.Resp
 import com.supter.data.response.ResultWrapper
@@ -45,4 +47,10 @@ class PurchaseNetworkDataSourceImpl(
     ): ResultWrapper<Resp> {
         return safeApiCall(Dispatchers.IO) { api.registerUser(UserParams(name, email, password)) }
     }
+
+    override suspend fun login(username: String, password: String): ResultWrapper<LoginResponse> {
+        return safeApiCall(Dispatchers.IO) { api.loginUser(UserAuthParams(username, password)) }
+    }
+
+
 }

@@ -8,6 +8,7 @@ import com.supter.data.repository.AuthRepository
 import com.supter.data.repository.AuthRepositoryImpl
 import com.supter.data.repository.PurchaseRepository
 import com.supter.data.repository.PurchaseRepositoryImpl
+import com.supter.ui.auth.login.LoginViewModelFactory
 import com.supter.ui.auth.signup.SignUpViewModelFactory
 import com.supter.ui.main.dashboard.DashboardViewModelFactory
 import com.supter.ui.main.purchase.add.AddPurchaseViewModel
@@ -58,6 +59,7 @@ class SupterApplication : Application(), DIAware {
         }
 
         //ViewModelFactories
+        bind() from provider { LoginViewModelFactory(instance()) }
         bind() from provider { MovieListViewModelFactory(instance()) }
         bind() from provider { MovieDetailViewModelFactory(instance()) }
         bind() from provider { DashboardViewModelFactory(instance()) }

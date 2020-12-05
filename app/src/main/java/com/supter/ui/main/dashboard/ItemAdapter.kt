@@ -26,6 +26,9 @@ internal class ItemAdapter(
         val item = mItemList[position]
         holder.purchaseTitle.text = item.name
         holder.purchaseCost.text = item.cost.toString()
+        holder.itemView.setOnClickListener {view ->
+            Toast.makeText(view.context, "Item clicked ${item.cost}", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun getUniqueItemId(position: Int): Long {
@@ -40,7 +43,6 @@ internal class ItemAdapter(
         var purchaseCost: TextView = itemView.findViewById(R.id.purchase_cost) as TextView
 
         override fun onItemClicked(view: View) {
-            Toast.makeText(view.context, "Item clicked", Toast.LENGTH_SHORT).show()
         }
 
         override fun onItemLongClicked(view: View): Boolean {
@@ -51,6 +53,6 @@ internal class ItemAdapter(
     }
 
     init {
-        itemList = list
+        mItemList = list
     }
 }

@@ -1,21 +1,21 @@
 package com.supter.data.network
 
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
+import com.supter.data.body.UserAuthParams
 import com.supter.data.body.UserParams
+import com.supter.data.response.LoginResponse
 import com.supter.data.response.Resp
-import com.supter.data.response.ResponseWrapper
-import com.supter.data.response.ResultWrapper
-import kotlinx.coroutines.Deferred
 import okhttp3.OkHttpClient
-import retrofit2.Call
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
-import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
 
 interface Api {
+
+    // Login
+    @POST("auth/login")
+    suspend fun loginUser(@Body user: UserAuthParams): LoginResponse
 
     //Register
     @POST("auth/register")
@@ -23,7 +23,7 @@ interface Api {
 
     companion object {
 
-        const val BASE_URL = "https://supter-api.demyan.net/api/"
+        const val BASE_URL = "https://supter-api.demyan.net/"
 
         operator fun invoke(
             connectivityInterceptor: ConnectivityInterceptor
