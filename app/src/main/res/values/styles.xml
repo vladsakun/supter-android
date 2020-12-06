@@ -7,14 +7,18 @@
     <style name="AuthButton" parent="Widget.MaterialComponents.Button">
         <item name="android:minWidth">@dimen/buttonMinWidth</item>
         <item name="android:padding">10dp</item>
-        <item name="android:textSize">@dimen/buttonTextSize</item>
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:backgroundTint">@color/button</item>
     </style>
 
     <style name="PurchaseEditText" parent="Widget.AppCompat.EditText">
         <item name="android:textColorHint">@color/textColorHint</item>
         <item name="android:textColor">@color/textColorPrimary</item>
+    </style>
+
+    <style name="ProfileTextView" parent="Widget.MaterialComponents.TextView">
+        <item name="android:paddingTop">20dp</item>
+        <item name="android:paddingBottom">20dp</item>
+        <item name="android:paddingEnd">20dp</item>
+        <item name="android:textAppearance">?attr/textAppearanceSubtitle1</item>
     </style>
 
     <!--Bottom Sheets-->

@@ -1,21 +1,20 @@
 package com.supter.ui.main.profile
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.supter.R
 import com.supter.databinding.FragmentProfileBinding
 import com.supter.ui.auth.LoginActivity
 import com.supter.utils.SystemUtils
+import es.dmoral.toasty.Toasty
 
 class ProfileFragment : Fragment() {
     private val TAG = "ProfileFragment"
 
     private var _binding: FragmentProfileBinding? = null
-    private val binding: FragmentProfileBinding get() = _binding!!
+    private val mBinding: FragmentProfileBinding get() = _binding!!
 
     private lateinit var viewModel: ProfileViewModel
 
@@ -26,7 +25,7 @@ class ProfileFragment : Fragment() {
     ): View? {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
-        return binding.root
+        return mBinding.root
     }
 
     override fun onDestroyView() {
@@ -36,6 +35,12 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        mBinding.incomeRemainder.editText?.setText("20000")
+        mBinding.period.editText?.setText("30")
+        mBinding.incomeRemainder.setEndIconOnClickListener {
+            Toasty.info(requireContext(), "Income remainder").show()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

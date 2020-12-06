@@ -12,13 +12,10 @@
     <!--  Card  -->
     <dimen name="cardElevation">5dp</dimen>
     <dimen name="cardMarginVertical">5dp</dimen>
-    <dimen name="cardPadding">10dp</dimen>
+    <dimen name="cardPaddingHorizontal">13dp</dimen>
+    <dimen name="cardPaddingVertical">13dp</dimen>
     <dimen name="cardCornerRadius">5dp</dimen>
 
-    <!--  Text  -->
-    <dimen name="hintTextSize">15sp</dimen>
-    <dimen name="titleTextSize">20sp</dimen>
-    <dimen name="buttonTextSize">15sp</dimen>
 
     <!--  BoardView  -->
     <dimen name="boardEdges">0dp</dimen>

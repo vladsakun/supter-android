@@ -2,6 +2,6 @@
 <View xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/line_height"
-    android:background="@color/lineColor">
+    android:background="?attr/colorPrimary">
 
 </View>
