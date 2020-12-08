@@ -2,6 +2,7 @@ package com.supter.ui.main.profile
 
 import android.os.Bundle
 import android.view.*
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.supter.R
@@ -35,6 +36,9 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        postponeEnterTransition()
+        view.doOnPreDraw { startPostponedEnterTransition() }
 
         mBinding.incomeRemainder.editText?.setText("20000")
         mBinding.period.editText?.setText("30")

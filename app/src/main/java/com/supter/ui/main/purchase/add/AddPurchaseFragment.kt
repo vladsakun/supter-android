@@ -67,15 +67,11 @@ class AddPurchaseFragment : Fragment(), DIAware {
                 startView = requireActivity().findViewById(R.id.fab)
                 endView = addPurchaseCardView
 
-                addTarget(addPurchaseCardView)
-
                 duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
 
                 scrimColor = Color.TRANSPARENT
+                setAllContainerColors(requireContext().themeColor(R.attr.colorSurface))
 
-                containerColor = requireContext().themeColor(R.attr.colorSurface)
-                startContainerColor = requireContext().themeColor(R.attr.colorPrimary)
-                endContainerColor = requireContext().themeColor(R.attr.colorSurface)
             }
 
             returnTransition = Slide(Gravity.BOTTOM).apply {
