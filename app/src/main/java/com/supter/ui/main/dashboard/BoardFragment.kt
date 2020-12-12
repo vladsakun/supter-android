@@ -101,6 +101,10 @@ class BoardFragment : ScopedFragment(), DIAware {
                 addColumn(key.capitalize(Locale.ROOT), value)
             }
 
+            for(i in 0 .. 2){
+                mBoardView.getRecyclerView(i).overScrollMode = View.OVER_SCROLL_NEVER
+            }
+
         }
     }
 
@@ -111,6 +115,7 @@ class BoardFragment : ScopedFragment(), DIAware {
     private fun bindViews() {
 
         mBoardView = mBinding.boardView
+        mBoardView.overScrollMode = View.OVER_SCROLL_NEVER
 
         mBoardView.setSnapToColumnsWhenScrolling(true)
         mBoardView.setSnapToColumnWhenDragging(true)
