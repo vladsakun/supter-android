@@ -30,7 +30,7 @@ interface UserRepository {
     suspend fun putUser(
         name: String,
         incomeRemainder:Double,
-        amount:Double,
+        savings:Double,
         period:Double
     ): ResultWrapper<AccountResponse>
 }

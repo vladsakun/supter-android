@@ -22,7 +22,7 @@ import com.google.android.material.navigation.NavigationView
 import com.google.android.material.transition.MaterialElevationScale
 import com.supter.R
 import com.supter.databinding.ActivityMainBinding
-import com.supter.ui.main.purchase.add.AddPurchaseFragmentDirections
+import com.supter.ui.main.purchase.create.AddPurchaseFragmentDirections
 
 class MainActivity : AppCompatActivity() {
 

@@ -3,15 +3,13 @@ package com.supter.data.network
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.supter.data.body.AccountParams
-import com.supter.data.body.UserAuthParams
-import com.supter.data.body.UserParams
+import com.supter.data.body.AccountBody
+import com.supter.data.body.LoginParams
+import com.supter.data.body.PurchaseBody
+import com.supter.data.body.RegistrationParams
 import com.supter.data.db.entity.PurchaseEntity
-import com.supter.data.response.AccountResponse
-import com.supter.data.response.LoginResponse
+import com.supter.data.response.*
 import com.supter.utils.exceptions.NoConnectivityException
-import com.supter.data.response.Resp
-import com.supter.data.response.ResultWrapper
 import kotlinx.coroutines.Dispatchers
 
 class PurchaseNetworkDataSourceImpl(
@@ -42,21 +40,28 @@ class PurchaseNetworkDataSourceImpl(
         }
     }
 
+    override suspend fun createPurchase(
+        token: String,
+        createPurchaseBody: PurchaseBody
+    ): ResultWrapper<CreatePurchaseResponse> {
+        return safeApiCall(Dispatchers.IO) {api.createPurchase(token, createPurchaseBody)}
+    }
+
     override suspend fun registerWithCoroutines(
         name: String,
         email: String,
         password: String
     ): ResultWrapper<Resp> {
-        return safeApiCall(Dispatchers.IO) { api.registerUser(UserParams(name, email, password)) }
+        return safeApiCall(Dispatchers.IO) { api.registerUser(RegistrationParams(name, email, password)) }
     }
 
     override suspend fun login(username: String, password: String): ResultWrapper<LoginResponse> {
-        return safeApiCall(Dispatchers.IO) { api.loginUser(UserAuthParams(username, password)) }
+        return safeApiCall(Dispatchers.IO) { api.loginUser(LoginParams(username, password)) }
     }
 
     override suspend fun putUser(
         token:String,
-        accountParams: AccountParams
+        accountParams: AccountBody
     ): ResultWrapper<AccountResponse> {
         return safeApiCall(Dispatchers.IO) {api.putUser(token, accountParams)}
     }

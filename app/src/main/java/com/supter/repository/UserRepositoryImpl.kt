@@ -1,7 +1,7 @@
 package com.supter.repository
 
 import android.content.Context
-import com.supter.data.body.AccountParams
+import com.supter.data.body.AccountBody
 import com.supter.data.db.dao.Dao
 import com.supter.data.db.entity.UserEntity
 import com.supter.data.network.PurchaseNetworkDataSource
@@ -58,13 +58,13 @@ class UserRepositoryImpl(
     override suspend fun putUser(
         name: String,
         incomeRemainder: Double,
-        amount: Double,
+        savings: Double,
         period: Double
     ): ResultWrapper<AccountResponse> {
 
         val account = networkDataSource.putUser(
             SystemUtils.getToken(context.applicationContext),
-            AccountParams(name, incomeRemainder, amount, period)
+            AccountBody(name, incomeRemainder, savings, period)
         )
 
         if (account is ResultWrapper.Success) {

@@ -8,20 +8,24 @@ import java.io.Serializable
 @Entity(tableName = "purchase")
 data class PurchaseEntity(
 
-    val name:String,
-    val cost:Double,
-    val priority:Int,
-    var status:String,
-    val questionsJSON:String?,
-    val remind: Double,
-    val realPeriod:Double,
+    @PrimaryKey(autoGenerate = false)
+    var id: Int,
+
+    var title: String,
+    var price: Double,
+    var order: Int,
+    var stage: String,
+    var potential: Int,
+    var description: String?,
+    var questionsJSON: String?,
+    var remind: Double,
+    var realPeriod: Int,
 
     @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
-    val image: ByteArray?
+    var image: ByteArray?
 
-) : Serializable{
-    @PrimaryKey(autoGenerate = true)
-    var id: Int = 0
-}
+)
+
+
 
 

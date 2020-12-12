@@ -9,7 +9,6 @@ import com.supter.data.response.AccountResponse
 import com.supter.data.response.ResultWrapper
 import com.supter.repository.UserRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -26,7 +25,7 @@ class ProfileViewModel(
     fun upsertUser(
         name: String,
         incomeRemainder: Double,
-        amount: Double,
+        savings: Double,
         period: Double
     ) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -34,7 +33,7 @@ class ProfileViewModel(
                 authRepository.putUser(
                     name,
                     incomeRemainder,
-                    amount,
+                    savings,
                     period
                 )
             )

@@ -58,13 +58,14 @@ class ProfileFragment : Fragment(), DIAware {
     }
 
     private fun bindObservers() {
+
         viewModel.getUser().observe(viewLifecycleOwner, {
             performUserData(it)
         })
+
         viewModel.accountResponse.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is ResultWrapper.Success -> {
-                    Log.d(TAG, "bindObservers: ${result.value.data.id}")
                     showSuccessToast()
                 }
 
@@ -101,8 +102,8 @@ class ProfileFragment : Fragment(), DIAware {
             viewModel.upsertUser(
                 mBinding.name.editText?.text.toString(),
                 mBinding.incomeRemainder.editText?.text.toString().toDouble(),
-                mBinding.period.editText?.text.toString().toDouble(),
                 mBinding.savings.editText?.text.toString().toDouble(),
+                mBinding.period.editText?.text.toString().toDouble(),
             )
         }
 

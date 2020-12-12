@@ -1,4 +1,4 @@
-package com.supter.ui.main.purchase.add
+package com.supter.ui.main.purchase.create
 
 import android.graphics.Color
 import android.os.Bundle
@@ -9,20 +9,15 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.transition.ArcMotion
-import androidx.transition.Explode
-import androidx.transition.Fade
 import androidx.transition.Slide
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.transition.MaterialArcMotion
 import com.google.android.material.transition.MaterialContainerTransform
 import com.supter.R
-import com.supter.data.db.entity.PurchaseEntity
+import com.supter.data.response.CreatePurchaseResponse
+import com.supter.data.response.ResultWrapper
 import com.supter.databinding.AddPurchaseFragmentBinding
 import com.supter.ui.main.MainActivity
-import com.supter.utils.enums.Priority
-import com.supter.utils.enums.Status
 import com.supter.utils.themeColor
+import es.dmoral.toasty.Toasty
 import org.json.JSONObject
 import org.kodein.di.DIAware
 import org.kodein.di.instance
@@ -86,6 +81,17 @@ class AddPurchaseFragment : Fragment(), DIAware {
     }
 
     private fun bindViews() {
+        viewModel.createPurchaseResponse.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is ResultWrapper.Success -> handleSuccessResult(result)
+                is ResultWrapper.NetworkError -> showErrorToast(requireContext().getString(R.string.no_internet_connection))
+                is ResultWrapper.GenericError -> showErrorToast(
+                    result.error?.message
+                        ?: requireContext().getString(R.string.no_internet_connection)
+                )
+            }
+        }
+
         binding.save.setOnClickListener {
 
             val questionsMap = mapOf(
@@ -94,13 +100,21 @@ class AddPurchaseFragment : Fragment(), DIAware {
             )
 
             viewModel.upsertPurchase(
-                    binding.purchaseName.editText?.text.toString(),
-                    binding.purchaseCost.editText?.text.toString().toDouble(),
-                    JSONObject(questionsMap).toString(),
+                binding.purchaseTitle.editText?.text.toString(),
+                binding.purchasePrice.editText?.text.toString().toDouble(),
+                JSONObject(questionsMap).toString(),
             )
 
-            findNavController().navigate(R.id.nav_dashboard)
         }
+    }
+
+    private fun showErrorToast(message: String) {
+        Toasty.error(requireContext(), message).show()
+    }
+
+    private fun handleSuccessResult(result: ResultWrapper.Success<CreatePurchaseResponse>) {
+        Toasty.success(requireContext(), "Successfully created ${result.value.data.title}").show()
+        findNavController().navigate(R.id.nav_dashboard)
     }
 
     private fun hideAddBtn() {

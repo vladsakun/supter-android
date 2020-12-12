@@ -28,7 +28,7 @@
 
     <fragment
         android:id="@+id/add_purchase"
-        android:name="com.supter.ui.main.purchase.add.AddPurchaseFragment"
+        android:name="com.supter.ui.main.purchase.create.AddPurchaseFragment"
         android:label="@string/add_purchase"
         tools:layout="@layout/add_purchase_fragment" />
 

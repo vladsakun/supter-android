@@ -1,22 +1,29 @@
 package com.supter.repository
 
 import android.content.Context
-import androidx.lifecycle.LiveData
+import com.supter.data.body.PurchaseBody
 import com.supter.data.db.dao.Dao
 import com.supter.data.db.entity.PurchaseEntity
+import com.supter.data.db.entity.UserEntity
 import com.supter.data.network.PurchaseNetworkDataSource
+import com.supter.data.response.CreatePurchaseResponse
+import com.supter.data.response.ResultWrapper
+import com.supter.utils.SystemUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
 class PurchaseRepositoryImpl(
     private var context: Context,
-    private val purchaseDao: Dao,
+    private val dao: Dao,
     private val networkDataSource: PurchaseNetworkDataSource
 
 ) : PurchaseRepository {
+
+    private val TAG = "PurchaseRepositoryImpl"
 
     init {
         context = context.applicationContext
@@ -25,30 +32,34 @@ class PurchaseRepositoryImpl(
 
             //Set observer on fetched purchases
             fetchedPurchaseList.observeForever { newPurchaseResponse ->
-                persistFetchedPurchases(newPurchaseResponse)
+                upsertPurchaseList(newPurchaseResponse)
             }
 
         }
 
     }
 
-    //Add new movies to local db
-    private fun persistFetchedPurchases(newPurchaseList: List<PurchaseEntity>) {
-        GlobalScope.launch(Dispatchers.IO) {
-            purchaseDao.upsert(newPurchaseList)
-        }
-    }
-
     //Select all movies from db and return them
-    override suspend fun getPurchaseList(): LiveData<List<PurchaseEntity>> {
+    override suspend fun getPurchaseList(): Flow<List<PurchaseEntity>> {
         return withContext(Dispatchers.IO) {
             initPurchaseData()
-            return@withContext purchaseDao.getPurchaseLiveDataList()
+            return@withContext dao.getPurchaseFlowList()
         }
     }
 
+
     override suspend fun upsertPurchase(purchaseEntity: PurchaseEntity) {
-        purchaseDao.upsertOneItem(purchaseEntity)
+        dao.upsertOneItem(purchaseEntity)
+    }
+
+    override fun upsertPurchaseList(purchaseEntityList: List<PurchaseEntity>) {
+        GlobalScope.launch(Dispatchers.IO) {
+            dao.upsert(purchaseEntityList)
+        }
+    }
+
+    override fun getUser(): Flow<UserEntity?> {
+        return dao.getUserFlow()
     }
 
     private suspend fun initPurchaseData() {
@@ -59,5 +70,26 @@ class PurchaseRepositoryImpl(
     private suspend fun fetchPurchaseList() {
         networkDataSource.fetchPurchaseList()
     }
+
+    override suspend fun createPurchase(createPurchaseBody: PurchaseBody): ResultWrapper<CreatePurchaseResponse> {
+        val createPurchaseResponse =
+            networkDataSource.createPurchase(SystemUtils.getToken(context), createPurchaseBody)
+
+        if (createPurchaseResponse is ResultWrapper.Success) {
+            createPurchaseResponse.value.data.apply {
+                upsertPurchase(
+                    PurchaseEntity(
+                        id, title, price,
+                        order, stage, potential,
+                        description, null, remind = 0.0,
+                        realPeriod = 0, null
+                    )
+                )
+            }
+        }
+
+        return createPurchaseResponse
+    }
+
 
 }

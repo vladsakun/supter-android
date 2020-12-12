@@ -12,7 +12,7 @@ import com.supter.ui.auth.login.LoginViewModelFactory
 import com.supter.ui.auth.signup.SignUpViewModelFactory
 import com.supter.ui.main.dashboard.DashboardViewModelFactory
 import com.supter.ui.main.profile.ProfileViewModelFactory
-import com.supter.ui.main.purchase.add.AddPurchaseViewModelFactory
+import com.supter.ui.main.purchase.create.AddPurchaseViewModelFactory
 import com.supter.ui.moviedetail.MovieDetailViewModelFactory
 import com.supter.ui.movielist.MovieListViewModelFactory
 import org.kodein.di.*

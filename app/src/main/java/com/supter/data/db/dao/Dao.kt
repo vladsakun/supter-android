@@ -17,7 +17,7 @@ interface Dao {
     fun upsertOneItem(purchaseEntity: PurchaseEntity)
 
     @Query("SELECT * FROM purchase")
-    fun getPurchaseLiveDataList(): LiveData<List<PurchaseEntity>>
+    fun getPurchaseFlowList(): Flow<List<PurchaseEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun upsertUser(userEntity: UserEntity)

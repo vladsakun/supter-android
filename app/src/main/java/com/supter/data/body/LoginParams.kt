@@ -1,6 +1,6 @@
 package com.supter.data.body
 
-data class UserAuthParams(
+data class LoginParams(
     val username: String,
     val password: String,
 )

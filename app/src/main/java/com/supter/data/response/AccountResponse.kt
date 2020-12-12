@@ -9,7 +9,7 @@ data class Data(
 	val name: String,
 	val email: String,
 	val incomeRemainder: Double,
+	val period: Double,
 	val savings: Double,
-	val period: Double
 )
 

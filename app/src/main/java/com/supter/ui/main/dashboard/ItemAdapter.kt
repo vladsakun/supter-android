@@ -10,7 +10,7 @@ import com.supter.data.db.entity.PurchaseEntity
 import com.woxthebox.draglistview.DragItemAdapter
 
 internal class ItemAdapter(
-    list: List<PurchaseEntity>,
+    val list: ArrayList<PurchaseEntity>,
     private val mLayoutId: Int,
     private val mGrabHandleId: Int,
     private val mDragOnLongPress: Boolean
@@ -24,15 +24,21 @@ internal class ItemAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         super.onBindViewHolder(holder, position)
         val item = mItemList[position]
-        holder.purchaseTitle.text = item.name
-        holder.purchaseCost.text = item.cost.toString()
+        holder.purchaseTitle.text = item.title
+        holder.purchaseCost.text = item.price.toString()
         holder.itemView.setOnClickListener {view ->
-            Toast.makeText(view.context, "Item clicked ${item.cost}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(view.context, "Item clicked ${item.price}", Toast.LENGTH_SHORT).show()
         }
     }
 
     override fun getUniqueItemId(position: Int): Long {
         return mItemList[position]!!.id.toLong()
+    }
+
+    fun updateList(newList:ArrayList<PurchaseEntity>){
+        list.clear()
+        list.addAll(newList)
+        notifyDataSetChanged()
     }
 
     internal inner class ViewHolder(itemView: View) :

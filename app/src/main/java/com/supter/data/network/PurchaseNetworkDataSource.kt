@@ -1,16 +1,17 @@
 package com.supter.data.network
 
 import androidx.lifecycle.LiveData
-import com.supter.data.body.AccountParams
+import com.supter.data.body.AccountBody
+import com.supter.data.body.PurchaseBody
 import com.supter.data.db.entity.PurchaseEntity
-import com.supter.data.response.AccountResponse
-import com.supter.data.response.LoginResponse
-import com.supter.data.response.Resp
-import com.supter.data.response.ResultWrapper
+import com.supter.data.response.*
 
 interface PurchaseNetworkDataSource {
     val fetchedPurchaseList: LiveData<List<PurchaseEntity>>
     suspend fun fetchPurchaseList()
+
+    suspend fun createPurchase(token: String, createPurchaseBody: PurchaseBody)
+            : ResultWrapper<CreatePurchaseResponse>
 
     suspend fun registerWithCoroutines(
         name: String,
@@ -22,6 +23,6 @@ interface PurchaseNetworkDataSource {
 
     suspend fun putUser(
         token: String,
-        accountParams: AccountParams
+        accountParams: AccountBody
     ): ResultWrapper<AccountResponse>
 }

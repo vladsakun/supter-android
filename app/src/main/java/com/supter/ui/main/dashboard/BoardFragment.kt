@@ -2,6 +2,10 @@ package com.supter.ui.main.dashboard
 
 import android.animation.ObjectAnimator
 import android.content.Context
+import kotlin.math.round
+import kotlin.math.ceil
+import java.math.BigDecimal
+import java.math.RoundingMode
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,7 +14,6 @@ import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnPreDraw
@@ -20,7 +23,10 @@ import com.supter.R
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.databinding.FragmentDashboardBinding
 import com.supter.ui.ScopedFragment
-import com.supter.utils.themeColor
+import com.supter.ui.views.MyDragItem
+import com.supter.utils.STATUS_DONE
+import com.supter.utils.STATUS_PROCESS
+import com.supter.utils.STATUS_WANT
 import com.woxthebox.draglistview.BoardView
 import com.woxthebox.draglistview.BoardView.BoardCallback
 import com.woxthebox.draglistview.BoardView.BoardListener
@@ -31,17 +37,19 @@ import org.kodein.di.DIAware
 import org.kodein.di.android.x.di
 import org.kodein.di.instance
 import java.util.*
-import kotlin.reflect.typeOf
+import kotlin.collections.ArrayList
 
 class BoardFragment : ScopedFragment(), DIAware {
 
     private val TAG = "BoardFragment"
 
+    private var _binding: FragmentDashboardBinding? = null
+    private val mBinding get() = _binding!!
+
     override val di by di()
 
     private lateinit var mBoardView: BoardView
-    private var _binding: FragmentDashboardBinding? = null
-    private val mBinding get() = _binding!!
+    private lateinit var listAdapter:ItemAdapter
 
     private val viewModelFactory: DashboardViewModelFactory by instance()
 
@@ -74,21 +82,23 @@ class BoardFragment : ScopedFragment(), DIAware {
     private fun resetBoard(purchaseList: List<PurchaseEntity>) {
         if (context != null) {
 
+            Log.d(TAG, "resetBoard: ")
+
             mBoardView.clearBoard()
             mBoardView.setCustomDragItem(MyDragItem(requireContext(), R.layout.column_item))
 
             val sortedPurchaseMap = linkedMapOf(
-                "Wish" to arrayListOf<PurchaseEntity>(),
-                "Process" to arrayListOf(),
-                "Done" to arrayListOf()
+                STATUS_WANT to arrayListOf<PurchaseEntity>(),
+                STATUS_PROCESS to arrayListOf(),
+                STATUS_DONE to arrayListOf()
             )
 
             for (purchase in purchaseList) {
-                sortedPurchaseMap[purchase.status.capitalize(Locale.ROOT)]?.add(purchase)
+                sortedPurchaseMap[purchase.stage]?.add(purchase)
             }
 
             for ((key, value) in sortedPurchaseMap) {
-                addColumn(key, value)
+                addColumn(key.capitalize(Locale.ROOT), value)
             }
 
         }
@@ -98,7 +108,7 @@ class BoardFragment : ScopedFragment(), DIAware {
         mBinding.progress.visibility = View.GONE
     }
 
-    private fun bindViews() = launch {
+    private fun bindViews() {
 
         mBoardView = mBinding.boardView
 
@@ -116,10 +126,14 @@ class BoardFragment : ScopedFragment(), DIAware {
             }
 
             override fun onItemDragEnded(fromColumn: Int, fromRow: Int, toColumn: Int, toRow: Int) {
-                if ((fromColumn != toColumn || fromRow != toRow) && dragItem != null) {
-                    viewModel.updatePurchase(dragItem!!, toColumn)
-                    dragItem = null
-//                    Toast.makeText(requireContext(), "End - column: " + toColumn + " row: " + toRow, Toast.LENGTH_SHORT).show()
+                if ((fromColumn != toColumn || fromRow != toRow)) {
+                    val copyList = ArrayList<PurchaseEntity>()
+                    mBoardView.getAdapter(fromColumn).itemList.forEachIndexed { index, item ->
+                        val newItem = (item as PurchaseEntity)
+                        newItem.order = index
+                        copyList.add(newItem)
+                    }
+                    viewModel.upsertPurchaseList(copyList)
                 }
             }
 
@@ -174,22 +188,28 @@ class BoardFragment : ScopedFragment(), DIAware {
             }
         })
 
-        val purchaseList = viewModel.purchaseList.await()
+        viewModel.getUser().observe(viewLifecycleOwner, {
 
-        purchaseList.observe(viewLifecycleOwner, {
+        })
+
+        viewModel.getPurchaseLiveData().observe(viewLifecycleOwner, {
             if (it != null) {
-                resetBoard(it)
-                hideProgress()
-                purchaseList.removeObservers(viewLifecycleOwner)
+                if(this::listAdapter.isInitialized && listAdapter.itemList.size > 0){
+                    listAdapter.updateList(it as ArrayList<PurchaseEntity>)
+                }else {
+                    resetBoard(it)
+                    hideProgress()
+//                    viewModel.getPurchaseLiveData().removeObservers(viewLifecycleOwner)
+                }
             }
         })
 
     }
 
-    private fun addColumn(columnName: String, purchaseList: List<PurchaseEntity>) {
+    private fun addColumn(columnName: String, purchaseList: ArrayList<PurchaseEntity>) {
         if (context != null) {
 
-            val listAdapter =
+            listAdapter =
                 ItemAdapter(purchaseList, R.layout.column_item, R.id.item_layout, true)
             val header = View.inflate(activity, R.layout.column_header, null)
 
@@ -212,57 +232,5 @@ class BoardFragment : ScopedFragment(), DIAware {
             mBoardView.addColumn(columnProperties)
         }
     }
-
-    private class MyDragItem(val context: Context, layoutId: Int) :
-        DragItem(context, layoutId) {
-
-        override fun onBindDragView(clickedView: View, dragView: View) {
-            val name = (clickedView.findViewById<View>(R.id.purchase_title) as TextView).text
-            val cost = (clickedView.findViewById<View>(R.id.purchase_cost) as TextView).text
-            (dragView.findViewById<View>(R.id.purchase_title) as TextView).text = name
-            (dragView.findViewById<View>(R.id.purchase_cost) as TextView).text = cost
-            val dragCard: CardView = dragView.findViewById(R.id.card)
-            val clickedCard: CardView = clickedView.findViewById(R.id.card)
-            dragCard.maxCardElevation = 40f
-            dragCard.cardElevation = clickedCard.cardElevation
-
-            // I know the dragView is a FrameLayout and that is why I can use setForeground below api level 23
-            dragCard.foreground =
-                ContextCompat.getDrawable(context, R.drawable.card_view_drag_foreground)
-        }
-
-        override fun onMeasureDragView(clickedView: View, dragView: View) {
-            val dragCard: CardView = dragView.findViewById(R.id.card)
-            val clickedCard: CardView = clickedView.findViewById(R.id.card)
-            val widthDiff = dragCard.paddingLeft - clickedCard.paddingLeft + dragCard.paddingRight -
-                    clickedCard.paddingRight
-            val heightDiff = dragCard.paddingTop - clickedCard.paddingTop + dragCard.paddingBottom -
-                    clickedCard.paddingBottom
-            val width = clickedView.measuredWidth + widthDiff
-            val height = clickedView.measuredHeight + heightDiff
-            dragView.layoutParams = FrameLayout.LayoutParams(width, height)
-            val widthSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY)
-            val heightSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY)
-            dragView.measure(widthSpec, heightSpec)
-        }
-
-        override fun onStartDragAnimation(dragView: View) {
-            val dragCard: CardView = dragView.findViewById(R.id.card)
-            val anim =
-                ObjectAnimator.ofFloat(dragCard, "CardElevation", dragCard.cardElevation, 40f)
-            anim.interpolator = DecelerateInterpolator()
-            anim.duration = ANIMATION_DURATION.toLong()
-            anim.start()
-        }
-
-        override fun onEndDragAnimation(dragView: View) {
-            val dragCard: CardView = dragView.findViewById(R.id.card)
-            val anim = ObjectAnimator.ofFloat(dragCard, "CardElevation", dragCard.cardElevation, 6f)
-            anim.interpolator = DecelerateInterpolator()
-            anim.duration = ANIMATION_DURATION.toLong()
-            anim.start()
-        }
-    }
-
 
 }

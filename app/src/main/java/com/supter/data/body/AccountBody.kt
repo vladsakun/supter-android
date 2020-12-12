@@ -1,6 +1,6 @@
 package com.supter.data.body
 
-data class AccountParams(
+data class AccountBody(
     val name: String,
     val incomeRemainder: Double,
     val savings: Double,

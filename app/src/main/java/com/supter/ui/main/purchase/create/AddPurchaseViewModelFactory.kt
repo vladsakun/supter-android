@@ -1,4 +1,4 @@
-package com.supter.ui.main.purchase.add
+package com.supter.ui.main.purchase.create
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
