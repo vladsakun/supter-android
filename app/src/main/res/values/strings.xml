@@ -32,4 +32,5 @@
     <string name="savings">Savings</string>
     <string name="hint_income_remainder">Income remainder</string>
     <string name="successfully_updated">Successfully updated</string>
+    <string name="dark_theme">Dark theme:</string>
 </resources>

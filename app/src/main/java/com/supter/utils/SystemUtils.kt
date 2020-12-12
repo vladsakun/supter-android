@@ -1,9 +1,9 @@
 package com.supter.utils
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.content.res.Configuration
-import com.supter.SupterApplication
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.edit
 
 class SystemUtils {
 
@@ -16,16 +16,35 @@ class SystemUtils {
                 context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
 
             return when (currentNightMode) {
-                Configuration.UI_MODE_NIGHT_NO -> {
+                AppCompatDelegate.MODE_NIGHT_NO -> {
                     false
                 }
-                Configuration.UI_MODE_NIGHT_YES -> {
+                AppCompatDelegate.MODE_NIGHT_YES -> {
                     true
                 }
                 else -> {
                     true
                 }
             }
+        }
+
+        fun setColorMode(applicationContext: Context, colorMode: Int) {
+
+            val sharedPreferences =
+                applicationContext.getSharedPreferences(THEME_SPRF_NAME, Context.MODE_PRIVATE)
+
+            sharedPreferences.edit {
+                putInt(COLOR_MODE, colorMode)
+            }
+
+            AppCompatDelegate.setDefaultNightMode(colorMode)
+
+        }
+
+        fun getColorMode(applicationContext: Context): Int {
+            val sharedPreferences =
+                applicationContext.getSharedPreferences(THEME_SPRF_NAME, Context.MODE_PRIVATE)
+            return sharedPreferences.getInt(COLOR_MODE, Configuration.UI_MODE_NIGHT_YES)
         }
 
         fun saveToken(applicationContext: Context, token: String) {

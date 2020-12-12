@@ -10,11 +10,11 @@
     <dimen name="fab_margin">16dp</dimen>
 
     <!--  Card  -->
-    <dimen name="cardElevation">5dp</dimen>
+    <dimen name="cardElevation">3dp</dimen>
     <dimen name="cardMarginVertical">5dp</dimen>
     <dimen name="cardPaddingHorizontal">13dp</dimen>
     <dimen name="cardPaddingVertical">13dp</dimen>
-    <dimen name="cardCornerRadius">5dp</dimen>
+    <dimen name="cardCornerRadius">4dp</dimen>
 
 
     <!--  BoardView  -->

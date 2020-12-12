@@ -15,6 +15,7 @@ import com.supter.ui.main.profile.ProfileViewModelFactory
 import com.supter.ui.main.purchase.create.AddPurchaseViewModelFactory
 import com.supter.ui.moviedetail.MovieDetailViewModelFactory
 import com.supter.ui.movielist.MovieListViewModelFactory
+import com.supter.utils.SystemUtils
 import org.kodein.di.*
 import org.kodein.di.android.x.androidXModule
 
@@ -66,6 +67,6 @@ class SupterApplication : Application(), DIAware {
 
     override fun onCreate() {
         super.onCreate()
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        AppCompatDelegate.setDefaultNightMode(SystemUtils.getColorMode(applicationContext))
     }
 }

@@ -1,4 +1,4 @@
-package com.supter.ui.main.gallery
+package com.supter.ui.main.settings
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

@@ -14,9 +14,9 @@
 
     <fragment
         android:id="@+id/nav_settings"
-        android:name="com.supter.ui.main.gallery.GalleryFragment"
+        android:name="com.supter.ui.main.settings.SettingsFragment"
         android:label="@string/menu_settings"
-        tools:layout="@layout/fragment_gallery" >
+        tools:layout="@layout/fragment_settings" >
     </fragment>
 
     <fragment
