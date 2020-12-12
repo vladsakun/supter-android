@@ -30,4 +30,6 @@
     <string name="income_remainder">Income remainder</string>
     <string name="period">Period</string>
     <string name="savings">Savings</string>
+    <string name="hint_income_remainder">Income remainder</string>
+    <string name="successfully_updated">Successfully updated</string>
 </resources>

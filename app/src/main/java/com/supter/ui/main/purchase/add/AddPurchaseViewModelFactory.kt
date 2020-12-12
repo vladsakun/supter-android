@@ -2,7 +2,7 @@ package com.supter.ui.main.purchase.add
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.supter.data.repository.PurchaseRepository
+import com.supter.repository.PurchaseRepository
 
 class AddPurchaseViewModelFactory(
     private val repository: PurchaseRepository

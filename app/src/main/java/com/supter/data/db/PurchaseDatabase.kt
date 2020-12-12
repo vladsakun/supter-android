@@ -6,14 +6,13 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.supter.data.db.dao.Dao
 import com.supter.data.db.entity.PurchaseEntity
-
-
-@Database(
-    entities = [PurchaseEntity::class],
-    version = 1
-)
+import com.supter.data.db.entity.UserEntity
 
 //Database
+@Database(
+    entities = [PurchaseEntity::class, UserEntity::class],
+    version = 1
+)
 abstract class PurchaseDatabase : RoomDatabase() {
 
     abstract fun movieDao(): Dao
@@ -30,9 +29,9 @@ abstract class PurchaseDatabase : RoomDatabase() {
         private fun buildDB(context: Context) =
             Room.databaseBuilder(
                 context.applicationContext,
-                PurchaseDatabase::class.java, "supter.db"
-            )
-                .build()
+                PurchaseDatabase::class.java,
+                "supter.db"
+            ).build()
 
     }
 

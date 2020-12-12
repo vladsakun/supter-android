@@ -1,9 +1,6 @@
 package com.supter.supter
 
-import com.supter.data.repository.PurchaseRepository
-import org.junit.Test
-
-import org.junit.Assert.*
+import com.supter.repository.PurchaseRepository
 
 /**
  * Example local unit test, which will execute on the development machine (host).

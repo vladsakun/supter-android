@@ -94,14 +94,9 @@ class AddPurchaseFragment : Fragment(), DIAware {
             )
 
             viewModel.upsertPurchase(
-                PurchaseEntity(
-                    Priority.LOW.ordinal,
-                    "wish",
-                    binding.purchaseCost.editText?.text.toString().toDouble(),
                     binding.purchaseName.editText?.text.toString(),
+                    binding.purchaseCost.editText?.text.toString().toDouble(),
                     JSONObject(questionsMap).toString(),
-                    null
-                )
             )
 
             findNavController().navigate(R.id.nav_dashboard)

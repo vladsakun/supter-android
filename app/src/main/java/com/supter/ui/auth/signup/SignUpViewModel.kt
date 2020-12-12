@@ -5,13 +5,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.supter.data.repository.AuthRepository
+import com.supter.repository.UserRepository
 import com.supter.data.response.Resp
 import com.supter.data.response.ResultWrapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class SignUpViewModel(val repository: AuthRepository) : ViewModel() {
+class SignUpViewModel(val repository: UserRepository) : ViewModel() {
 
     private val TAG = "SignUpViewModel"
     private val signUpResultMutableLiveData = MutableLiveData<ResultWrapper<Resp>>()

@@ -2,7 +2,7 @@ package com.supter.ui.moviedetail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.supter.data.repository.PurchaseRepository
+import com.supter.repository.PurchaseRepository
 
 class MovieDetailViewModelFactory(
     private val purchaseRepository: PurchaseRepository

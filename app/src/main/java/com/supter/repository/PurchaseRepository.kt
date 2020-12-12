@@ -1,4 +1,4 @@
-package com.supter.data.repository
+package com.supter.repository
 
 import androidx.lifecycle.LiveData
 import com.supter.data.db.entity.PurchaseEntity

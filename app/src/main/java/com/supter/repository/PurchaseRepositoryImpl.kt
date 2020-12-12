@@ -1,4 +1,4 @@
-package com.supter.data.repository
+package com.supter.repository
 
 import android.content.Context
 import androidx.lifecycle.LiveData

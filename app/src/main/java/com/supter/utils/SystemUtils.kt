@@ -9,6 +9,8 @@ class SystemUtils {
 
     companion object {
 
+        const val bearer = "Bearer "
+
         fun isNightMode(context: Context): Boolean {
             val currentNightMode =
                 context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
@@ -37,7 +39,7 @@ class SystemUtils {
         fun getToken(applicationContext: Context): String {
             val sharedPreferences =
                 applicationContext.getSharedPreferences(TOKEN_SPRF_NAME, Context.MODE_PRIVATE)
-            return sharedPreferences.getString(TOKEN_NAME, "")!!
+            return bearer + sharedPreferences.getString(TOKEN_NAME, "")!!
         }
 
         fun deleteToken(applicationContext: Context) {

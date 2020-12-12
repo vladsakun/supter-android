@@ -4,14 +4,14 @@ import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import com.supter.data.db.PurchaseDatabase
 import com.supter.data.network.*
-import com.supter.data.repository.AuthRepository
-import com.supter.data.repository.AuthRepositoryImpl
-import com.supter.data.repository.PurchaseRepository
-import com.supter.data.repository.PurchaseRepositoryImpl
+import com.supter.repository.UserRepository
+import com.supter.repository.UserRepositoryImpl
+import com.supter.repository.PurchaseRepository
+import com.supter.repository.PurchaseRepositoryImpl
 import com.supter.ui.auth.login.LoginViewModelFactory
 import com.supter.ui.auth.signup.SignUpViewModelFactory
 import com.supter.ui.main.dashboard.DashboardViewModelFactory
-import com.supter.ui.main.purchase.add.AddPurchaseViewModel
+import com.supter.ui.main.profile.ProfileViewModelFactory
 import com.supter.ui.main.purchase.add.AddPurchaseViewModelFactory
 import com.supter.ui.moviedetail.MovieDetailViewModelFactory
 import com.supter.ui.movielist.MovieListViewModelFactory
@@ -19,10 +19,6 @@ import org.kodein.di.*
 import org.kodein.di.android.x.androidXModule
 
 class SupterApplication : Application(), DIAware {
-
-    companion object {
-        lateinit var instance: SupterApplication
-    }
 
     override val di by DI.lazy {
 
@@ -50,8 +46,8 @@ class SupterApplication : Application(), DIAware {
                 instance()
             )
         }
-        bind<AuthRepository>() with singleton {
-            AuthRepositoryImpl(
+        bind<UserRepository>() with singleton {
+            UserRepositoryImpl(
                 instance(),
                 instance(),
                 instance()
@@ -65,11 +61,11 @@ class SupterApplication : Application(), DIAware {
         bind() from provider { DashboardViewModelFactory(instance()) }
         bind() from provider { SignUpViewModelFactory(instance()) }
         bind() from provider { AddPurchaseViewModelFactory(instance()) }
+        bind() from provider { ProfileViewModelFactory(instance()) }
     }
 
     override fun onCreate() {
         super.onCreate()
-        instance = this
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
     }
 }

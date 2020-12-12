@@ -5,14 +5,16 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.io.Serializable
 
-@Entity(tableName = "supter_db")
+@Entity(tableName = "purchase")
 data class PurchaseEntity(
 
+    val name:String,
+    val cost:Double,
     val priority:Int,
     var status:String,
-    val cost:Double,
-    val name:String,
     val questionsJSON:String?,
+    val remind: Double,
+    val realPeriod:Double,
 
     @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
     val image: ByteArray?

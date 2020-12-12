@@ -3,7 +3,7 @@ package com.supter.ui.main.dashboard
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.supter.data.db.entity.PurchaseEntity
-import com.supter.data.repository.PurchaseRepository
+import com.supter.repository.PurchaseRepository
 import com.supter.internal.lazyDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

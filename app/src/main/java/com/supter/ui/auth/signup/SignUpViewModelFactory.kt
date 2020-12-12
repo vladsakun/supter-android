@@ -2,9 +2,9 @@ package com.supter.ui.auth.signup
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.supter.data.repository.AuthRepository
+import com.supter.repository.UserRepository
 
-class SignUpViewModelFactory(val repository: AuthRepository): ViewModelProvider.NewInstanceFactory() {
+class SignUpViewModelFactory(val repository: UserRepository): ViewModelProvider.NewInstanceFactory() {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {

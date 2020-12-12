@@ -1,10 +1,8 @@
 package com.supter.ui.movielist
 
 import androidx.lifecycle.ViewModel
-import com.supter.data.repository.PurchaseRepository
+import com.supter.repository.PurchaseRepository
 import com.supter.internal.lazyDeferred
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 class MovieListViewModel(
     private val movieRepository: PurchaseRepository

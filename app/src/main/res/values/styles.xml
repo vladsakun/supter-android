@@ -21,6 +21,12 @@
         <item name="android:textAppearance">?attr/textAppearanceSubtitle1</item>
     </style>
 
+    <style name="AccountTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:layout_marginTop">@dimen/editTextMarginTop</item>
+        <item name="endIconDrawable">@drawable/ic_info_outline_white_24dp</item>
+        <item name="endIconMode">custom</item>
+    </style>
+
     <!--Bottom Sheets-->
     <style name="ThemeOverlay.MyTheme.BottomSheetDialog" parent="ThemeOverlay.MaterialComponents.Dialog">
         <item name="android:windowIsFloating">false</item>
