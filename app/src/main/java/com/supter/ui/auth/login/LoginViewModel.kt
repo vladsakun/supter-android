@@ -1,17 +1,18 @@
 package com.supter.ui.auth.login
 
-import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.*
-import com.supter.repository.UserRepository
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.supter.data.response.LoginResponse
 import com.supter.data.response.ResultWrapper
+import com.supter.repository.UserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class LoginViewModel @ViewModelInject constructor(
-    private val authRepository: UserRepository,
-    @Assisted private val savedStateHandle: SavedStateHandle
+    private val authRepository: UserRepository
 ) : ViewModel() {
 
     private val _loginResultMutableLiveData = MutableLiveData<ResultWrapper<LoginResponse>>()

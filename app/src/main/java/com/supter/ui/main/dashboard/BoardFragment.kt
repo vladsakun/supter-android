@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.supter.R
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.databinding.FragmentDashboardBinding
-import com.supter.ui.ScopedFragment
-import com.supter.ui.views.MyDragItem
+import com.supter.utils.ScopedFragment
+import com.supter.views.MyDragItem
 import com.supter.utils.STATUS_DONE
 import com.supter.utils.STATUS_PROCESS
 import com.supter.utils.STATUS_WANT

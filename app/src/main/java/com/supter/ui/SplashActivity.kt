@@ -1,12 +1,8 @@
-package com.supter.ui.splash
+package com.supter.ui
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.view.View
-import androidx.core.view.ViewCompat
-import com.supter.R
 import com.supter.ui.auth.LoginActivity
 import com.supter.ui.main.MainActivity
 import com.supter.utils.SystemUtils

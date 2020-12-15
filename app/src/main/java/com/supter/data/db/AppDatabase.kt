@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.supter.data.db.dao.PurchaseDao
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.db.entity.UserEntity
 

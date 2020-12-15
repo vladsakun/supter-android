@@ -1,4 +1,4 @@
-package com.supter.adapters
+package com.supter.ui.adapters
 
 import android.content.Context
 import android.graphics.Rect

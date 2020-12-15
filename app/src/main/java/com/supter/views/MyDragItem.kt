@@ -1,4 +1,4 @@
-package com.supter.ui.views
+package com.supter.views
 
 import android.animation.ObjectAnimator
 import android.content.Context

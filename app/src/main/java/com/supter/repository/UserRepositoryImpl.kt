@@ -2,7 +2,7 @@ package com.supter.repository
 
 import android.content.Context
 import com.supter.data.body.AccountBody
-import com.supter.data.db.dao.PurchaseDao
+import com.supter.data.db.PurchaseDao
 import com.supter.data.db.entity.UserEntity
 import com.supter.data.network.PurchaseNetworkDataSource
 import com.supter.data.response.AccountResponse

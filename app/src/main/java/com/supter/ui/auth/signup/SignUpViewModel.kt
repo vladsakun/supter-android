@@ -11,8 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class SignUpViewModel @ViewModelInject constructor(
-    val repository: UserRepository,
-    @Assisted private val savedStateHandle: SavedStateHandle
+    val repository: UserRepository
 ) : ViewModel() {
 
     private val TAG = "SignUpViewModel"

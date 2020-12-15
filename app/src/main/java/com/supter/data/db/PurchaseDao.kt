@@ -1,4 +1,4 @@
-package com.supter.data.db.dao
+package com.supter.data.db
 
 import androidx.room.Dao
 import androidx.room.Insert

@@ -6,11 +6,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.supter.data.body.PurchaseBody
-import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.response.CreatePurchaseResponse
 import com.supter.data.response.ResultWrapper
 import com.supter.repository.PurchaseRepository
-import com.supter.utils.enums.Priority
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

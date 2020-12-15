@@ -3,7 +3,7 @@ package com.supter.di
 import android.content.Context
 import androidx.room.Room
 import com.supter.data.db.AppDatabase
-import com.supter.data.db.dao.PurchaseDao
+import com.supter.data.db.PurchaseDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,7 +26,7 @@ object DatabaseModule {
     }
 
     @Provides
-    fun provideDao(database: AppDatabase): PurchaseDao{
+    fun provideDao(database: AppDatabase): PurchaseDao {
         return database.purchaseDao()
     }
 }
