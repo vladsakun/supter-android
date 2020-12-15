@@ -17,7 +17,7 @@ class SplashActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
 
-        if (SystemUtils.getToken(applicationContext).isNotEmpty()) {
+        if (SystemUtils.getToken(applicationContext).length > 10) {
             startMainActivity()
         } else {
             startLoginActivity()

@@ -1,5 +1,6 @@
 package com.supter.ui.main.profile
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,8 +12,9 @@ import com.supter.repository.UserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ProfileViewModel(
+class ProfileViewModel @ViewModelInject constructor(
     private val authRepository: UserRepository
 ) : ViewModel() {
 

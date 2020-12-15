@@ -4,22 +4,23 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.supter.data.db.dao.Dao
+import com.supter.data.db.dao.PurchaseDao
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.db.entity.UserEntity
 
 //Database
 @Database(
     entities = [PurchaseEntity::class, UserEntity::class],
-    version = 1
+    version = 1,
+    exportSchema = false
 )
-abstract class PurchaseDatabase : RoomDatabase() {
+abstract class AppDatabase : RoomDatabase() {
 
-    abstract fun movieDao(): Dao
+    abstract fun purchaseDao(): PurchaseDao
 
     companion object {
         @Volatile
-        private var instance: PurchaseDatabase? = null
+        private var instance: AppDatabase? = null
         private val LOCK = Any()
 
         operator fun invoke(context: Context) = instance ?: synchronized(LOCK) {
@@ -29,7 +30,7 @@ abstract class PurchaseDatabase : RoomDatabase() {
         private fun buildDB(context: Context) =
             Room.databaseBuilder(
                 context.applicationContext,
-                PurchaseDatabase::class.java,
+                AppDatabase::class.java,
                 "supter.db"
             ).build()
 

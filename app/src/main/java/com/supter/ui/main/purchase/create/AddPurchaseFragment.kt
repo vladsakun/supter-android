@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.transition.Slide
@@ -17,17 +18,12 @@ import com.supter.data.response.ResultWrapper
 import com.supter.databinding.AddPurchaseFragmentBinding
 import com.supter.ui.main.MainActivity
 import com.supter.utils.themeColor
+import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import org.json.JSONObject
-import org.kodein.di.DIAware
-import org.kodein.di.instance
-import org.kodein.di.android.x.di
 
-class AddPurchaseFragment : Fragment(), DIAware {
-
-    override val di by di()
-
-    private val viewModelFactory: AddPurchaseViewModelFactory by instance()
+@AndroidEntryPoint
+class AddPurchaseFragment : Fragment() {
 
     private var _binding: AddPurchaseFragmentBinding? = null
     private val binding: AddPurchaseFragmentBinding get() = _binding!!
@@ -37,7 +33,7 @@ class AddPurchaseFragment : Fragment(), DIAware {
         fun newInstance() = AddPurchaseFragment()
     }
 
-    private lateinit var viewModel: AddPurchaseViewModel
+    private val viewModel: AddPurchaseViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -75,8 +71,6 @@ class AddPurchaseFragment : Fragment(), DIAware {
             }
         }
 
-        viewModel =
-            ViewModelProvider(this, viewModelFactory).get(AddPurchaseViewModel::class.java)
         bindViews()
     }
 

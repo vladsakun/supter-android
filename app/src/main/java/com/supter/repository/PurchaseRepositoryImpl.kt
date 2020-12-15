@@ -2,23 +2,25 @@ package com.supter.repository
 
 import android.content.Context
 import com.supter.data.body.PurchaseBody
-import com.supter.data.db.dao.Dao
+import com.supter.data.db.dao.PurchaseDao
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.db.entity.UserEntity
 import com.supter.data.network.PurchaseNetworkDataSource
 import com.supter.data.response.CreatePurchaseResponse
 import com.supter.data.response.ResultWrapper
 import com.supter.utils.SystemUtils
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 
-class PurchaseRepositoryImpl(
-    private var context: Context,
-    private val dao: Dao,
+class PurchaseRepositoryImpl @Inject constructor(
+    @ApplicationContext private var context: Context,
+    private val dao: PurchaseDao,
     private val networkDataSource: PurchaseNetworkDataSource
 
 ) : PurchaseRepository {

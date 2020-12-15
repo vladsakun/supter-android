@@ -1,16 +1,10 @@
 package com.supter.ui.main.settings
 
-import android.content.res.Configuration
-import android.content.res.Resources
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
-import android.util.TypedValue
 import android.view.*
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
-import com.supter.R
 import com.supter.databinding.FragmentSettingsBinding
 import com.supter.utils.SystemUtils
 
@@ -22,7 +16,7 @@ class SettingsFragment : Fragment() {
     private var _binding: FragmentSettingsBinding? = null
     val mBinding get() = _binding!!
 
-    private lateinit var galleryViewModel: GalleryViewModel
+    private lateinit var galleryViewModel: SettingsViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,

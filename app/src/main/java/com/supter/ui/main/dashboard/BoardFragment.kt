@@ -1,23 +1,14 @@
 package com.supter.ui.main.dashboard
 
-import android.animation.ObjectAnimator
-import android.content.Context
-import kotlin.math.round
-import kotlin.math.ceil
-import java.math.BigDecimal
-import java.math.RoundingMode
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.DecelerateInterpolator
-import android.widget.FrameLayout
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnPreDraw
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.supter.R
 import com.supter.data.db.entity.PurchaseEntity
@@ -31,29 +22,22 @@ import com.woxthebox.draglistview.BoardView
 import com.woxthebox.draglistview.BoardView.BoardCallback
 import com.woxthebox.draglistview.BoardView.BoardListener
 import com.woxthebox.draglistview.ColumnProperties
-import com.woxthebox.draglistview.DragItem
-import kotlinx.coroutines.launch
-import org.kodein.di.DIAware
-import org.kodein.di.android.x.di
-import org.kodein.di.instance
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import kotlin.collections.ArrayList
 
-class BoardFragment : ScopedFragment(), DIAware {
+@AndroidEntryPoint
+class BoardFragment : ScopedFragment() {
 
     private val TAG = "BoardFragment"
 
     private var _binding: FragmentDashboardBinding? = null
     private val mBinding get() = _binding!!
 
-    override val di by di()
-
     private lateinit var mBoardView: BoardView
     private lateinit var listAdapter:ItemAdapter
 
-    private val viewModelFactory: DashboardViewModelFactory by instance()
-
-    private lateinit var viewModel: DashboardViewModel
+    private val viewModel: DashboardViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -74,7 +58,6 @@ class BoardFragment : ScopedFragment(), DIAware {
         super.onViewCreated(view, savedInstanceState)
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
-        viewModel = ViewModelProvider(this, viewModelFactory).get(DashboardViewModel::class.java)
 
         bindViews()
     }

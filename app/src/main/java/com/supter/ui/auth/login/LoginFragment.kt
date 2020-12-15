@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.supter.R
 import com.supter.data.response.ResultWrapper
@@ -15,20 +16,16 @@ import com.supter.ui.auth.LoginActivity
 import com.supter.ui.auth.signup.SignUpFragment
 import com.supter.ui.main.MainActivity
 import com.supter.utils.logException
+import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
-import org.kodein.di.DIAware
-import org.kodein.di.android.x.di
-import org.kodein.di.instance
 
-class LoginFragment : Fragment(), DIAware {
-
-    override val di by di()
+@AndroidEntryPoint
+class LoginFragment : Fragment() {
 
     private var _binding: LoginFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private val loginViewModelFactory: LoginViewModelFactory by instance()
-    private lateinit var viewModel: LoginViewModel
+    private val viewModel: LoginViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,7 +44,7 @@ class LoginFragment : Fragment(), DIAware {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(this, loginViewModelFactory).get(LoginViewModel::class.java)
+//        viewModel = ViewModelProvider(this, loginViewModelFactory).get(LoginViewModel::class.java)
         bindViews()
     }
 

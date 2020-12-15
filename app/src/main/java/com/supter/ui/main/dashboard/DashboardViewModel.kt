@@ -1,5 +1,6 @@
 package com.supter.ui.main.dashboard
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,10 +16,11 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.math.RoundingMode
+import javax.inject.Inject
 import kotlin.math.ceil
 import kotlin.math.round
 
-class DashboardViewModel(
+class DashboardViewModel @ViewModelInject constructor(
     private val purchaseRepository: PurchaseRepository
 ) : ViewModel() {
 

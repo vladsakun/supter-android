@@ -17,7 +17,7 @@ interface PurchaseNetworkDataSource {
         name: String,
         email: String,
         password: String
-    ): ResultWrapper<Resp>
+    ): ResultWrapper<RegistrationResponse>
 
     suspend fun login(username: String, password: String): ResultWrapper<LoginResponse>
 

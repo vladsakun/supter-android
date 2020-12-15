@@ -23,7 +23,9 @@ import com.google.android.material.transition.MaterialElevationScale
 import com.supter.R
 import com.supter.databinding.ActivityMainBinding
 import com.supter.ui.main.purchase.create.AddPurchaseFragmentDirections
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding

@@ -1,21 +1,23 @@
 package com.supter.ui.auth.signup
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.hilt.Assisted
+import androidx.hilt.lifecycle.ViewModelInject
+import androidx.lifecycle.*
 import com.supter.repository.UserRepository
-import com.supter.data.response.Resp
+import com.supter.data.response.RegistrationResponse
 import com.supter.data.response.ResultWrapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class SignUpViewModel(val repository: UserRepository) : ViewModel() {
+class SignUpViewModel @ViewModelInject constructor(
+    val repository: UserRepository,
+    @Assisted private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
 
     private val TAG = "SignUpViewModel"
-    private val signUpResultMutableLiveData = MutableLiveData<ResultWrapper<Resp>>()
-    val signUp: LiveData<ResultWrapper<Resp>> get() = signUpResultMutableLiveData
+    private val signUpResultMutableLiveData = MutableLiveData<ResultWrapper<RegistrationResponse>>()
+    val signUp: LiveData<ResultWrapper<RegistrationResponse>> get() = signUpResultMutableLiveData
 
     fun registerUser(
         name: String,
@@ -37,7 +39,7 @@ class SignUpViewModel(val repository: UserRepository) : ViewModel() {
 
     }
 
-    private fun showSuccess(value: Resp) {
+    private fun showSuccess(value: RegistrationResponse) {
         Log.d(TAG, "showSuccess: ")
     }
 

@@ -1,5 +1,6 @@
 package com.supter.ui.main.purchase.create
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,7 +14,7 @@ import com.supter.utils.enums.Priority
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class AddPurchaseViewModel(
+class AddPurchaseViewModel @ViewModelInject constructor(
     private val repository: PurchaseRepository
 ) : ViewModel() {
 

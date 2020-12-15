@@ -1,4 +1,4 @@
-package com.supter.internal
+package com.supter.utils.internal
 
 import kotlinx.coroutines.*
 

@@ -11,9 +11,10 @@ import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.response.*
 import com.supter.utils.exceptions.NoConnectivityException
 import kotlinx.coroutines.Dispatchers
+import javax.inject.Inject
 
-class PurchaseNetworkDataSourceImpl(
-    private val api: Api
+class PurchaseNetworkDataSourceImpl @Inject constructor(
+    var api: Api
 ) : BaseNetworkDataSourceImpl(), PurchaseNetworkDataSource {
 
     private val CONNECTIVITY_TAG = "Connectivity"
@@ -51,7 +52,7 @@ class PurchaseNetworkDataSourceImpl(
         name: String,
         email: String,
         password: String
-    ): ResultWrapper<Resp> {
+    ): ResultWrapper<RegistrationResponse> {
         return safeApiCall(Dispatchers.IO) { api.registerUser(RegistrationParams(name, email, password)) }
     }
 

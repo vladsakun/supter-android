@@ -7,30 +7,26 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import com.supter.R
-import com.supter.data.response.Resp
+import com.supter.data.response.RegistrationResponse
 import com.supter.data.response.ResultWrapper
 import com.supter.databinding.SignupFragmentBinding
 import com.supter.ui.main.MainActivity
 import com.supter.utils.SystemUtils
 import com.supter.utils.logException
+import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
-import org.kodein.di.DIAware
-import org.kodein.di.android.x.di
-import org.kodein.di.instance
 
-class SignUpFragment : Fragment(), DIAware {
+@AndroidEntryPoint
+class SignUpFragment : Fragment() {
 
     private var _binding: SignupFragmentBinding? = null
     private val binding: SignupFragmentBinding get() = _binding!!
 
     private val TAG = "SignUpFragment"
 
-    override val di by di()
-    private val signUpViewModelFactory: SignUpViewModelFactory by instance()
-
-    private lateinit var viewModel: SignUpViewModel
+    private val viewModel: SignUpViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,8 +39,6 @@ class SignUpFragment : Fragment(), DIAware {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        viewModel = ViewModelProvider(this, signUpViewModelFactory).get(SignUpViewModel::class.java)
 
         bindViews()
     }
@@ -92,8 +86,8 @@ class SignUpFragment : Fragment(), DIAware {
         )
     }
 
-    private fun successSignUp(result: ResultWrapper.Success<Resp>) {
-        SystemUtils.saveToken(requireContext().applicationContext, result.value.data.access_token)
+    private fun successSignUp(result: ResultWrapper.Success<RegistrationResponse>) {
+        SystemUtils.saveToken(requireContext().applicationContext, result.value.accessToken)
         startMainActivity()
     }
 

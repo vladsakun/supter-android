@@ -9,7 +9,9 @@ import com.supter.R
 import com.supter.databinding.LoginActivityBinding
 import com.supter.ui.auth.login.LoginFragment
 import com.supter.ui.auth.signup.SignUpFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
 
     lateinit var mBinding: LoginActivityBinding

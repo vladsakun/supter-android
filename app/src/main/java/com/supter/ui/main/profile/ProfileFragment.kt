@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.*
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -14,21 +15,17 @@ import com.supter.data.response.ResultWrapper
 import com.supter.databinding.FragmentProfileBinding
 import com.supter.ui.auth.LoginActivity
 import com.supter.utils.SystemUtils
+import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
-import org.kodein.di.DIAware
-import org.kodein.di.android.x.di
-import org.kodein.di.instance
 
-class ProfileFragment : Fragment(), DIAware {
+@AndroidEntryPoint
+class ProfileFragment : Fragment() {
     private val TAG = "ProfileFragment"
-
-    override val di by di()
 
     private var _binding: FragmentProfileBinding? = null
     private val mBinding: FragmentProfileBinding get() = _binding!!
 
-    private val viewModelFactory: ProfileViewModelFactory by instance()
-    private lateinit var viewModel: ProfileViewModel
+    private val viewModel: ProfileViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,8 +47,6 @@ class ProfileFragment : Fragment(), DIAware {
 
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
-
-        viewModel = ViewModelProvider(this, viewModelFactory).get(ProfileViewModel::class.java)
 
         bindObservers()
         bindClickListeners()

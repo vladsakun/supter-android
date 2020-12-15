@@ -2,24 +2,26 @@ package com.supter.repository
 
 import android.content.Context
 import com.supter.data.body.AccountBody
-import com.supter.data.db.dao.Dao
+import com.supter.data.db.dao.PurchaseDao
 import com.supter.data.db.entity.UserEntity
 import com.supter.data.network.PurchaseNetworkDataSource
 import com.supter.data.response.AccountResponse
 import com.supter.data.response.LoginResponse
-import com.supter.data.response.Resp
+import com.supter.data.response.RegistrationResponse
 import com.supter.data.response.ResultWrapper
 import com.supter.utils.SystemUtils
 import com.supter.utils.SystemUtils.Companion.saveToken
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class UserRepositoryImpl(
-    private var context: Context,
-    private val dao: Dao,
-    private val networkDataSource: PurchaseNetworkDataSource
+class UserRepositoryImpl @Inject constructor(
+    @ApplicationContext var context: Context,
+    var dao: PurchaseDao,
+    var networkDataSource: PurchaseNetworkDataSource
 ) : UserRepository {
 
     init {
@@ -30,7 +32,7 @@ class UserRepositoryImpl(
         name: String,
         email: String,
         password: String
-    ): ResultWrapper<Resp> {
+    ): ResultWrapper<RegistrationResponse> {
         return networkDataSource.registerWithCoroutines(name, email, password)
     }
 
