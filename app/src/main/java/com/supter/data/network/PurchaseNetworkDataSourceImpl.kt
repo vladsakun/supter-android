@@ -20,32 +20,17 @@ class PurchaseNetworkDataSourceImpl @Inject constructor(
     private val CONNECTIVITY_TAG = "Connectivity"
     private val TAG = "PurchaseNetworkDataSour"
 
-    private val _fetchedPurchaseList = MutableLiveData<List<PurchaseEntity>>()
-    override val fetchedPurchaseList: LiveData<List<PurchaseEntity>>
-        get() = _fetchedPurchaseList
-
-    //Fetch popular movie list
-    override suspend fun fetchPurchaseList() {
-        try {
-            val list = ArrayList<PurchaseEntity>()
-//            list.add(PurchaseEntity(1, 2000.0, "Laptop", null))
-//            list.add(PurchaseEntity(2, 1000.0, "Chair", null))
-//            list.add(PurchaseEntity(3, 1500.0, "Table", null))
-//            list.add(PurchaseEntity(1, 2000.0, "Smartphone", null))
-//            list.add(PurchaseEntity(3, 2500.0, "Car", null))
-
-            _fetchedPurchaseList.postValue(list)
-
-        } catch (e: NoConnectivityException) {
-            Log.e(CONNECTIVITY_TAG, "No internet connection", e)
-        }
+    override suspend fun fetchPurchaseList(
+        token: String
+    ): ResultWrapper<GetPurchasesResponse> {
+        return safeApiCall(Dispatchers.IO) { api.getPurchasesList(token) }
     }
 
     override suspend fun createPurchase(
         token: String,
         createPurchaseBody: PurchaseBody
     ): ResultWrapper<CreatePurchaseResponse> {
-        return safeApiCall(Dispatchers.IO) {api.createPurchase(token, createPurchaseBody)}
+        return safeApiCall(Dispatchers.IO) { api.createPurchase(token, createPurchaseBody) }
     }
 
     override suspend fun registerWithCoroutines(
@@ -53,7 +38,15 @@ class PurchaseNetworkDataSourceImpl @Inject constructor(
         email: String,
         password: String
     ): ResultWrapper<RegistrationResponse> {
-        return safeApiCall(Dispatchers.IO) { api.registerUser(RegistrationParams(name, email, password)) }
+        return safeApiCall(Dispatchers.IO) {
+            api.registerUser(
+                RegistrationParams(
+                    name,
+                    email,
+                    password
+                )
+            )
+        }
     }
 
     override suspend fun login(username: String, password: String): ResultWrapper<LoginResponse> {
@@ -61,10 +54,10 @@ class PurchaseNetworkDataSourceImpl @Inject constructor(
     }
 
     override suspend fun putUser(
-        token:String,
+        token: String,
         accountParams: AccountBody
     ): ResultWrapper<AccountResponse> {
-        return safeApiCall(Dispatchers.IO) {api.putUser(token, accountParams)}
+        return safeApiCall(Dispatchers.IO) { api.putUser(token, accountParams) }
     }
 
 

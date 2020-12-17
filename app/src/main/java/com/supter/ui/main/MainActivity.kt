@@ -1,12 +1,9 @@
 package com.supter.ui.main
 
-import android.content.res.Configuration
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -34,7 +31,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var appBarConfiguration: AppBarConfiguration
 
-    val currentNavigationFragment: Fragment?
+    private val currentNavigationFragment: Fragment?
         get() = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
             ?.childFragmentManager
             ?.fragments
@@ -64,24 +61,6 @@ class MainActivity : AppCompatActivity() {
                 setOnClickListener {
                     navigateToAddPurchase()
                 }
-        }
-
-
-        val changeThemeBtn =
-            navView.getHeaderView(0).findViewById<ImageButton>(R.id.change_theme_button)
-
-        changeThemeBtn.setOnClickListener {
-            val currentNightMode =
-                resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-
-            when (currentNightMode) {
-                Configuration.UI_MODE_NIGHT_NO -> {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                }
-                Configuration.UI_MODE_NIGHT_YES -> {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                }
-            }
         }
     }
 

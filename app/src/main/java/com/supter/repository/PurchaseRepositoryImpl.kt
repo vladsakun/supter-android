@@ -9,6 +9,7 @@ import com.supter.data.network.PurchaseNetworkDataSource
 import com.supter.data.response.CreatePurchaseResponse
 import com.supter.data.response.ResultWrapper
 import com.supter.utils.SystemUtils
+import com.supter.utils.converDataItemListToPurchaseEntityList
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -27,28 +28,29 @@ class PurchaseRepositoryImpl @Inject constructor(
 
     private val TAG = "PurchaseRepositoryImpl"
 
-    init {
-        context = context.applicationContext
-
-        networkDataSource.apply {
-
-            //Set observer on fetched purchases
-            fetchedPurchaseList.observeForever { newPurchaseResponse ->
-                upsertPurchaseList(newPurchaseResponse)
-            }
-
-        }
-
-    }
-
     //Select all movies from db and return them
     override suspend fun getPurchaseList(): Flow<List<PurchaseEntity>> {
         return withContext(Dispatchers.IO) {
-            initPurchaseData()
+            fetchPurchaseList()
             return@withContext dao.getPurchaseFlowList()
         }
     }
 
+    //Fetch movies from api
+    private suspend fun fetchPurchaseList() {
+        val fetchedPurchaseList = networkDataSource.fetchPurchaseList(
+            SystemUtils.getToken(context)
+        )
+
+        if (fetchedPurchaseList is ResultWrapper.Success) {
+            upsertPurchaseList(
+                converDataItemListToPurchaseEntityList(
+                    fetchedPurchaseList.value.data
+                )
+            )
+        }
+
+    }
 
     override suspend fun upsertPurchase(purchaseEntity: PurchaseEntity) {
         dao.upsertOneItem(purchaseEntity)
@@ -62,15 +64,6 @@ class PurchaseRepositoryImpl @Inject constructor(
 
     override fun getUser(): Flow<UserEntity?> {
         return dao.getUserFlow()
-    }
-
-    private suspend fun initPurchaseData() {
-        fetchPurchaseList()
-    }
-
-    //Fetch movies from api
-    private suspend fun fetchPurchaseList() {
-        networkDataSource.fetchPurchaseList()
     }
 
     override suspend fun createPurchase(createPurchaseBody: PurchaseBody): ResultWrapper<CreatePurchaseResponse> {

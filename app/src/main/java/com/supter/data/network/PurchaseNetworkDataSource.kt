@@ -7,8 +7,7 @@ import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.response.*
 
 interface PurchaseNetworkDataSource {
-    val fetchedPurchaseList: LiveData<List<PurchaseEntity>>
-    suspend fun fetchPurchaseList()
+    suspend fun fetchPurchaseList(token: String): ResultWrapper<GetPurchasesResponse>
 
     suspend fun createPurchase(token: String, createPurchaseBody: PurchaseBody)
             : ResultWrapper<CreatePurchaseResponse>

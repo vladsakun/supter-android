@@ -35,7 +35,7 @@ class BoardFragment : ScopedFragment() {
     private val mBinding get() = _binding!!
 
     private lateinit var mBoardView: BoardView
-    private lateinit var listAdapter:ItemAdapter
+    private lateinit var listAdapter: ItemAdapter
 
     private val viewModel: DashboardViewModel by viewModels()
 
@@ -63,32 +63,28 @@ class BoardFragment : ScopedFragment() {
     }
 
     private fun resetBoard(purchaseList: List<PurchaseEntity>) {
-        if (context != null) {
 
-            Log.d(TAG, "resetBoard: ")
+        mBoardView.clearBoard()
+        mBoardView.setCustomDragItem(MyDragItem(requireContext(), R.layout.column_item))
 
-            mBoardView.clearBoard()
-            mBoardView.setCustomDragItem(MyDragItem(requireContext(), R.layout.column_item))
+        val sortedPurchaseMap = linkedMapOf(
+            STATUS_WANT to arrayListOf<PurchaseEntity>(),
+            STATUS_PROCESS to arrayListOf(),
+            STATUS_DONE to arrayListOf()
+        )
 
-            val sortedPurchaseMap = linkedMapOf(
-                STATUS_WANT to arrayListOf<PurchaseEntity>(),
-                STATUS_PROCESS to arrayListOf(),
-                STATUS_DONE to arrayListOf()
-            )
-
-            for (purchase in purchaseList) {
-                sortedPurchaseMap[purchase.stage]?.add(purchase)
-            }
-
-            for ((key, value) in sortedPurchaseMap) {
-                addColumn(key.capitalize(Locale.ROOT), value)
-            }
-
-            for(i in 0 .. 2){
-                mBoardView.getRecyclerView(i).overScrollMode = View.OVER_SCROLL_NEVER
-            }
-
+        for (purchase in purchaseList) {
+            sortedPurchaseMap[purchase.stage]?.add(purchase)
         }
+
+        for ((key, value) in sortedPurchaseMap) {
+            addColumn(key.capitalize(Locale.ROOT), value)
+        }
+
+        for (i in 0..2) {
+            mBoardView.getRecyclerView(i).overScrollMode = View.OVER_SCROLL_NEVER
+        }
+
     }
 
     private fun hideProgress() {
@@ -182,9 +178,9 @@ class BoardFragment : ScopedFragment() {
 
         viewModel.getPurchaseLiveData().observe(viewLifecycleOwner, {
             if (it != null) {
-                if(this::listAdapter.isInitialized && listAdapter.itemList.size > 0){
+                if (this::listAdapter.isInitialized && listAdapter.itemList.size > 0) {
                     listAdapter.updateList(it as ArrayList<PurchaseEntity>)
-                }else {
+                } else {
                     resetBoard(it)
                     hideProgress()
 //                    viewModel.getPurchaseLiveData().removeObservers(viewLifecycleOwner)

@@ -5,8 +5,10 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.util.Log
 import com.supter.BuildConfig
+import com.supter.data.db.entity.PurchaseEntity
+import com.supter.data.response.Data
+import com.supter.data.response.DataItem
 import java.util.*
-
 
 private val TAG = "Supter"
 
@@ -46,5 +48,33 @@ fun logException(e: Exception) {
         Log.e(TAG, message, e)
     }
 
+}
+
+fun converDataItemListToPurchaseEntityList(dataItemList: List<DataItem>): List<PurchaseEntity> {
+    val resultList = ArrayList<PurchaseEntity>()
+
+    for (dataItem in dataItemList) {
+        resultList.add(convertDataItemToPurchaseEntity(dataItem))
+    }
+
+    return resultList
+}
+
+fun convertDataItemToPurchaseEntity(dataItem: DataItem): PurchaseEntity {
+    with(dataItem) {
+        return PurchaseEntity(
+            id,
+            title,
+            price.toDouble(),
+            order,
+            stage,
+            potential,
+            description,
+            null,
+            remind = 0.0,
+            realPeriod = 0,
+            null
+        )
+    }
 }
 
