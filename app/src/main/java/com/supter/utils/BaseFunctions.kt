@@ -13,7 +13,7 @@ import java.util.*
 private val TAG = "Supter"
 
 fun isOnline(context: Context): Boolean {
-    var isOnline = false
+    val isOnline: Boolean
     val connectivityManager =
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
@@ -50,7 +50,7 @@ fun logException(e: Exception) {
 
 }
 
-fun converDataItemListToPurchaseEntityList(dataItemList: List<DataItem>): List<PurchaseEntity> {
+fun convertDataItemListToPurchaseEntityList(dataItemList: List<DataItem>): List<PurchaseEntity> {
     val resultList = ArrayList<PurchaseEntity>()
 
     for (dataItem in dataItemList) {

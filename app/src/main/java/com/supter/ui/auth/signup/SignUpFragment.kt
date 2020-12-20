@@ -80,7 +80,7 @@ class SignUpFragment : Fragment() {
 
     private fun registerUser() {
         viewModel.registerUser(
-            binding.name?.text.toString(),
+            binding.name.text.toString(),
             binding.username.text.toString(),
             binding.password.text.toString()
         )

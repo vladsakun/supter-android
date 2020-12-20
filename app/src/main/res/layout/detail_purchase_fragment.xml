@@ -1,13 +1,159 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.main.purchase.detail.DetailPurchaseFragment">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
+    <data>
+
+        <variable
+            name="purchase"
+            type="com.supter.data.db.entity.PurchaseEntity" />
+
+        <import type="android.view.View" />
+
+    </data>
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Hello" />
+        android:layout_height="match_parent">
 
-</FrameLayout>
+        <LinearLayout
+            style="@style/DefaultParenViewWithPadding"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp">
+
+
+                <com.timqi.sectorprogressview.ColorfulRingProgressView
+                    android:id="@+id/potential"
+                    style="@style/PotentialRingView"
+                    android:layout_centerInParent="true"
+                    android:layout_centerHorizontal="true"
+                    app:percent="@{purchase.potential}" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="@{String.valueOf(purchase.potential) + `%`}"
+                    android:textAppearance="@style/TextAppearance.MyTheme.Headline5"
+                    tools:text="64%" />
+
+            </RelativeLayout>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="@string/to_increase_potential"
+                android:textAppearance="@style/TextAppearance.MyTheme.Subtitle1" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/to_increase_potential_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/potential_item" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="@string/done"
+                android:textAppearance="@style/TextAppearance.MyTheme.Subtitle1" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/done_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/potential_item" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:paddingBottom="16dp">
+
+                        <TextView
+                            android:id="@+id/stage"
+                            style="@style/DetailPurchaseTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@{@string/stage.concat(` `).concat(purchase.stage)}"
+                            tools:text="Stage: wish" />
+
+                        <TextView
+                            android:id="@+id/real_period"
+                            style="@style/DetailPurchaseTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@{@string/real_period.concat(` `).concat(String.valueOf(purchase.realPeriod))}"
+                            tools:text="Real period: 60 days" />
+
+                        <TextView
+                            android:id="@+id/order"
+                            style="@style/DetailPurchaseTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@{@string/order.concat(` `).concat(String.valueOf(purchase.order))}"
+                            tools:text="Order: 4" />
+
+                        <TextView
+                            android:id="@+id/price"
+                            style="@style/DetailPurchaseTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@{@string/price.concat(` `).concat(purchase.title)}"
+                            tools:text="Price: 1200" />
+
+                        <TextView
+                            android:id="@+id/description"
+                            style="@style/DetailPurchaseTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@{purchase.description != null ? @string/description.concat(` `).concat(purchase.description) : ``}"
+                            android:visibility="@{purchase.description == null ? View.GONE : View.VISIBLE}"
+                            tools:text="Description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt" />
+
+
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <Button
+                android:id="@+id/delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/editTextMarginTop"
+                android:backgroundTint="@color/red_600"
+                android:text="@string/delete" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</layout>

@@ -1,5 +1,6 @@
 package com.supter.ui.main.dashboard
 
+import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.db.entity.UserEntity
+import com.supter.data.response.ResultWrapper
 import com.supter.repository.PurchaseRepository
 import com.supter.utils.STATUS_DONE
 import com.supter.utils.STATUS_PROCESS
@@ -16,15 +18,17 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.math.RoundingMode
-import javax.inject.Inject
 import kotlin.math.ceil
 import kotlin.math.round
 
 class DashboardViewModel @ViewModelInject constructor(
-    private val purchaseRepository: PurchaseRepository
+        private val purchaseRepository: PurchaseRepository,
 ) : ViewModel() {
 
     private val TAG = "DashboardViewModel"
+
+    private val _errorMessageMutableLiveData = MutableLiveData<String?>()
+    val errorMessageLiveData get() = _errorMessageMutableLiveData
 
     fun updatePurchase(dragItem: PurchaseEntity, toColumn: Int) {
         when (toColumn) {
@@ -38,38 +42,69 @@ class DashboardViewModel @ViewModelInject constructor(
         }
     }
 
-    fun upsertPurchaseList(purchaseList:List<PurchaseEntity>){
-        purchaseRepository.upsertPurchaseList(purchaseList)
+    fun upsertPurchaseList(purchaseList: List<PurchaseEntity>) {
+        sendIdsList(purchaseList)
+    }
+
+    fun sendIdsList(purchaseList: List<PurchaseEntity>) {
+        val idsList = mutableListOf<Int>()
+
+        for (purchase in purchaseList) {
+            idsList.add(purchase.id)
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            val resp = purchaseRepository.putPurchasesOrder(idsList)
+            when (resp) {
+                is ResultWrapper.Success -> {
+                    purchaseRepository.upsertPurchaseList(updatePurchasesData(purchaseList))
+                }
+
+                is ResultWrapper.GenericError -> {
+                    _errorMessageMutableLiveData.postValue(resp.error?.message)
+                }
+
+                is ResultWrapper.NetworkError -> {
+                    _errorMessageMutableLiveData.postValue(null)
+                }
+            }
+        }
+
     }
 
     private val _purchaseList = MutableLiveData<List<PurchaseEntity>>()
     private val purchaseList: LiveData<List<PurchaseEntity>> get() = _purchaseList
 
     fun getPurchaseLiveData(): LiveData<List<PurchaseEntity>> {
+
         viewModelScope.launch(Dispatchers.IO) {
             purchaseRepository.getPurchaseList().collect { purchaseEntityList ->
-                _purchaseList.postValue(purchaseEntityList.sortedBy { it.order })
+                val sortedByOrder = purchaseEntityList.sortedBy { it.order }
+                _purchaseList.postValue(updatePurchasesData(sortedByOrder))
             }
         }
+
         return _purchaseList
     }
 
-    private val _user = MutableLiveData<UserEntity>()
+    private val _user = MutableLiveData<UserEntity?>()
 
-    fun getUser(): LiveData<UserEntity> {
+    fun getUser(): LiveData<UserEntity?> {
         viewModelScope.launch(Dispatchers.IO) {
-            purchaseRepository.getUser().collect {
+            purchaseRepository.getLocalUser().collect {
                 _user.postValue(it)
             }
         }
         return _user
     }
 
-    fun updatePurchasesOrder() {
+    fun updatePurchasesData(purchaseList: List<PurchaseEntity>): List<PurchaseEntity> {
 
         _user.value?.let { user ->
 
-            _purchaseList.value?.let { purchaseList ->
+            if(user.incomeRemainder != null && user.period != null) {
+
+                val newPurchaseList = mutableListOf<PurchaseEntity>()
 
                 purchaseList.forEachIndexed { index, element ->
 
@@ -79,38 +114,46 @@ class DashboardViewModel @ViewModelInject constructor(
                         val productPeriod = rounder(currentPeriod)
 
                         val productRemind = BigDecimal(productPeriod - currentPeriod).setScale(
-                            10,
-                            RoundingMode.HALF_EVEN
+                                10,
+                                RoundingMode.HALF_EVEN
                         ).toDouble()
+
                         element.remind = productRemind
                         element.realPeriod = productPeriod
-
-                        println(element)
 
                     } else {
 
                         val previousProduct = purchaseList[index - 1]
 
                         val currentPeriod: Double =
-                            element.price / user.incomeRemainder - previousProduct.remind
+                                element.price / user.incomeRemainder - previousProduct.remind
 
                         val productPeriod = rounder(currentPeriod)
 
                         val productRemind = BigDecimal(productPeriod - currentPeriod).setScale(
-                            10,
-                            RoundingMode.HALF_EVEN
+                                10,
+                                RoundingMode.HALF_EVEN
                         ).toDouble()
 
                         element.remind = productRemind
                         element.realPeriod = productPeriod + previousProduct.realPeriod
 
-                        println(element)
                     }
 
+                    Log.d(TAG, "updatePurchasesData: $element")
+
+                    newPurchaseList.add(element)
+
                 }
+                return newPurchaseList
+
             }
 
+            return purchaseList
+
         }
+
+        return purchaseList
 
     }
 

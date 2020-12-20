@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ProfileViewModel @ViewModelInject constructor(
-    private val authRepository: UserRepository
+        private val authRepository: UserRepository,
 ) : ViewModel() {
 
     private val _accountResponse = MutableLiveData<ResultWrapper<AccountResponse>>()
@@ -25,19 +25,21 @@ class ProfileViewModel @ViewModelInject constructor(
     val account: LiveData<UserEntity?> get() = _account
 
     fun upsertUser(
-        name: String,
-        incomeRemainder: Double,
-        savings: Double,
-        period: Double
+            name: String,
+            incomeRemainder: Double,
+            savings: Double,
+            period: Double,
+            dateOfSalaryComing: Int,
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             _accountResponse.postValue(
-                authRepository.putUser(
-                    name,
-                    incomeRemainder,
-                    savings,
-                    period
-                )
+                    authRepository.putUser(
+                            name,
+                            incomeRemainder,
+                            savings,
+                            period,
+                            dateOfSalaryComing
+                    )
             )
         }
     }
@@ -49,5 +51,9 @@ class ProfileViewModel @ViewModelInject constructor(
             }
         }
         return account
+    }
+
+    fun logout() {
+        authRepository.clearDB()
     }
 }

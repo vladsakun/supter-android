@@ -28,11 +28,13 @@ class ProfileFragment : Fragment() {
     private val viewModel: ProfileViewModel by viewModels()
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?,
     ): View? {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
+        mBinding.numberPicker.maxValue = 27
+        mBinding.numberPicker.minValue = 1
         setHasOptionsMenu(true)
         return mBinding.root
     }
@@ -66,14 +68,14 @@ class ProfileFragment : Fragment() {
 
                 is ResultWrapper.GenericError -> {
                     showErrorMessage(
-                        result.error?.message
-                            ?: requireContext().getString(R.string.no_internet_connection)
+                            result.error?.message
+                                    ?: requireContext().getString(R.string.no_internet_connection)
                     )
                 }
 
                 is ResultWrapper.NetworkError -> {
                     showErrorMessage(
-                        requireContext().getString(R.string.no_internet_connection)
+                            requireContext().getString(R.string.no_internet_connection)
                     )
                 }
             }
@@ -95,10 +97,11 @@ class ProfileFragment : Fragment() {
 
         mBinding.save.setOnClickListener {
             viewModel.upsertUser(
-                mBinding.name.editText?.text.toString(),
-                mBinding.incomeRemainder.editText?.text.toString().toDouble(),
-                mBinding.savings.editText?.text.toString().toDouble(),
-                mBinding.period.editText?.text.toString().toDouble(),
+                    mBinding.name.editText?.text.toString(),
+                    mBinding.incomeRemainder.editText?.text.toString().toDouble(),
+                    mBinding.savings.editText?.text.toString().toDouble(),
+                    mBinding.period.editText?.text.toString().toDouble(),
+                    mBinding.numberPicker.value
             )
         }
 
@@ -113,7 +116,7 @@ class ProfileFragment : Fragment() {
 
     private fun showSuccessToast() {
         Toasty.success(requireContext(), requireContext().getString(R.string.successfully_updated))
-            .show()
+                .show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -131,6 +134,7 @@ class ProfileFragment : Fragment() {
 
     private fun logout() {
         SystemUtils.deleteToken(requireContext().applicationContext)
+        viewModel.logout()
         requireContext().startActivity(LoginActivity.getStartIntent(requireContext()))
     }
 

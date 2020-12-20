@@ -33,6 +33,26 @@ class PurchaseNetworkDataSourceImpl @Inject constructor(
         return safeApiCall(Dispatchers.IO) { api.createPurchase(token, createPurchaseBody) }
     }
 
+    override suspend fun updatePurchase(
+        token: String,
+        purchaseId: Int,
+        purchaseBody: PurchaseBody
+    ): ResultWrapper<UpdatePurchaseResponse> {
+        return safeApiCall(Dispatchers.IO) {api.updatePurchase(token, purchaseId, purchaseBody)}
+    }
+
+    override suspend fun deletePurchase(
+        token: String,
+        purchaseId: Int
+    ): ResultWrapper<MessageResponse> {
+        return safeApiCall(Dispatchers.IO) {api.deletePurchase(token, purchaseId)}
+    }
+
+    override suspend fun postPurchaseIdsList(token: String, purchaseIdsList: List<Int>): ResultWrapper<MessageResponse> {
+        val ids = hashMapOf("ids" to purchaseIdsList)
+        return safeApiCall(Dispatchers.IO) {api.putPurchasesOrder(token, ids)}
+    }
+
     override suspend fun registerWithCoroutines(
         name: String,
         email: String,
@@ -58,6 +78,10 @@ class PurchaseNetworkDataSourceImpl @Inject constructor(
         accountParams: AccountBody
     ): ResultWrapper<AccountResponse> {
         return safeApiCall(Dispatchers.IO) { api.putUser(token, accountParams) }
+    }
+
+    override suspend fun fetchUser(token: String): ResultWrapper<AccountResponse> {
+        return safeApiCall(Dispatchers.IO) {api.fetchUser(token)}
     }
 
 

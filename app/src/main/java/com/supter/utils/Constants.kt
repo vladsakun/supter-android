@@ -9,3 +9,5 @@ const val TOKEN_NAME = "token"
 const val STATUS_WANT = "want"
 const val STATUS_PROCESS = "process"
 const val STATUS_DONE = "done"
+
+const val Authorization = "Authorization"

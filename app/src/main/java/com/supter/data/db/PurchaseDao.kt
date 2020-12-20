@@ -1,9 +1,6 @@
 package com.supter.data.db
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.db.entity.UserEntity
 import kotlinx.coroutines.flow.Flow
@@ -17,6 +14,9 @@ interface PurchaseDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun upsertOneItem(purchaseEntity: PurchaseEntity)
 
+    @Delete
+    fun deletePurchaseEntity(purchaseEntity: PurchaseEntity)
+
     @Query("SELECT * FROM purchase")
     fun getPurchaseFlowList(): Flow<List<PurchaseEntity>>
 
@@ -25,4 +25,10 @@ interface PurchaseDao {
 
     @Query("SELECT * FROM users")
     fun getUserFlow(): Flow<UserEntity?>
+
+    @Query("DELETE FROM users")
+    fun clearUserTable()
+
+    @Query("DELETE FROM purchase")
+    fun clearPurchaseTable()
 }

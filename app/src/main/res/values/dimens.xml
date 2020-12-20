@@ -15,13 +15,22 @@
     <dimen name="cardPaddingHorizontal">13dp</dimen>
     <dimen name="cardPaddingVertical">13dp</dimen>
     <dimen name="cardCornerRadius">4dp</dimen>
+    <dimen name="cornerSizePurchaseInfo">15dp</dimen>
 
+    <!--Potential item-->
+    <dimen name="cardWidth">150dp</dimen>
+    <dimen name="cardHeight">65dp</dimen>
+    <dimen name="potentialItemSpacing">5dp</dimen>
 
     <!--  BoardView  -->
     <dimen name="boardEdges">0dp</dimen>
     <dimen name="columnSpacing">10dp</dimen>
 
-    <!-- Button-->
+    <!--  ColorfulRingProgressView  -->
+    <dimen name="strokeWidth">21dp</dimen>
+    <dimen name="potentialProgressViewSize">200dp</dimen>
+
+    <!--  Button  -->
     <dimen name="buttonMinWidth">150dp</dimen>
 
     <!-- EditText-->

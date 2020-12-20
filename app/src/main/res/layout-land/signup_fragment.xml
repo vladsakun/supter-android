@@ -1,44 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/windowBackground">
+    android:layout_height="match_parent">
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/signUpParent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/sign_up_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="30dp"
-            android:text="@string/sign_in"
-            android:textColor="?android:attr/textColorSecondary"
-            android:textSize="20sp" />
-
         <LinearLayout
             android:id="@+id/edit_text_container"
-            android:layout_width="wrap_content"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/sign_up_text"
-            android:layout_centerHorizontal="true"
+            android:layout_marginStart="40dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginRight="40dp"
             android:background="@drawable/sign_in_background"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <EditText
+                android:id="@+id/name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="Enter your email"
+                android:background="@android:color/transparent"
+                android:hint="@string/name"
+                android:imeActionLabel="@string/name"
+                android:inputType="textEmailAddress"
+                android:minWidth="300dp"
+                android:padding="15dp"
+                android:textColor="?android:attr/textColorSecondary"
+                android:textColorHint="?android:attr/textColorSecondary" />
+
+            <include layout="@layout/line" />
 
             <EditText
                 android:id="@+id/username"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints="Enter your email"
                 android:background="@android:color/transparent"
                 android:hint="@string/email"
                 android:imeActionLabel="@string/email"
                 android:inputType="textEmailAddress"
-                android:maxWidth="300dp"
-                android:minWidth="250dp"
+                android:minWidth="300dp"
                 android:padding="15dp"
                 android:textColor="?android:attr/textColorSecondary"
                 android:textColorHint="?android:attr/textColorSecondary" />
@@ -53,52 +64,39 @@
                 android:background="@android:color/transparent"
                 android:hint="@string/password"
                 android:inputType="textPassword"
-                android:maxWidth="300dp"
-                android:minWidth="250dp"
+                android:minWidth="200dp"
+                android:padding="15dp"
+                android:textColor="?android:attr/textColorSecondary"
+                android:textColorHint="?android:attr/textColorSecondary" />
+
+            <include layout="@layout/line" />
+
+            <EditText
+                android:id="@+id/confirm_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="Enter your email"
+                android:background="@android:color/transparent"
+                android:hint="@string/confirm_password"
+                android:inputType="textPassword"
+                android:minWidth="200dp"
                 android:padding="15dp"
                 android:textColor="?android:attr/textColorSecondary"
                 android:textColorHint="?android:attr/textColorSecondary" />
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/sign_up_btn"
+            style="@style/AuthButton"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/edit_text_container"
-            android:orientation="vertical"
-            android:padding="20dp">
+            android:layout_marginTop="20dp"
+            android:text="@string/sign_up"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edit_text_container" />
 
-            <Button
-                android:id="@+id/sign_in_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/sign_in"
-                style="@style/AuthButton" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:orientation="horizontal"
-                android:padding="10dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="5dp"
-                    android:text="@string/new_to_supter"
-                    android:textColor="?android:attr/textColorHint"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/sign_up_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/join_now"
-                    android:textColor="@color/button"
-                    android:textSize="16sp" />
-            </LinearLayout>
-        </LinearLayout>
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

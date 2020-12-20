@@ -5,11 +5,11 @@ data class CreatePurchaseResponse(
 )
 
 data class PurchaseData(
-	val stage: String,
-	val price: Double,
-	val description: String?,
 	val id: Int,
 	val title: String,
+	val price: Double,
+	val description: String?,
+	val stage: String,
 	val user: UserData,
 	val potential: Int,
 	val order: Int

@@ -29,6 +29,7 @@ android {
     }
 
     buildFeatures {
+        dataBinding true
         viewBinding true
     }
 
@@ -130,5 +131,9 @@ dependencies {
 
     // Pretty Toast
     implementation 'com.github.GrenderG:Toasty:1.5.0'
+
+    // Sector progress view
+    implementation 'com.timqi.sectorprogressview:library:2.0.1'
+
 
 }

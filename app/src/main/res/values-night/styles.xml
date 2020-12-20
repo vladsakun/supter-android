@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="PotentialRingView" parent="">
+        <item name="bgColor">@color/dark_gray</item>
+        <item name="fgColorStart">@color/orange_700</item>
+        <item name="fgColorEnd">@color/orange_200</item>
+        <item name="strokeWidth">@dimen/strokeWidth</item>
+        <item name="startAngle">0</item>
+        <item name="android:layout_width">@dimen/potentialProgressViewSize</item>
+        <item name="android:layout_height">@dimen/potentialProgressViewSize</item>
+    </style>
+</resources>

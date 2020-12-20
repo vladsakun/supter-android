@@ -31,6 +31,9 @@ interface UserRepository {
         name: String,
         incomeRemainder:Double,
         savings:Double,
-        period:Double
+        period:Double,
+        dateOfSalaryComing:Int
     ): ResultWrapper<AccountResponse>
+
+    fun clearDB()
 }

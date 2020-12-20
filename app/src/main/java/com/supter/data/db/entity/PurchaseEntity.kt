@@ -24,7 +24,7 @@ data class PurchaseEntity(
     @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
     var image: ByteArray?
 
-)
+): Serializable
 
 
 

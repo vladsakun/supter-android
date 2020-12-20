@@ -19,9 +19,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
-    @ApplicationContext var context: Context,
-    var dao: PurchaseDao,
-    var networkDataSource: PurchaseNetworkDataSource
+        @ApplicationContext var context: Context,
+        var dao: PurchaseDao,
+        var networkDataSource: PurchaseNetworkDataSource,
 ) : UserRepository {
 
     init {
@@ -29,9 +29,9 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun register(
-        name: String,
-        email: String,
-        password: String
+            name: String,
+            email: String,
+            password: String,
     ): ResultWrapper<RegistrationResponse> {
         return networkDataSource.registerWithCoroutines(name, email, password)
     }
@@ -42,6 +42,7 @@ class UserRepositoryImpl @Inject constructor(
 
         if (response is ResultWrapper.Success) {
             saveToken(context, response.value.accessToken)
+//            putUser(response.value)
         }
 
         return response
@@ -58,33 +59,42 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun putUser(
-        name: String,
-        incomeRemainder: Double,
-        savings: Double,
-        period: Double
+            name: String,
+            incomeRemainder: Double,
+            savings: Double,
+            period: Double,
+            dateOfSalaryComing: Int,
     ): ResultWrapper<AccountResponse> {
 
         val account = networkDataSource.putUser(
-            SystemUtils.getToken(context.applicationContext),
-            AccountBody(name, incomeRemainder, savings, period)
+                SystemUtils.getToken(context.applicationContext),
+                AccountBody(name, incomeRemainder, savings, period)
         )
 
         if (account is ResultWrapper.Success) {
             account.value.data.apply {
                 upsertUser(
-                    UserEntity(
-                        this.id,
-                        this.name,
-                        this.email,
-                        this.incomeRemainder,
-                        this.savings,
-                        this.period
-                    )
+                        UserEntity(
+                                this.id,
+                                this.name,
+                                this.email,
+                                this.incomeRemainder,
+                                this.savings,
+                                this.period,
+                                dateOfSalaryComing
+                        )
                 )
             }
         }
 
         return account
+    }
+
+    override fun clearDB() {
+        GlobalScope.launch(Dispatchers.IO) {
+            dao.clearUserTable()
+            dao.clearPurchaseTable()
+        }
     }
 
 }

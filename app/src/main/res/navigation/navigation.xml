@@ -9,22 +9,23 @@
         android:id="@+id/nav_dashboard"
         android:name="com.supter.ui.main.dashboard.BoardFragment"
         android:label="@string/menu_dashboard"
-        tools:layout="@layout/fragment_dashboard" >
+        tools:layout="@layout/fragment_dashboard">
+        <action
+            android:id="@+id/action_nav_dashboard_to_detailPurchaseFragment"
+            app:destination="@id/detailPurchaseFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/nav_settings"
         android:name="com.supter.ui.main.settings.SettingsFragment"
         android:label="@string/menu_settings"
-        tools:layout="@layout/fragment_settings" >
-    </fragment>
+        tools:layout="@layout/fragment_settings" />
 
     <fragment
         android:id="@+id/nav_profile"
         android:name="com.supter.ui.main.profile.ProfileFragment"
         android:label="@string/menu_profile"
-        tools:layout="@layout/fragment_profile" >
-    </fragment>
+        tools:layout="@layout/fragment_profile" />
 
     <fragment
         android:id="@+id/add_purchase"
@@ -35,4 +36,17 @@
     <action
         android:id="@+id/action_global_add_purchase"
         app:destination="@id/add_purchase" />
+
+    <fragment
+        android:id="@+id/detailPurchaseFragment"
+        android:name="com.supter.ui.main.purchase.detail.DetailPurchaseFragment"
+        android:label="{title}"
+        tools:layout="@layout/detail_purchase_fragment">
+        <argument
+            android:name="title"
+            app:argType="string" />
+        <argument
+            android:name="purchaseEntity"
+            app:argType="com.supter.data.db.entity.PurchaseEntity"/>
+    </fragment>
 </navigation>

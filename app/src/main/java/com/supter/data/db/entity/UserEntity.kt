@@ -9,9 +9,10 @@ data class UserEntity(
     @PrimaryKey(autoGenerate = false)
     val id: Int,
 
-    val name: String,
+    val name: String?,
     val email: String,
-    val incomeRemainder:Double,
-    val savings: Double,
-    val period:Double,
+    val incomeRemainder:Double?,
+    val savings: Double?,
+    val period:Double?,
+    val salaryDate:Int = 1,
 )
