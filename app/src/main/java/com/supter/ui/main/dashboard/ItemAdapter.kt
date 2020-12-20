@@ -5,8 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import com.supter.R
 import com.supter.data.db.entity.PurchaseEntity
+import com.supter.databinding.ColumnItemBinding
 import com.woxthebox.draglistview.DragItemAdapter
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -20,7 +22,7 @@ internal class ItemAdapter constructor(
         private val mDragOnLongPress: Boolean,
         private val onItemClick: OnItemClick,
         private val period: Double,
-        private val salaryDate:Int,
+        private val salaryDate: Int,
 ) : DragItemAdapter<PurchaseEntity, ItemAdapter.ViewHolder>() {
 
     init {
@@ -30,28 +32,22 @@ internal class ItemAdapter constructor(
     private val TAG = "ItemAdapter"
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(mLayoutId, parent, false)
-        return ViewHolder(view)
+        return ViewHolder(
+                ColumnItemBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+        ), onItemClick)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         super.onBindViewHolder(holder, position)
 
         val item = itemList[position]
+        holder.bind(item)
 
-        holder.purchaseTitle.text = item.title
-        holder.purchaseCost.text = item.price.toString()
-
-        val cal: Calendar = Calendar.getInstance()
-        val dayOfMonth: Int = cal.get(Calendar.DAY_OF_MONTH)
-
-        val realPeriod = period * item.realPeriod - dayOfMonth + salaryDate
-
-        holder.realPeriod.text = getPrettyDate(realPeriod)
-
-        holder.itemView.setOnClickListener { view ->
-            onItemClick.onItemClick(item)
-        }
+//        holder.purchaseTitle.text = item.title
+//        holder.purchaseCost.text = item.price.toString()
 
     }
 
@@ -61,13 +57,17 @@ internal class ItemAdapter constructor(
         notifyDataSetChanged()
     }
 
-    internal inner class ViewHolder(itemView: View) :
+    internal inner class ViewHolder(
+            private val binding: ColumnItemBinding,
+            listener: OnItemClick,
+    ) : DragItemAdapter.ViewHolder(binding.root, mGrabHandleId, mDragOnLongPress) {
 
-            DragItemAdapter.ViewHolder(itemView, mGrabHandleId, mDragOnLongPress) {
 
-        var purchaseTitle: TextView = itemView.findViewById(R.id.purchase_title) as TextView
-        var purchaseCost: TextView = itemView.findViewById(R.id.purchase_cost) as TextView
-        var realPeriod: TextView = itemView.findViewById(R.id.real_period) as TextView
+        init {
+            binding.run {
+                this.listener = listener
+            }
+        }
 
         override fun onItemClicked(view: View) {
 
@@ -75,6 +75,16 @@ internal class ItemAdapter constructor(
 
         override fun onItemLongClicked(view: View): Boolean {
             return true
+        }
+
+        fun bind(purchaseEntity: PurchaseEntity) {
+            binding.purchase = purchaseEntity
+            val cal: Calendar = Calendar.getInstance()
+            val dayOfMonth: Int = cal.get(Calendar.DAY_OF_MONTH)
+
+            val realPeriod = period * purchaseEntity.realPeriod - dayOfMonth + salaryDate
+
+            binding.realPeriod.text = getPrettyDate(realPeriod)
         }
 
     }
@@ -102,5 +112,5 @@ internal class ItemAdapter constructor(
 }
 
 interface OnItemClick {
-    fun onItemClick(purchaseEntity: PurchaseEntity)
+    fun onItemClick(cardView: View, purchaseEntity: PurchaseEntity)
 }

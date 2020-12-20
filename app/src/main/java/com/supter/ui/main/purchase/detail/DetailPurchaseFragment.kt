@@ -1,5 +1,6 @@
 package com.supter.ui.main.purchase.detail
 
+import android.graphics.Color
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.os.Handler
@@ -15,12 +16,14 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.transition.MaterialContainerTransform
 import com.supter.R
 import com.supter.data.PotentialItem
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.databinding.DetailPurchaseFragmentBinding
 import com.supter.ui.adapters.PotentialAdapter
 import com.supter.ui.adapters.SimpleDividerItemDecorationLastExcluded
+import com.supter.utils.themeColor
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -33,15 +36,26 @@ class DetailPurchaseFragment : Fragment() {
 
     private val viewModel: DetailPurchaseViewModel by viewModels()
 
-    private lateinit var purchaseEntity:PurchaseEntity
+    private lateinit var purchaseEntity: PurchaseEntity
 
     companion object {
         fun newInstance() = DetailPurchaseFragment()
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        sharedElementEnterTransition = MaterialContainerTransform().apply {
+            drawingViewId = R.id.nav_host_fragment
+            duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+            scrimColor = Color.TRANSPARENT
+            setAllContainerColors(requireContext().themeColor(R.attr.colorSurface))
+        }
+    }
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?,
     ): View? {
         _binding = DetailPurchaseFragmentBinding.inflate(inflater, container, false)
         return mBinding.root
@@ -68,7 +82,7 @@ class DetailPurchaseFragment : Fragment() {
 
         val mockPotentialItemList = mutableListOf<PotentialItem>()
 
-        for (i in 1..10){
+        for (i in 1..10) {
             mockPotentialItemList.add(PotentialItem(true, "Test title $i", "Test description $i"))
         }
 

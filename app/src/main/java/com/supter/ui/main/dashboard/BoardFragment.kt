@@ -6,11 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.transition.MaterialElevationScale
 import com.supter.R
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.db.entity.UserEntity
@@ -26,7 +29,6 @@ import com.woxthebox.draglistview.BoardView.BoardListener
 import com.woxthebox.draglistview.ColumnProperties
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
-import okhttp3.internal.notifyAll
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -107,6 +109,7 @@ class BoardFragment : ScopedFragment(), OnItemClick {
 
         for (i in 0..2) {
             mBoardView.getRecyclerView(i).overScrollMode = View.OVER_SCROLL_NEVER
+            mBoardView.getRecyclerView(i).isTransitionGroup = true
         }
 
     }
@@ -253,14 +256,26 @@ class BoardFragment : ScopedFragment(), OnItemClick {
         }
     }
 
-    override fun onItemClick(purchaseEntity: PurchaseEntity) {
+    override fun onItemClick(cardView: View, purchaseEntity: PurchaseEntity) {
+
+        Log.d(TAG, "onItemClick: ")
+
+        val detailPurchaseTransitionName = getString(R.string.purchase_card_detail_transition_name)
+        val extras = FragmentNavigatorExtras(cardView to detailPurchaseTransitionName)
 
         val direction = BoardFragmentDirections.actionNavDashboardToDetailPurchaseFragment(
                 purchaseEntity.title,
                 purchaseEntity
         )
 
-        findNavController().navigate(direction)
+        findNavController().navigate(direction, extras)
+        exitTransition = MaterialElevationScale(false).apply{
+            duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+        }
+
+        reenterTransition = MaterialElevationScale(true).apply {
+            duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+        }
     }
 
     private fun showErrorMessage(it: String?) {

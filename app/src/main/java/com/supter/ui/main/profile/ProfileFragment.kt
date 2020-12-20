@@ -89,6 +89,7 @@ class ProfileFragment : Fragment() {
                 period.editText?.setText(it.period.toString())
                 savings.editText?.setText(it.savings.toString())
                 name.editText?.setText(it.name)
+                numberPicker.value = it.salaryDate
             }
         }
     }

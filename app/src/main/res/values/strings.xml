@@ -41,4 +41,7 @@
     <string name="to_increase_potential">To increase potential:</string>
     <string name="done">Done:</string>
     <string name="delete">Delete</string>
+
+    <string name="purchase_card_transition_name">purchase_detail_%1$s</string>
+    <string name="purchase_card_detail_transition_name">purchase_card_detail</string>
 </resources>
