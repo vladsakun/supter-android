@@ -60,7 +60,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.2'
 
     // Fragment ktx
-    implementation "androidx.fragment:fragment-ktx:1.3.0-beta02"
+    implementation "androidx.fragment:fragment-ktx:1.3.0-rc01"
     implementation 'androidx.preference:preference-ktx:1.1.1'
 
     // For tests

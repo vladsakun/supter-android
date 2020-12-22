@@ -21,8 +21,8 @@
             style="@style/DefaultParenViewWithPadding"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:transitionName="@string/purchase_card_detail_transition_name"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:transitionName="@string/purchase_card_detail_transition_name">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -84,6 +84,7 @@
                 android:layout_height="wrap_content">
 
                 <com.google.android.material.card.MaterialCardView
+                    style="@style/DefaultCardView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toEndOf="parent"

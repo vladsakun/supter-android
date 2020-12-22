@@ -23,9 +23,9 @@ import javax.inject.Inject
 
 
 class PurchaseRepositoryImpl @Inject constructor(
-        @ApplicationContext private var context: Context,
-        private val dao: PurchaseDao,
-        private val networkDataSource: PurchaseNetworkDataSource,
+    @ApplicationContext private var context: Context,
+    private val dao: PurchaseDao,
+    private val networkDataSource: PurchaseNetworkDataSource,
 ) : PurchaseRepository {
 
     private val TAG = "PurchaseRepositoryImpl"
@@ -37,19 +37,20 @@ class PurchaseRepositoryImpl @Inject constructor(
     private fun updateLocalUser() {
         GlobalScope.launch(Dispatchers.IO) {
             val accountResponse = fetchUser()
+
             if (accountResponse is ResultWrapper.Success) {
-                if (accountResponse.value.data != null)
-                    with(accountResponse.value.data) {
+                with(accountResponse.value.data) {
+                    if (incomeRemainder != null && period != null) {
                         upsertUser(UserEntity(id, name, email, incomeRemainder, savings, period))
                     }
+                }
             }
+
         }
     }
 
-    override fun upsertUser(userEntity: UserEntity) {
-        GlobalScope.launch(Dispatchers.IO) {
-            dao.upsertUser(userEntity)
-        }
+    override suspend fun upsertUser(userEntity: UserEntity) {
+        dao.upsertUser(userEntity)
     }
 
     //Select all movies from db and return them
@@ -64,17 +65,17 @@ class PurchaseRepositoryImpl @Inject constructor(
     }
 
     //Fetch movies from api
-    private fun fetchPurchaseList() {
+    private suspend fun fetchPurchaseList() {
         GlobalScope.launch(Dispatchers.IO) {
             val fetchedPurchaseList = networkDataSource.fetchPurchaseList(
-                    SystemUtils.getToken(context)
+                SystemUtils.getToken(context)
             )
 
             if (fetchedPurchaseList is ResultWrapper.Success) {
                 upsertPurchaseList(
-                        convertDataItemListToPurchaseEntityList(
-                                fetchedPurchaseList.value.data
-                        )
+                    convertDataItemListToPurchaseEntityList(
+                        fetchedPurchaseList.value.data
+                    )
                 )
             }
         }
@@ -86,10 +87,11 @@ class PurchaseRepositoryImpl @Inject constructor(
 
     override suspend fun deletePurchase(purchaseEntity: PurchaseEntity) {
         val deleteResponse = networkDataSource.deletePurchase(
-                SystemUtils.getToken(context),
-                purchaseId = purchaseEntity.id)
+            SystemUtils.getToken(context),
+            purchaseId = purchaseEntity.id
+        )
 
-        if(deleteResponse is ResultWrapper.Success){
+        if (deleteResponse is ResultWrapper.Success) {
             dao.deletePurchaseEntity(purchaseEntity)
         }
     }
@@ -98,13 +100,11 @@ class PurchaseRepositoryImpl @Inject constructor(
         return networkDataSource.postPurchaseIdsList(SystemUtils.getToken(context), purchaseIdsList)
     }
 
-    override fun upsertPurchaseList(purchaseEntityList: List<PurchaseEntity>) {
-        GlobalScope.launch(Dispatchers.IO) {
-            dao.upsert(purchaseEntityList)
-        }
+    override suspend fun upsertPurchaseList(purchaseEntityList: List<PurchaseEntity>) {
+        dao.upsert(purchaseEntityList)
     }
 
-    override fun getLocalUser(): Flow<UserEntity?> {
+    override suspend fun getLocalUser(): Flow<UserEntity?> {
         return dao.getUserFlow()
     }
 
@@ -117,17 +117,17 @@ class PurchaseRepositoryImpl @Inject constructor(
 
     override suspend fun createPurchase(createPurchaseBody: PurchaseBody): ResultWrapper<CreatePurchaseResponse> {
         val createPurchaseResponse =
-                networkDataSource.createPurchase(SystemUtils.getToken(context), createPurchaseBody)
+            networkDataSource.createPurchase(SystemUtils.getToken(context), createPurchaseBody)
 
         if (createPurchaseResponse is ResultWrapper.Success) {
             createPurchaseResponse.value.data.apply {
                 upsertPurchase(
-                        PurchaseEntity(
-                                id, title, price,
-                                order, stage, potential,
-                                description, null, remind = 0.0,
-                                realPeriod = 0, null
-                        )
+                    PurchaseEntity(
+                        id, title, price,
+                        order, stage, potential,
+                        description, null, remind = 0.0,
+                        realPeriod = 0, null
+                    )
                 )
             }
         }

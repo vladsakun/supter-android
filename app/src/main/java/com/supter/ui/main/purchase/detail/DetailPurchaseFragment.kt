@@ -37,6 +37,8 @@ class DetailPurchaseFragment : Fragment() {
     private val viewModel: DetailPurchaseViewModel by viewModels()
 
     private lateinit var purchaseEntity: PurchaseEntity
+    private var isAnimatingPotential = false
+    private val durationOneCircle = 650L
 
     companion object {
         fun newInstance() = DetailPurchaseFragment()
@@ -47,15 +49,15 @@ class DetailPurchaseFragment : Fragment() {
 
         sharedElementEnterTransition = MaterialContainerTransform().apply {
             drawingViewId = R.id.nav_host_fragment
-            duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+            duration = resources.getInteger(R.integer.reply_motion_duration_medium).toLong()
             scrimColor = Color.TRANSPARENT
             setAllContainerColors(requireContext().themeColor(R.attr.colorSurface))
         }
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?,
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View? {
         _binding = DetailPurchaseFragmentBinding.inflate(inflater, container, false)
         return mBinding.root
@@ -72,18 +74,13 @@ class DetailPurchaseFragment : Fragment() {
         purchaseEntity = args.purchaseEntity
 
         mBinding.purchase = purchaseEntity
-        val durationOneCircle = 650L
 
-        mBinding.potential.animateIndeterminate(durationOneCircle.toInt(), AccelerateDecelerateInterpolator())
-
-        Handler(Looper.getMainLooper()).postDelayed({
-            mBinding.potential.stopAnimateIndeterminate()
-        }, durationOneCircle)
+        animatePotential()
 
         val mockPotentialItemList = mutableListOf<PotentialItem>()
 
         for (i in 1..10) {
-            mockPotentialItemList.add(PotentialItem(true, "Test title $i", "Test description $i"))
+            mockPotentialItemList.add(PotentialItem(true, "How would the purchase be useful?", "Test description $i"))
         }
 
         val toIncreasePotentialAdapter = PotentialAdapter(mockPotentialItemList, false)
@@ -92,11 +89,13 @@ class DetailPurchaseFragment : Fragment() {
         val itemDecoration = SimpleDividerItemDecorationLastExcluded(10)
 
         mBinding.toIncreasePotentialRecyclerview.adapter = toIncreasePotentialAdapter
-        mBinding.toIncreasePotentialRecyclerview.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        mBinding.toIncreasePotentialRecyclerview.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         mBinding.toIncreasePotentialRecyclerview.addItemDecoration(itemDecoration)
 
         mBinding.doneRecyclerview.adapter = donePotentialAdapter
-        mBinding.doneRecyclerview.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        mBinding.doneRecyclerview.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         mBinding.doneRecyclerview.addItemDecoration(itemDecoration)
 
         bindViews()
@@ -108,9 +107,26 @@ class DetailPurchaseFragment : Fragment() {
             viewModel.deletePurchase(purchaseEntity)
             findNavController().navigateUp()
         }
+
+        mBinding.potential.setOnClickListener {
+            if (!isAnimatingPotential) {
+                animatePotential()
+            }
+        }
     }
 
     private fun bindViews() {
+    }
+
+    private fun animatePotential() {
+        isAnimatingPotential = true
+
+        mBinding.potential.animateIndeterminate()
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            mBinding.potential.stopAnimateIndeterminate()
+            isAnimatingPotential = false
+        }, durationOneCircle)
     }
 
 }

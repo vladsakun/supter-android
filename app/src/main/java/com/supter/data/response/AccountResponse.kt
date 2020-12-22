@@ -6,10 +6,10 @@ data class AccountResponse(
 
 data class Data(
 	val id: Int,
-	val name: String,
+	val name: String?,
 	val email: String,
-	val incomeRemainder: Double,
-	val period: Double,
-	val savings: Double,
+	val incomeRemainder: Double?,
+	val period: Double?,
+	val savings: Double?,
 )
 

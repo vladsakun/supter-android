@@ -9,26 +9,26 @@ import kotlinx.coroutines.flow.Flow
 interface PurchaseDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun upsert(purchaseEntity: List<PurchaseEntity>)
+    suspend fun upsert(purchaseEntity: List<PurchaseEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun upsertOneItem(purchaseEntity: PurchaseEntity)
+    suspend fun upsertOneItem(purchaseEntity: PurchaseEntity)
 
     @Delete
-    fun deletePurchaseEntity(purchaseEntity: PurchaseEntity)
+    suspend fun deletePurchaseEntity(purchaseEntity: PurchaseEntity)
 
     @Query("SELECT * FROM purchase")
     fun getPurchaseFlowList(): Flow<List<PurchaseEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun upsertUser(userEntity: UserEntity)
+    suspend fun upsertUser(userEntity: UserEntity)
 
     @Query("SELECT * FROM users")
-    fun getUserFlow(): Flow<UserEntity?>
+    fun getUserFlow(): Flow<UserEntity>
 
     @Query("DELETE FROM users")
-    fun clearUserTable()
+    suspend fun clearUserTable()
 
     @Query("DELETE FROM purchase")
-    fun clearPurchaseTable()
+    suspend fun clearPurchaseTable()
 }

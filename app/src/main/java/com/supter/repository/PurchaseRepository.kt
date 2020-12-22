@@ -14,23 +14,20 @@ interface PurchaseRepository {
 
     suspend fun getPurchaseList(): Flow<List<PurchaseEntity>>
 
-    suspend fun createPurchase(createPurchaseBody: PurchaseBody):
-            ResultWrapper<CreatePurchaseResponse>
+    suspend fun createPurchase(createPurchaseBody: PurchaseBody): ResultWrapper<CreatePurchaseResponse>
 
     suspend fun upsertPurchase(purchaseEntity: PurchaseEntity)
 
     suspend fun deletePurchase(purchaseEntity: PurchaseEntity)
 
-    suspend fun putPurchasesOrder(purchaseIdsList:List<Int>): ResultWrapper<MessageResponse>
+    suspend fun putPurchasesOrder(purchaseIdsList: List<Int>): ResultWrapper<MessageResponse>
 
-    fun upsertPurchaseList(purchaseEntityList: List<PurchaseEntity>)
+    suspend fun upsertPurchaseList(purchaseEntityList: List<PurchaseEntity>)
 
-    fun getLocalUser(): Flow<UserEntity?>
+    suspend fun getLocalUser(): Flow<UserEntity?>
 
     suspend fun fetchUser(): ResultWrapper<AccountResponse>
 
-    fun upsertUser(
-            userEntity: UserEntity
-    )
+    suspend fun upsertUser(userEntity: UserEntity)
 
 }
