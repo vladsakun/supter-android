@@ -29,14 +29,24 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp">
 
+                <me.turkergoksu.lib.PercentageView
+                    android:id="@+id/percentageView"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    app:percentage="@{purchase.potential}"
+                    android:layout_centerInParent="true"
+                    style="@style/PercentageView" />
+
                 <com.timqi.sectorprogressview.ColorfulRingProgressView
                     android:id="@+id/potential"
+                    android:visibility="invisible"
                     style="@style/PotentialRingView"
                     android:layout_centerInParent="true"
                     android:layout_centerHorizontal="true"
                     app:percent="@{purchase.potential}" />
 
                 <TextView
+                    android:visibility="invisible"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"

@@ -9,4 +9,9 @@
         <item name="android:layout_width">@dimen/potentialProgressViewSize</item>
         <item name="android:layout_height">@dimen/potentialProgressViewSize</item>
     </style>
+
+    <style name="PercentageView" parent="ParentPercentageView">
+        <item name="progressBackgroundColor">@color/dark_gray</item>
+        <item name="progressColor">@color/orange_200</item>
+    </style>
 </resources>
