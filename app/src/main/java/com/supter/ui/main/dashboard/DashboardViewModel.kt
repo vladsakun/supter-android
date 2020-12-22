@@ -22,7 +22,7 @@ import kotlin.math.ceil
 import kotlin.math.round
 
 class DashboardViewModel @ViewModelInject constructor(
-        private val purchaseRepository: PurchaseRepository,
+    private val purchaseRepository: PurchaseRepository,
 ) : ViewModel() {
 
     private val TAG = "DashboardViewModel"
@@ -79,43 +79,45 @@ class DashboardViewModel @ViewModelInject constructor(
 
         viewModelScope.launch(Dispatchers.IO) {
             purchaseRepository.getPurchaseList().collect { purchaseEntityList ->
-                val sortedByOrder = purchaseEntityList.sortedBy { it.order }
-                _purchaseList.postValue(updatePurchasesData(sortedByOrder))
+                _purchaseList.postValue(updatePurchasesData(purchaseEntityList))
             }
         }
 
         return _purchaseList
     }
 
-    private val _user = MutableLiveData<UserEntity?>()
-
-    fun getUser(): LiveData<UserEntity?> {
-        viewModelScope.launch(Dispatchers.IO) {
-            purchaseRepository.getLocalUser().collect {
-                _user.postValue(it)
-            }
-        }
-        return _user
-    }
-
     fun updatePurchasesData(purchaseList: List<PurchaseEntity>): List<PurchaseEntity> {
 
         _user.value?.let { user ->
 
-            if(user.incomeRemainder != null && user.period != null) {
+            if (user.incomeRemainder != null && user.period != null) {
 
                 val newPurchaseList = mutableListOf<PurchaseEntity>()
+                val purchaseListWithoutDoneAndSortedByStage = mutableListOf<PurchaseEntity>()
 
-                purchaseList.forEachIndexed { index, element ->
+                val processList =
+                    purchaseList.filter { it.stage == STATUS_PROCESS }.sortedBy { it.order }
 
+                for (purchase in processList) {
+                    purchaseListWithoutDoneAndSortedByStage.add(purchase)
+                }
+
+                val statusWant =
+                    purchaseList.filter { it.stage == STATUS_WANT }.sortedBy { it.order }
+
+                for (purchase in statusWant) {
+                    purchaseListWithoutDoneAndSortedByStage.add(purchase)
+                }
+
+                for ((index, element) in purchaseListWithoutDoneAndSortedByStage.withIndex()) {
                     if (index == 0) {
                         val currentPeriod: Double = element.price / user.incomeRemainder
 
                         val productPeriod = rounder(currentPeriod)
 
                         val productRemind = BigDecimal(productPeriod - currentPeriod).setScale(
-                                10,
-                                RoundingMode.HALF_EVEN
+                            10,
+                            RoundingMode.HALF_EVEN
                         ).toDouble()
 
                         element.remind = productRemind
@@ -123,16 +125,16 @@ class DashboardViewModel @ViewModelInject constructor(
 
                     } else {
 
-                        val previousProduct = purchaseList[index - 1]
+                        val previousProduct = purchaseListWithoutDoneAndSortedByStage[index - 1]
 
                         val currentPeriod: Double =
-                                element.price / user.incomeRemainder - previousProduct.remind
+                            element.price / user.incomeRemainder - previousProduct.remind
 
                         val productPeriod = rounder(currentPeriod)
 
                         val productRemind = BigDecimal(productPeriod - currentPeriod).setScale(
-                                10,
-                                RoundingMode.HALF_EVEN
+                            10,
+                            RoundingMode.HALF_EVEN
                         ).toDouble()
 
                         element.remind = productRemind
@@ -140,11 +142,9 @@ class DashboardViewModel @ViewModelInject constructor(
 
                     }
 
-                    Log.d(TAG, "updatePurchasesData: $element")
-
                     newPurchaseList.add(element)
-
                 }
+
                 return newPurchaseList
 
             }
@@ -163,5 +163,16 @@ class DashboardViewModel @ViewModelInject constructor(
         }
 
         return ceil(x).toInt()
+    }
+
+    private val _user = MutableLiveData<UserEntity?>()
+
+    fun getUser(): LiveData<UserEntity?> {
+        viewModelScope.launch(Dispatchers.IO) {
+            purchaseRepository.getLocalUser().collect {
+                _user.postValue(it)
+            }
+        }
+        return _user
     }
 }

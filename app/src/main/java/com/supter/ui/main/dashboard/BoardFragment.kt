@@ -48,9 +48,9 @@ class BoardFragment : ScopedFragment(), OnItemClick {
     private val viewModel: DashboardViewModel by viewModels()
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View? {
         _binding = FragmentDashboardBinding.inflate(inflater, container, false)
 
@@ -77,31 +77,28 @@ class BoardFragment : ScopedFragment(), OnItemClick {
         mBoardView.setCustomDragItem(MyDragItem(requireContext(), R.layout.column_item))
 
         val sortedPurchaseMap = linkedMapOf(
-                STATUS_WANT to arrayListOf<PurchaseEntity>(),
-                STATUS_PROCESS to arrayListOf(),
-                STATUS_DONE to arrayListOf()
+            STATUS_WANT to purchaseList.filter { it.stage == STATUS_WANT },
+            STATUS_PROCESS to purchaseList.filter { it.stage == STATUS_PROCESS },
+            STATUS_DONE to purchaseList.filter { it.stage == STATUS_DONE }
         )
-
-        for (purchase in purchaseList) {
-            sortedPurchaseMap[purchase.stage]?.add(purchase)
-        }
 
         val period: Double = user.period!!
 
         for ((key, value) in sortedPurchaseMap) {
 
             val itemAdapter = ItemAdapter(
-                    value,
-                    R.layout.column_item,
-                    R.id.item_layout,
-                    true,
-                    this,
-                    period,
-                    user.salaryDate)
+                value as MutableList<PurchaseEntity>,
+                key,
+                R.id.item_layout,
+                true,
+                this,
+                period,
+                user.salaryDate
+            )
 
-            addColumn(itemAdapter,
-                    key.capitalize(Locale.ROOT),
-                    value)
+            addColumn(
+                itemAdapter,
+                key.capitalize(Locale.ROOT))
 
             itemAdapters.add(itemAdapter)
 
@@ -114,8 +111,7 @@ class BoardFragment : ScopedFragment(), OnItemClick {
 
     }
 
-    private fun bindViews() {
-
+    private fun initBoard(){
         mBoardView = mBinding.boardView
         mBoardView.overScrollMode = View.OVER_SCROLL_NEVER
 
@@ -136,9 +132,21 @@ class BoardFragment : ScopedFragment(), OnItemClick {
                 if ((fromColumn != toColumn || fromRow != toRow)) {
                     val copyList = ArrayList<PurchaseEntity>()
 
-                    mBoardView.getAdapter(fromColumn).itemList.forEachIndexed { index, item ->
+                    val fromColumnAdapter = mBoardView.getAdapter(fromColumn) as ItemAdapter
+                    val fromColumnStage = fromColumnAdapter.mColumnStage
+                    fromColumnAdapter.itemList.forEachIndexed { index, item ->
                         val newItem = (item as PurchaseEntity)
                         newItem.order = index
+                        newItem.stage = fromColumnStage
+                        copyList.add(newItem)
+                    }
+
+                    val toColumnAdapter = mBoardView.getAdapter(toColumn) as ItemAdapter
+                    val toColumnStage = toColumnAdapter.mColumnStage
+                    toColumnAdapter.itemList.forEachIndexed { index, item ->
+                        val newItem = item as PurchaseEntity
+                        newItem.order = index
+                        newItem.stage = toColumnStage
                         copyList.add(newItem)
                     }
 
@@ -147,10 +155,10 @@ class BoardFragment : ScopedFragment(), OnItemClick {
             }
 
             override fun onItemChangedPosition(
-                    oldColumn: Int,
-                    oldRow: Int,
-                    newColumn: Int,
-                    newRow: Int,
+                oldColumn: Int,
+                oldRow: Int,
+                newColumn: Int,
+                newRow: Int,
             ) {
 //                mBoardView.getRecyclerView(oldColumn).adapter?.notifyDataSetChanged()
                 //Toast.makeText(mBoardView.getContext(), "Position changed - column: " + newColumn + " row: " + newRow, Toast.LENGTH_SHORT).show();
@@ -158,10 +166,10 @@ class BoardFragment : ScopedFragment(), OnItemClick {
 
             override fun onItemChangedColumn(oldColumn: Int, newColumn: Int) {
                 val itemCount1 =
-                        mBoardView.getHeaderView(oldColumn).findViewById<TextView>(R.id.item_count)
+                    mBoardView.getHeaderView(oldColumn).findViewById<TextView>(R.id.item_count)
                 itemCount1.text = mBoardView.getAdapter(oldColumn).itemCount.toString()
                 val itemCount2 =
-                        mBoardView.getHeaderView(newColumn).findViewById<TextView>(R.id.item_count)
+                    mBoardView.getHeaderView(newColumn).findViewById<TextView>(R.id.item_count)
                 itemCount2.text = mBoardView.getAdapter(newColumn).itemCount.toString()
             }
 
@@ -188,30 +196,46 @@ class BoardFragment : ScopedFragment(), OnItemClick {
             }
 
             override fun canDropItemAtPosition(
-                    oldColumn: Int,
-                    oldRow: Int,
-                    newColumn: Int,
-                    newRow: Int,
+                oldColumn: Int,
+                oldRow: Int,
+                newColumn: Int,
+                newRow: Int,
             ): Boolean {
                 // Add logic here to prevent an item to be dropped
                 return true
             }
         })
+    }
+
+    private fun bindViews() {
+
+        initBoard()
 
         viewModel.getUser().observe(viewLifecycleOwner, { user ->
 
             if (user != null && user.period != null && user.incomeRemainder != null) {
-                viewModel.getPurchaseLiveData().observe(viewLifecycleOwner, {
-                    if (it != null) {
-                        if (isBoardInited && it.isNotEmpty()) {
 
-                            itemAdapters[0].updateList(it as MutableList<PurchaseEntity>)
+                viewModel.getUser().removeObservers(viewLifecycleOwner)
+
+                viewModel.getPurchaseLiveData().observe(viewLifecycleOwner, {purchaseList ->
+                    if (purchaseList != null) {
+
+                        if (isBoardInited && purchaseList.isNotEmpty()) {
+
+                            val wantList = purchaseList.filter { it.stage == STATUS_WANT }
+                            val processList = purchaseList.filter { it.stage == STATUS_PROCESS }
+                            val doneList = purchaseList.filter { it.stage == STATUS_DONE }
+
+                            itemAdapters[0].updateList(wantList)
+                            itemAdapters[1].updateList(processList)
+                            itemAdapters[2].updateList(doneList)
 
                         } else {
-                            resetBoard(it, user)
+                            resetBoard(purchaseList, user)
                             isBoardInited = true
                             hideProgress()
                         }
+
                     }
                 })
             } else {
@@ -230,26 +254,29 @@ class BoardFragment : ScopedFragment(), OnItemClick {
 
     }
 
-    private fun addColumn(listAdapter: ItemAdapter, columnName: String, purchaseList: List<PurchaseEntity>) {
+    private fun addColumn(
+        listAdapter: ItemAdapter,
+        columnName: String
+    ) {
         if (context != null) {
 
             val header = View.inflate(activity, R.layout.column_header, null)
 
             (header.findViewById<View>(R.id.header_title) as TextView).text = columnName
             (header.findViewById<View>(R.id.item_count) as TextView).text =
-                    purchaseList.size.toString()
+                listAdapter.itemCount.toString()
 
             val layoutManager = LinearLayoutManager(context)
             val columnProperties = ColumnProperties.Builder.newBuilder(listAdapter)
-                    .setLayoutManager(layoutManager)
-                    .setHasFixedItemSize(false)
-                    .setItemsSectionBackgroundColor(
-                            ContextCompat.getColor(requireContext(), R.color.columnBackground)
-                    )
-                    .setHeader(header)
-                    .setFooter(null)
-                    .setColumnDragView(null)
-                    .build()
+                .setLayoutManager(layoutManager)
+                .setHasFixedItemSize(false)
+                .setItemsSectionBackgroundColor(
+                    ContextCompat.getColor(requireContext(), R.color.columnBackground)
+                )
+                .setHeader(header)
+                .setFooter(null)
+                .setColumnDragView(null)
+                .build()
 
             mBoardView.addColumn(columnProperties)
 
@@ -264,12 +291,12 @@ class BoardFragment : ScopedFragment(), OnItemClick {
         val extras = FragmentNavigatorExtras(cardView to detailPurchaseTransitionName)
 
         val direction = BoardFragmentDirections.actionNavDashboardToDetailPurchaseFragment(
-                purchaseEntity.title,
-                purchaseEntity
+            purchaseEntity.title,
+            purchaseEntity
         )
 
         findNavController().navigate(direction, extras)
-        exitTransition = MaterialElevationScale(false).apply{
+        exitTransition = MaterialElevationScale(false).apply {
             duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
         }
 
@@ -279,8 +306,10 @@ class BoardFragment : ScopedFragment(), OnItemClick {
     }
 
     private fun showErrorMessage(it: String?) {
-        Toasty.error(requireContext(), it
-                ?: requireContext().getString(R.string.no_internet_connection)).show()
+        Toasty.error(
+            requireContext(), it
+                ?: requireContext().getString(R.string.no_internet_connection)
+        ).show()
     }
 
     private fun hideProgress() {

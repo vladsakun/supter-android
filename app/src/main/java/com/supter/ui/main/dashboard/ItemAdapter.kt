@@ -6,14 +6,15 @@ import android.view.ViewGroup
 import com.supter.R
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.databinding.ColumnItemBinding
+import com.supter.utils.STATUS_DONE
 import com.woxthebox.draglistview.DragItemAdapter
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.*
 
 internal class ItemAdapter constructor(
-    purchaseList: MutableList<PurchaseEntity>,
-    private val mLayoutId: Int,
+    val purchaseList: MutableList<PurchaseEntity>,
+    val mColumnStage: String,
     private val mGrabHandleId: Int,
     private val mDragOnLongPress: Boolean,
     private val onItemClick: OnItemClick,
@@ -44,7 +45,7 @@ internal class ItemAdapter constructor(
         holder.bind(item)
     }
 
-    fun updateList(newList: MutableList<PurchaseEntity>) {
+    fun updateList(newList: List<PurchaseEntity>) {
         mItemList.clear()
         mItemList.addAll(newList)
         notifyDataSetChanged()
@@ -73,9 +74,12 @@ internal class ItemAdapter constructor(
             activeItem = purchaseEntity
             binding.purchase = purchaseEntity
 
-            val realPeriod = period * purchaseEntity.realPeriod - dayOfMonth + salaryDate
+            if(mColumnStage != STATUS_DONE) {
 
-            binding.realPeriod.text = getPrettyDate(realPeriod)
+                val realPeriod = period * purchaseEntity.realPeriod - dayOfMonth + salaryDate
+
+                binding.realPeriod.text = getPrettyDate(realPeriod)
+            }
         }
 
     }
