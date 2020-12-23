@@ -12,6 +12,7 @@ data class DataItem(
 	val title: String,
 	val potential: Int,
 	val userId: Int,
-	val order: Int
+	val order: Int,
+	val thinkingTime:String
 )
 

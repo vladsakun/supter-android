@@ -56,7 +56,7 @@ class PurchaseRepositoryImpl @Inject constructor(
     //Select all movies from db and return them
     override suspend fun getPurchaseList(): Flow<List<PurchaseEntity>> {
 
-//        fetchPurchaseList()
+        fetchPurchaseList()
 
         return withContext(Dispatchers.IO) {
             return@withContext dao.getPurchaseFlowList()
@@ -126,7 +126,7 @@ class PurchaseRepositoryImpl @Inject constructor(
                         id, title, price,
                         order, stage, potential,
                         description, null, remind = 0.0,
-                        realPeriod = 0, null
+                        realPeriod = 0, thinkingTime, null
                     )
                 )
             }

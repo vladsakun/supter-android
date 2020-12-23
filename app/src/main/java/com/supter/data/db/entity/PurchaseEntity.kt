@@ -20,6 +20,7 @@ data class PurchaseEntity(
     var questionsJSON: String?,
     var remind: Double,
     var realPeriod: Int,
+    val thinkingTime:String,
 
     @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
     var image: ByteArray?

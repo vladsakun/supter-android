@@ -12,7 +12,9 @@ data class PurchaseData(
 	val stage: String,
 	val user: UserData,
 	val potential: Int,
-	val order: Int
+	val order: Int,
+	val thinkingTime:String
+
 )
 
 data class UserData(
