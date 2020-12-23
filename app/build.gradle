@@ -9,6 +9,16 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: "androidx.navigation.safeargs.kotlin"
 
 android {
+
+    signingConfigs {
+        release {
+            storeFile file('D:\\Documents\\Supter-Key\\supter.jks')
+            storePassword 'Supter#2020$'
+            keyAlias 'key0'
+            keyPassword 'Supter#2020$'
+        }
+    }
+
     compileSdkVersion 30
     buildToolsVersion "29.0.3"
 
@@ -22,10 +32,19 @@ android {
     }
 
     buildTypes {
+
         release {
+            debuggable false
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
+
+        debug{
+            debuggable true
+            minifyEnabled false
+        }
+
     }
 
     buildFeatures {
@@ -124,7 +143,7 @@ dependencies {
     implementation 'com.github.woxthebox:draglistview:1.7.2'
 
     //Leak Canary
-//    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.5'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.5'
 
     // Moshi
     implementation 'com.squareup.moshi:moshi:1.11.0'
@@ -137,7 +156,5 @@ dependencies {
 
     // Progress
     implementation 'com.github.turkergoksu:PercentageView:1.0.2'
-
-
 
 }
