@@ -1,7 +1,6 @@
 package com.supter.ui.main.purchase.detail
 
 import android.graphics.Color
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -9,9 +8,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AccelerateDecelerateInterpolator
-import android.view.animation.AccelerateInterpolator
-import android.view.animation.DecelerateInterpolator
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -20,11 +16,13 @@ import com.google.android.material.transition.MaterialContainerTransform
 import com.supter.R
 import com.supter.data.PotentialItem
 import com.supter.data.db.entity.PurchaseEntity
+import com.supter.data.response.ResultWrapper
 import com.supter.databinding.DetailPurchaseFragmentBinding
 import com.supter.ui.adapters.PotentialAdapter
 import com.supter.ui.adapters.SimpleDividerItemDecorationLastExcluded
 import com.supter.utils.themeColor
 import dagger.hilt.android.AndroidEntryPoint
+import es.dmoral.toasty.Toasty
 
 @AndroidEntryPoint
 class DetailPurchaseFragment : Fragment() {
@@ -77,10 +75,64 @@ class DetailPurchaseFragment : Fragment() {
 
         animatePotential()
 
+        bindViews()
+        setClickListeners()
+    }
+
+    private fun setClickListeners() {
+        mBinding.delete.setOnClickListener {
+            viewModel.deletePurchase(purchaseEntity)
+            findNavController().navigateUp()
+        }
+
+        mBinding.potential.setOnClickListener {
+            if (!isAnimatingPotential) {
+                animatePotential()
+            }
+        }
+
+        mBinding.saveChanges.setOnClickListener {
+//            with(mBinding) {
+//                viewModel.updatePurchase(
+//                    title.editText?.text.toString(),
+//                    description.editText?.text.toString(),
+//                    price.editText?.text.toString().toDouble(),
+//                    purchaseEntity
+//                )
+//            }
+        }
+    }
+
+    private fun bindViews() {
+        initQuestionsList()
+        bindObservers()
+    }
+
+    private fun bindObservers(){
+        viewModel.updateResponseResultLiveData.observe(viewLifecycleOwner, {updateResult ->
+            when(updateResult){
+                is ResultWrapper.Success -> {
+                    showSuccessMessage()
+                }
+            }
+        })
+    }
+
+    private fun showSuccessMessage() {
+        Toasty.success(requireContext(), getString(R.string.successfully_updated)).show()
+    }
+
+    private fun initQuestionsList() {
         val mockPotentialItemList = mutableListOf<PotentialItem>()
 
         for (i in 1..10) {
-            mockPotentialItemList.add(PotentialItem(true, "How would the purchase be useful?", "Test description $i"))
+            mockPotentialItemList.add(
+                PotentialItem(
+                    true,
+                    "How would the purchase be useful?",
+                    "Test description $i"
+                )
+            )
         }
 
         val toIncreasePotentialAdapter = PotentialAdapter(mockPotentialItemList, false)
@@ -97,25 +149,6 @@ class DetailPurchaseFragment : Fragment() {
         mBinding.doneRecyclerview.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         mBinding.doneRecyclerview.addItemDecoration(itemDecoration)
-
-        bindViews()
-        setClickListeners()
-    }
-
-    private fun setClickListeners() {
-        mBinding.delete.setOnClickListener {
-            viewModel.deletePurchase(purchaseEntity)
-            findNavController().navigateUp()
-        }
-
-        mBinding.potential.setOnClickListener {
-            if (!isAnimatingPotential) {
-                animatePotential()
-            }
-        }
-    }
-
-    private fun bindViews() {
     }
 
     private fun animatePotential() {

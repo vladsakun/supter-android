@@ -43,8 +43,6 @@
     </style>
 
     <style name="DetailPurchaseTextView" parent="Widget.MaterialComponents.TextView">
-        <item name="android:layout_marginStart">16dp</item>
-        <item name="android:layout_marginEnd">16dp</item>
         <item name="android:layout_marginTop">10dp</item>
         <item name="android:textAppearance">@style/TextAppearance.MyTheme.Subtitle1</item>
     </style>
@@ -81,7 +79,7 @@
         <item name="android:textAppearance">?attr/textAppearanceSubtitle1</item>
     </style>
 
-    <style name="AccountTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+    <style name="ProfileTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="android:layout_marginTop">@dimen/editTextMarginTop</item>
         <item name="endIconDrawable">@drawable/ic_info_outline_white_24dp</item>
         <item name="endIconMode">custom</item>

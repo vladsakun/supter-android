@@ -18,7 +18,7 @@ data class PurchaseData(
 )
 
 data class UserData(
-	val period: Int,
+	val period: Number,
 	val name: String,
 	val id: Int,
 	val savings: String,

@@ -4,10 +4,7 @@ import androidx.lifecycle.LiveData
 import com.supter.data.body.PurchaseBody
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.db.entity.UserEntity
-import com.supter.data.response.AccountResponse
-import com.supter.data.response.CreatePurchaseResponse
-import com.supter.data.response.MessageResponse
-import com.supter.data.response.ResultWrapper
+import com.supter.data.response.*
 import kotlinx.coroutines.flow.Flow
 
 interface PurchaseRepository {
@@ -21,6 +18,8 @@ interface PurchaseRepository {
     suspend fun deletePurchase(purchaseEntity: PurchaseEntity)
 
     suspend fun putPurchasesOrder(purchaseIdsList: List<Int>): ResultWrapper<MessageResponse>
+
+    suspend fun updateRemotePurchase(purchaseEntity: PurchaseEntity):ResultWrapper<UpdatePurchaseResponse>
 
     suspend fun upsertPurchaseList(purchaseEntityList: List<PurchaseEntity>)
 

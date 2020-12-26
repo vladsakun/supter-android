@@ -5,6 +5,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.util.Log
 import com.supter.BuildConfig
+import com.supter.data.body.PurchaseBody
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.response.Data
 import com.supter.data.response.DataItem
@@ -73,8 +74,8 @@ fun convertDataItemToPurchaseEntity(dataItem: DataItem): PurchaseEntity {
             null,
             remind = 0.0,
             realPeriod = 0,
+            thinkingTime,
             null
         )
     }
 }
-

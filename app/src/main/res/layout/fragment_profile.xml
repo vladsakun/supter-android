@@ -10,7 +10,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/income_remainder"
-        style="@style/AccountTextInputLayout"
+        style="@style/ProfileTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/income_remainder"
@@ -27,7 +27,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/period"
-        style="@style/AccountTextInputLayout"
+        style="@style/ProfileTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/period"
@@ -44,7 +44,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/savings"
-        style="@style/AccountTextInputLayout"
+        style="@style/ProfileTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/savings"
@@ -61,7 +61,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/name"
-        style="@style/AccountTextInputLayout"
+        style="@style/ProfileTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/name"

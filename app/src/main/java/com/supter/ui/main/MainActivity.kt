@@ -1,6 +1,7 @@
 package com.supter.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -20,10 +21,13 @@ import com.google.android.material.transition.MaterialElevationScale
 import com.supter.R
 import com.supter.databinding.ActivityMainBinding
 import com.supter.ui.main.purchase.create.AddPurchaseFragmentDirections
+import com.supter.utils.SystemUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    private val TAG = "MainActivity"
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
@@ -62,6 +66,8 @@ class MainActivity : AppCompatActivity() {
                     navigateToAddPurchase()
                 }
         }
+
+        Log.d(TAG, "onCreate: ${SystemUtils.getToken(this)}")
     }
 
     private fun navigateToAddPurchase() {

@@ -29,25 +29,7 @@ class SignUpViewModel @ViewModelInject constructor(
             val response = repository.register(name, email, password)
             signUpResultMutableLiveData.postValue(response)
 
-            when (response) {
-                is ResultWrapper.NetworkError -> showNetworkError()
-                is ResultWrapper.GenericError -> showGenericError(response)
-                is ResultWrapper.Success -> showSuccess(response.value)
-            }
         }
 
     }
-
-    private fun showSuccess(value: RegistrationResponse) {
-        Log.d(TAG, "showSuccess: ")
-    }
-
-    private fun showGenericError(response: ResultWrapper.GenericError) {
-        Log.d(TAG, "showGenericError: code: ${response.code} message ${response.error?.message}")
-    }
-
-    private fun showNetworkError() {
-        Log.d(TAG, "showNetworkError: ")
-    }
-
 }

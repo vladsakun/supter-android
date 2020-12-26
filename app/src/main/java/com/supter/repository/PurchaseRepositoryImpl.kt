@@ -7,10 +7,7 @@ import com.supter.data.db.PurchaseDao
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.db.entity.UserEntity
 import com.supter.data.network.PurchaseNetworkDataSource
-import com.supter.data.response.AccountResponse
-import com.supter.data.response.CreatePurchaseResponse
-import com.supter.data.response.MessageResponse
-import com.supter.data.response.ResultWrapper
+import com.supter.data.response.*
 import com.supter.utils.SystemUtils
 import com.supter.utils.convertDataItemListToPurchaseEntityList
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -98,6 +95,20 @@ class PurchaseRepositoryImpl @Inject constructor(
 
     override suspend fun putPurchasesOrder(purchaseIdsList: List<Int>): ResultWrapper<MessageResponse> {
         return networkDataSource.postPurchaseIdsList(SystemUtils.getToken(context), purchaseIdsList)
+    }
+
+    override suspend fun updateRemotePurchase(purchaseEntity: PurchaseEntity): ResultWrapper<UpdatePurchaseResponse> {
+
+        val updateResponse = networkDataSource.updatePurchase(
+            SystemUtils.getToken(context),
+            purchaseEntity.id,
+            PurchaseBody(purchaseEntity.title, purchaseEntity.price)
+        )
+
+        if (updateResponse is ResultWrapper.Success) {
+            upsertPurchase(purchaseEntity)
+        }
+        return updateResponse
     }
 
     override suspend fun upsertPurchaseList(purchaseEntityList: List<PurchaseEntity>) {

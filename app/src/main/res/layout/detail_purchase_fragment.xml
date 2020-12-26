@@ -31,27 +31,27 @@
 
                 <me.turkergoksu.lib.PercentageView
                     android:id="@+id/percentageView"
+                    style="@style/PercentageView"
                     android:layout_width="200dp"
                     android:layout_height="200dp"
-                    app:percentage="@{purchase.potential}"
                     android:layout_centerInParent="true"
-                    style="@style/PercentageView" />
+                    app:percentage="@{purchase.potential}" />
 
                 <com.timqi.sectorprogressview.ColorfulRingProgressView
                     android:id="@+id/potential"
-                    android:visibility="invisible"
                     style="@style/PotentialRingView"
                     android:layout_centerInParent="true"
                     android:layout_centerHorizontal="true"
+                    android:visibility="invisible"
                     app:percent="@{purchase.potential}" />
 
                 <TextView
-                    android:visibility="invisible"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:text="@{String.valueOf(purchase.potential) + `%`}"
                     android:textAppearance="@style/TextAppearance.MyTheme.Headline5"
+                    android:visibility="invisible"
                     tools:text="64%" />
 
             </RelativeLayout>
@@ -89,79 +89,142 @@
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/potential_item" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <com.google.android.material.card.MaterialCardView
+                style="@style/DefaultCardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <com.google.android.material.card.MaterialCardView
-                    style="@style/DefaultCardView"
+                <LinearLayout
+                    android:id="@+id/linearLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    android:orientation="vertical"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingBottom="10dp">
 
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/stage"
+                        style="@style/DetailPurchaseTextView"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:paddingBottom="16dp">
+                        android:layout_height="wrap_content"
+                        android:text="@{@string/stage.concat(` `).concat(purchase.stage)}"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        tools:text="Stage: wish" />
 
-                        <TextView
-                            android:id="@+id/stage"
-                            style="@style/DetailPurchaseTextView"
+                    <TextView
+                        android:id="@+id/real_period"
+                        style="@style/DetailPurchaseTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="@{@string/real_period.concat(` `).concat(String.valueOf(purchase.realPeriod))}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/stage"
+                        tools:text="Real period: 60 days" />
+
+                    <TextView
+                        android:id="@+id/order"
+                        style="@style/DetailPurchaseTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="@{@string/order.concat(` `).concat(String.valueOf(purchase.order))}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/real_period"
+                        tools:text="Order: 4" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                style="@style/DefaultCardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingBottom="10dp">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/title"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:hint="@string/title">
+
+                        <com.google.android.material.textfield.TextInputEditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@{@string/stage.concat(` `).concat(purchase.stage)}"
-                            tools:text="Stage: wish" />
+                            android:text="@{purchase.title}" />
 
-                        <TextView
-                            android:id="@+id/real_period"
-                            style="@style/DetailPurchaseTextView"
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/price"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:hint="@string/price">
+
+                        <com.google.android.material.textfield.TextInputEditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@{@string/real_period.concat(` `).concat(String.valueOf(purchase.realPeriod))}"
-                            tools:text="Real period: 60 days" />
+                            android:text="@{String.valueOf(purchase.price)}" />
 
-                        <TextView
-                            android:id="@+id/order"
-                            style="@style/DetailPurchaseTextView"
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/description"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:hint="@string/description">
+
+                        <com.google.android.material.textfield.TextInputEditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@{@string/order.concat(` `).concat(String.valueOf(purchase.order))}"
-                            tools:text="Order: 4" />
+                            android:text="@{purchase.description}" />
 
-                        <TextView
-                            android:id="@+id/price"
-                            style="@style/DetailPurchaseTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@{@string/price.concat(` `).concat(purchase.title)}"
-                            tools:text="Price: 1200" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                        <TextView
-                            android:id="@+id/description"
-                            style="@style/DetailPurchaseTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@{purchase.description != null ? @string/description.concat(` `).concat(purchase.description) : ``}"
-                            android:visibility="@{purchase.description == null ? View.GONE : View.VISIBLE}"
-                            tools:text="Description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt" />
+                    <Button
+                        android:id="@+id/save_changes"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/save_changes"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/description"
+                        app:strokeColor="?attr/colorPrimary" />
 
-
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
             <Button
                 android:id="@+id/delete"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/editTextMarginTop"
-                android:backgroundTint="@color/red_600"
-                android:text="@string/delete" />
+                android:text="@string/delete"
+                android:textColor="@color/red_600"
+                app:strokeColor="@color/red_600" />
 
         </LinearLayout>
 
