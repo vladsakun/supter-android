@@ -1,7 +1,7 @@
 package com.supter.data.response
 
 data class UpdatePurchaseResponse(
-	val data: UpdatePurchaseData
+	val data: PurchaseData
 )
 
 data class UpdatePurchaseData(

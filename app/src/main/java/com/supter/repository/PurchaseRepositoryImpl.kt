@@ -10,10 +10,12 @@ import com.supter.data.network.PurchaseNetworkDataSource
 import com.supter.data.response.*
 import com.supter.utils.SystemUtils
 import com.supter.utils.convertDataItemListToPurchaseEntityList
+import com.supter.utils.updatePurchasesData
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -38,7 +40,16 @@ class PurchaseRepositoryImpl @Inject constructor(
             if (accountResponse is ResultWrapper.Success) {
                 with(accountResponse.value.data) {
                     if (incomeRemainder != null && period != null) {
-                        upsertUser(UserEntity(id, name, email, incomeRemainder, savings, period))
+                        dao.upsertUser(
+                            UserEntity(
+                                id,
+                                name,
+                                email,
+                                incomeRemainder,
+                                savings,
+                                period
+                            )
+                        )
                     }
                 }
             }
@@ -46,23 +57,16 @@ class PurchaseRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun upsertUser(userEntity: UserEntity) {
-        dao.upsertUser(userEntity)
-    }
-
     //Select all movies from db and return them
-    override suspend fun getPurchaseList(): Flow<List<PurchaseEntity>> {
+    override fun getPurchaseList(userEntity: UserEntity): Flow<List<PurchaseEntity>> {
 
         fetchPurchaseList()
 
-        return withContext(Dispatchers.IO) {
-            return@withContext dao.getPurchaseFlowList()
-        }
-
+        return dao.getPurchaseFlowList().map { updatePurchasesData(it, userEntity) }
     }
 
     //Fetch movies from api
-    private suspend fun fetchPurchaseList() {
+    private fun fetchPurchaseList() {
         GlobalScope.launch(Dispatchers.IO) {
             val fetchedPurchaseList = networkDataSource.fetchPurchaseList(
                 SystemUtils.getToken(context)
@@ -115,8 +119,12 @@ class PurchaseRepositoryImpl @Inject constructor(
         dao.upsert(purchaseEntityList)
     }
 
-    override suspend fun getLocalUser(): Flow<UserEntity?> {
+    override suspend fun getUserFlow(): Flow<UserEntity?> {
         return dao.getUserFlow()
+    }
+
+    override suspend fun getUser(): UserEntity? {
+        return dao.getUser()
     }
 
     override suspend fun fetchUser(): ResultWrapper<AccountResponse> {
@@ -137,7 +145,7 @@ class PurchaseRepositoryImpl @Inject constructor(
                         id, title, price,
                         order, stage, potential,
                         description, null, remind = 0.0,
-                        realPeriod = 0, thinkingTime, null
+                        realPeriod = 0, thinkingTime, createdAt, null
                     )
                 )
             }

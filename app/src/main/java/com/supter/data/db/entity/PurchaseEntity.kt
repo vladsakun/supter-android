@@ -21,6 +21,7 @@ data class PurchaseEntity(
     var remind: Double,
     var realPeriod: Int,
     val thinkingTime:String,
+    val createdAt:String,
 
     @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
     var image: ByteArray?

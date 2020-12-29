@@ -37,6 +37,9 @@
     <color name="black_900">#000000</color>
     
     <color name="light_gray">#e1e1e1</color>
+    <color name="gray_100">#0A000000</color>
     <color name="dark_gray">#424242</color>
+
+    <color name="black_850">#444444</color>
 
 </resources>

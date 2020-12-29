@@ -1,11 +1,7 @@
 package com.supter.ui.main.dashboard
 
-import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.db.entity.UserEntity
 import com.supter.data.response.ResultWrapper
@@ -15,7 +11,11 @@ import com.supter.utils.STATUS_PROCESS
 import com.supter.utils.STATUS_WANT
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.conflate
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 import java.math.RoundingMode
 import kotlin.math.ceil
@@ -77,18 +77,24 @@ class DashboardViewModel @ViewModelInject constructor(
 
     fun getPurchaseLiveData(): LiveData<List<PurchaseEntity>> {
 
-        viewModelScope.launch(Dispatchers.IO) {
-            purchaseRepository.getPurchaseList().collect { purchaseEntityList ->
-                _purchaseList.postValue(updatePurchasesData(purchaseEntityList))
-            }
+//        viewModelScope.launch(Dispatchers.IO) {
+//            val purchaseFlow =
+//                purchaseRepository.getPurchaseList()
+//                    .map {
+//                        updatePurchasesData(it)
+//                    }.asLiveData(Dispatchers.IO)
+//        }
+        userEntity?.let { user ->
+            return purchaseRepository.getPurchaseList(user).asLiveData(Dispatchers.IO)
         }
 
         return _purchaseList
+
     }
 
     fun updatePurchasesData(purchaseList: List<PurchaseEntity>): List<PurchaseEntity> {
 
-        _user.value?.let { user ->
+        userEntity?.let { user ->
 
             if (user.incomeRemainder != null && user.period != null) {
 
@@ -169,10 +175,22 @@ class DashboardViewModel @ViewModelInject constructor(
 
     fun getUser(): LiveData<UserEntity?> {
         viewModelScope.launch(Dispatchers.IO) {
-            purchaseRepository.getLocalUser().collect {
+            purchaseRepository.getUserFlow().collect {
                 _user.postValue(it)
             }
         }
         return _user
+    }
+
+    var userEntity: UserEntity? = null
+    suspend fun getUserSuspend(): UserEntity? {
+        return withContext(Dispatchers.IO) {
+            userEntity = purchaseRepository.getUser()
+            return@withContext userEntity
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
     }
 }

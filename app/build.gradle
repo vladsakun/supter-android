@@ -157,4 +157,7 @@ dependencies {
     // Progress
     implementation 'com.github.turkergoksu:PercentageView:1.0.2'
 
+    // Thinking time progress
+    implementation 'com.akexorcist:round-corner-progress-bar:2.1.1'
+
 }

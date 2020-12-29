@@ -26,34 +26,29 @@
         <item name="cardElevation">@dimen/cardElevation</item>
     </style>
 
+    <style name="PurchaseInfoMaterialCardView" parent="DefaultCardView">
+        <item name="contentPaddingBottom">@dimen/cardPaddingHorizontal</item>
+        <item name="contentPaddingRight">@dimen/cardPaddingHorizontal</item>
+        <item name="contentPaddingLeft">@dimen/cardPaddingHorizontal</item>
+    </style>
+
+    <style name="Progress" parent="">
+        <item name="rcMax">100</item>
+        <item name="android:layout_height">@dimen/progressHeight</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="rcBackgroundColor">@color/gray_100</item>
+        <item name="rcRadius">@dimen/cardCornerRadius</item>
+        <item name="android:layout_marginTop">@dimen/marginBetweenBigViews</item>
+    </style>
+
     <style name="PotentialItemCardShape" parent="ShapeAppearance.MaterialComponents.MediumComponent">
         <item name="cornerFamilyTopRight">cut</item>
         <item name="cornerSizeTopRight">13dp</item>
     </style>
 
-    <style name="PurchaseInfoCardViewShape" parent="ShapeAppearance.MaterialComponents.SmallComponent">
-        <item name="cornerFamilyTopLeft">cut</item>
-        <item name="cornerFamilyTopRight">cut</item>
-        <item name="cornerFamilyBottomRight">cut</item>
-        <item name="cornerFamilyBottomLeft">cut</item>
-        <item name="cornerSizeTopLeft">@dimen/cornerSizePurchaseInfo</item>
-        <item name="cornerSizeTopRight">@dimen/cornerSizePurchaseInfo</item>
-        <item name="cornerSizeBottomRight">@dimen/cornerSizePurchaseInfo</item>
-        <item name="cornerSizeBottomLeft">@dimen/cornerSizePurchaseInfo</item>
-    </style>
-
     <style name="DetailPurchaseTextView" parent="Widget.MaterialComponents.TextView">
         <item name="android:layout_marginTop">10dp</item>
         <item name="android:textAppearance">@style/TextAppearance.MyTheme.Subtitle1</item>
-    </style>
-
-    <style name="PotentialRingView" parent="">
-        <item name="bgColor">@color/light_gray</item>
-        <item name="fgColorStart">@color/orange_200</item>
-        <item name="fgColorEnd">@color/orange_700</item>
-        <item name="strokeWidth">@dimen/strokeWidth</item>
-        <item name="android:layout_width">@dimen/potentialProgressViewSize</item>
-        <item name="android:layout_height">@dimen/potentialProgressViewSize</item>
     </style>
 
     <style name="ParentPercentageView" parent="">

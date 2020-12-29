@@ -1,9 +1,11 @@
 package com.supter.data.db
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.db.entity.UserEntity
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
 @Dao
 interface PurchaseDao {
@@ -25,6 +27,9 @@ interface PurchaseDao {
 
     @Query("SELECT * FROM users")
     fun getUserFlow(): Flow<UserEntity>
+
+    @Query("SELECT * FROM users")
+    suspend fun getUser():UserEntity?
 
     @Query("DELETE FROM users")
     suspend fun clearUserTable()

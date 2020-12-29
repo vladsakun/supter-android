@@ -17,6 +17,11 @@
     <dimen name="cardPaddingVertical">13dp</dimen>
     <dimen name="cornerSizePurchaseInfo">15dp</dimen>
 
+    <!-- Detail purchase-->
+    <dimen name="marginBetweenHintAndView">5dp</dimen>
+    <dimen name="marginBetweenBigViews">16dp</dimen>
+    <dimen name="progressHeight">30dp</dimen>
+
     <!--Potential item-->
     <dimen name="cardWidth">150dp</dimen>
     <dimen name="cardHeight">65dp</dimen>

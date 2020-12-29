@@ -29,6 +29,7 @@ import com.woxthebox.draglistview.BoardView.BoardListener
 import com.woxthebox.draglistview.ColumnProperties
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
+import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -43,9 +44,8 @@ class BoardFragment : ScopedFragment(), OnItemClick {
     private lateinit var mBoardView: BoardView
     private var itemAdapters: MutableList<ItemAdapter> = mutableListOf()
 
-    private var isBoardInited = false
-
     private val viewModel: DashboardViewModel by viewModels()
+    private var isBoardInitted = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,14 +53,13 @@ class BoardFragment : ScopedFragment(), OnItemClick {
         savedInstanceState: Bundle?,
     ): View? {
         _binding = FragmentDashboardBinding.inflate(inflater, container, false)
-
+        isBoardInitted = false
         return mBinding.root
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        isBoardInited = false
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -73,6 +72,7 @@ class BoardFragment : ScopedFragment(), OnItemClick {
 
     private fun resetBoard(purchaseList: List<PurchaseEntity>, user: UserEntity) {
 
+        itemAdapters.clear()
         mBoardView.clearBoard()
         mBoardView.setCustomDragItem(MyDragItem(requireContext(), R.layout.column_item))
 
@@ -211,16 +211,14 @@ class BoardFragment : ScopedFragment(), OnItemClick {
 
         initBoard()
 
-        viewModel.getUser().observe(viewLifecycleOwner, { user ->
+        launch {
+            val user = viewModel.getUserSuspend()
 
-            if (user != null && user.period != null && user.incomeRemainder != null) {
-
-                viewModel.getUser().removeObservers(viewLifecycleOwner)
-
+            if(user != null){
                 viewModel.getPurchaseLiveData().observe(viewLifecycleOwner, {purchaseList ->
                     if (purchaseList != null) {
 
-                        if (isBoardInited && purchaseList.isNotEmpty()) {
+                        if (isBoardInitted) {
 
                             val wantList = purchaseList.filter { it.stage == STATUS_WANT }
                             val processList = purchaseList.filter { it.stage == STATUS_PROCESS }
@@ -232,25 +230,28 @@ class BoardFragment : ScopedFragment(), OnItemClick {
 
                         } else {
                             resetBoard(purchaseList, user)
-                            isBoardInited = true
+                            isBoardInitted = true
                             hideProgress()
                         }
 
                     }
                 })
-            } else {
-                showFillUserDialog()
             }
+        }
 
-        })
+//        viewModel.getUser().observe(viewLifecycleOwner, { user ->
+//
+//            if (user?.period != null && user.incomeRemainder != null) {
+//
+//            } else {
+//                showFillUserDialog()
+//            }
+//
+//        })
 
         viewModel.errorMessageLiveData.observe(viewLifecycleOwner, {
             showErrorMessage(it)
         })
-
-    }
-
-    private fun showFillUserDialog() {
 
     }
 
@@ -303,6 +304,10 @@ class BoardFragment : ScopedFragment(), OnItemClick {
         reenterTransition = MaterialElevationScale(true).apply {
             duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
         }
+    }
+
+    private fun showFillUserDialog() {
+
     }
 
     private fun showErrorMessage(it: String?) {

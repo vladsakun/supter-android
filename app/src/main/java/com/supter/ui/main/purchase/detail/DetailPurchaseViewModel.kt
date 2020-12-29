@@ -6,10 +6,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.supter.data.db.entity.PurchaseEntity
+import com.supter.data.db.entity.UserEntity
 import com.supter.data.response.ResultWrapper
 import com.supter.data.response.UpdatePurchaseResponse
 import com.supter.repository.PurchaseRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class DetailPurchaseViewModel @ViewModelInject constructor(
@@ -18,6 +21,9 @@ class DetailPurchaseViewModel @ViewModelInject constructor(
 
     private val _updateResponseResultLiveData =
         MutableLiveData<ResultWrapper<UpdatePurchaseResponse>>()
+
+    private val _timer = MutableLiveData(0.0f)
+    val timer: LiveData<Float> get() = _timer
 
     val updateResponseResultLiveData: LiveData<ResultWrapper<UpdatePurchaseResponse>> get() = _updateResponseResultLiveData
 
@@ -37,8 +43,39 @@ class DetailPurchaseViewModel @ViewModelInject constructor(
             purchaseEntity.title = title
             purchaseEntity.description = description
             purchaseEntity.price = price
-            _updateResponseResultLiveData.postValue(purchaseRepository.updateRemotePurchase(purchaseEntity))
+            _updateResponseResultLiveData.postValue(
+                purchaseRepository.updateRemotePurchase(
+                    purchaseEntity
+                )
+            )
         }
     }
 
+    fun timer(startProgress: Float, oneSecPercent: Float) {
+
+        _timer.value = startProgress
+
+        viewModelScope.launch(Dispatchers.IO) {
+
+            while (true) {
+                val progress = _timer.value!! + oneSecPercent
+                _timer.postValue(progress)
+                delay(1000)
+            }
+
+        }
+    }
+
+    fun getUser(): LiveData<UserEntity> {
+
+        val userEntityMutableLiveData = MutableLiveData<UserEntity>()
+
+        viewModelScope.launch(Dispatchers.IO) {
+            purchaseRepository.getUserFlow().collect {
+                userEntityMutableLiveData.postValue(it)
+            }
+        }
+
+        return userEntityMutableLiveData
+    }
 }

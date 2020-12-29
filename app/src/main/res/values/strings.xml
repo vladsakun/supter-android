@@ -46,4 +46,10 @@
     <string name="purchase_card_transition_name">purchase_detail_%1$s</string>
     <string name="purchase_card_detail_transition_name">purchase_card_detail</string>
     <string name="date_of_salary_coming">Date of salary coming:</string>
+    <string name="submit">Submit</string>
+    <string name="cancel">Cancel</string>
+    <string name="zero_hours">0 hours</string>
+    <string name="hours">%s hours</string>
+    <string name="edit">Edit</string>
+    <string name="answer">Answer</string>
 </resources>

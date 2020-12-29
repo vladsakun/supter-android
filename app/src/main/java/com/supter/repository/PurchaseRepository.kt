@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface PurchaseRepository {
 
-    suspend fun getPurchaseList(): Flow<List<PurchaseEntity>>
+    fun getPurchaseList(userEntity: UserEntity): Flow<List<PurchaseEntity>>
 
     suspend fun createPurchase(createPurchaseBody: PurchaseBody): ResultWrapper<CreatePurchaseResponse>
 
@@ -23,10 +23,10 @@ interface PurchaseRepository {
 
     suspend fun upsertPurchaseList(purchaseEntityList: List<PurchaseEntity>)
 
-    suspend fun getLocalUser(): Flow<UserEntity?>
+    suspend fun getUserFlow(): Flow<UserEntity?>
+
+    suspend fun getUser(): UserEntity?
 
     suspend fun fetchUser(): ResultWrapper<AccountResponse>
-
-    suspend fun upsertUser(userEntity: UserEntity)
 
 }

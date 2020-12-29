@@ -13,9 +13,15 @@ data class PurchaseData(
 	val user: UserData,
 	val potential: Int,
 	val order: Int,
-	val thinkingTime:String
+	val thinkingTime:String,
+	val createdAt:String,
+){
+	override fun toString(): String {
+		return "PurchaseData(id=$id, title='$title', price=$price, description=$description, stage='$stage', user=$user, potential=$potential, order=$order, thinkingTime='$thinkingTime', createdAt='$createdAt')"
+	}
+}
 
-)
+
 
 data class UserData(
 	val period: Number,

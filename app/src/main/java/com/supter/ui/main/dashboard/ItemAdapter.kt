@@ -7,9 +7,8 @@ import com.supter.R
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.databinding.ColumnItemBinding
 import com.supter.utils.STATUS_DONE
+import com.supter.utils.getPrettyDate
 import com.woxthebox.draglistview.DragItemAdapter
-import java.math.BigDecimal
-import java.math.RoundingMode
 import java.util.*
 
 internal class ItemAdapter constructor(
@@ -88,25 +87,7 @@ internal class ItemAdapter constructor(
         return mItemList[position]!!.id.toLong()
     }
 
-    fun getPrettyDate(date: Double): String {
-        val time = date * 24 // hours
 
-        return if (time >= 24.0 && time < (31.0 * 24)) {
-            (BigDecimal(time / 24).setScale(1, RoundingMode.HALF_EVEN)).toString() + " days"
-        } else if (time >= (31.0 * 24) && time < (365 * 24)) {
-            (BigDecimal(time / (31 * 24)).setScale(
-                1,
-                RoundingMode.HALF_EVEN
-            )).toString() + " months"
-        } else if (time >= (365 * 24)) {
-            (BigDecimal(time / (365 * 24)).setScale(
-                1,
-                RoundingMode.HALF_EVEN
-            )).toString() + " years"
-        } else {
-            (BigDecimal(time / 24).setScale(1, RoundingMode.HALF_EVEN)).toString() + " days"
-        }
-    }
 }
 
 interface OnItemClick {

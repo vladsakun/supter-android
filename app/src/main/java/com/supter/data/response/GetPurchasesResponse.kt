@@ -1,7 +1,7 @@
 package com.supter.data.response
 
 data class GetPurchasesResponse(
-	val data: List<DataItem>
+	val data: List<PurchaseData>
 )
 
 data class DataItem(
