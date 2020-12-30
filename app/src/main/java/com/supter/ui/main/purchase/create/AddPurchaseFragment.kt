@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.transition.Slide
 import com.google.android.material.transition.MaterialContainerTransform
@@ -17,6 +16,7 @@ import com.supter.data.response.CreatePurchaseResponse
 import com.supter.data.response.ResultWrapper
 import com.supter.databinding.AddPurchaseFragmentBinding
 import com.supter.ui.main.MainActivity
+import com.supter.utils.SystemUtils.Companion.hideKeyboard
 import com.supter.utils.themeColor
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
@@ -26,7 +26,7 @@ import org.json.JSONObject
 class AddPurchaseFragment : Fragment() {
 
     private var _binding: AddPurchaseFragmentBinding? = null
-    private val binding: AddPurchaseFragmentBinding get() = _binding!!
+    private val mBinding: AddPurchaseFragmentBinding get() = _binding!!
 
     companion object {
         const val TAG = "AddPurchaseFragment"
@@ -41,18 +41,24 @@ class AddPurchaseFragment : Fragment() {
     ): View? {
         hideAddBtn()
         _binding = AddPurchaseFragmentBinding.inflate(inflater, container, false)
-        return binding.root
+        return mBinding.root
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+
+        mBinding.purchaseTitle.editText?.clearFocus()
+        mBinding.purchasePrice.editText?.clearFocus()
+        mBinding.purchaseUsability.editText?.clearFocus()
+
         _binding = null
+
         showAddBtn()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        binding.run {
+        mBinding.run {
             enterTransition = MaterialContainerTransform().apply {
                 // Manually tell the container transform which Views to transform between.
                 startView = requireActivity().findViewById(R.id.fab)
@@ -86,16 +92,16 @@ class AddPurchaseFragment : Fragment() {
             }
         }
 
-        binding.save.setOnClickListener {
+        mBinding.save.setOnClickListener {
 
             val questionsMap = mapOf(
                 requireContext().getString(R.string.how_would_the_purchase_be_useful)
-                        to binding.purchaseUsability.editText?.text.toString()
+                        to mBinding.purchaseUsability.editText?.text.toString()
             )
 
             viewModel.upsertPurchase(
-                binding.purchaseTitle.editText?.text.toString(),
-                binding.purchasePrice.editText?.text.toString().toDouble(),
+                mBinding.purchaseTitle.editText?.text.toString(),
+                mBinding.purchasePrice.editText?.text.toString().toDouble(),
                 JSONObject(questionsMap).toString(),
             )
 
