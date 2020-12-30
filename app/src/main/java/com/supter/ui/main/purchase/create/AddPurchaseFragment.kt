@@ -94,16 +94,30 @@ class AddPurchaseFragment : Fragment() {
 
         mBinding.save.setOnClickListener {
 
-            val questionsMap = mapOf(
-                requireContext().getString(R.string.how_would_the_purchase_be_useful)
-                        to mBinding.purchaseUsability.editText?.text.toString()
-            )
+            mBinding.run {
 
-            viewModel.upsertPurchase(
-                mBinding.purchaseTitle.editText?.text.toString(),
-                mBinding.purchasePrice.editText?.text.toString().toDouble(),
-                JSONObject(questionsMap).toString(),
-            )
+                if(purchaseTitle.editText?.text.toString().isNotBlank()
+                    && purchasePrice.editText?.text.toString().isNotBlank()){
+
+                    val title = purchaseTitle.editText?.text.toString()
+                    val price = purchasePrice.editText?.text.toString().toDouble()
+                    val usability = purchaseUsability.editText?.text.toString()
+
+                    val questionsMap = mapOf(
+                        requireContext().getString(R.string.how_would_the_purchase_be_useful)
+                                to usability
+                    )
+
+                    viewModel.upsertPurchase(
+                        title,
+                        price,
+                        JSONObject(questionsMap).toString(),
+                    )
+                }else{
+                    showErrorToast(requireContext().getString(R.string.some_fields_are_empty))
+                }
+
+            }
 
         }
     }

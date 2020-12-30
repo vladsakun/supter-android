@@ -52,4 +52,5 @@
     <string name="hours">%s hours</string>
     <string name="edit">Edit</string>
     <string name="answer">Answer</string>
+    <string name="some_fields_are_empty">Some fields are empty</string>
 </resources>
