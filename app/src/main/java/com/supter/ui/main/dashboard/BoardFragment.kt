@@ -74,7 +74,7 @@ class BoardFragment : ScopedFragment(), OnItemClick {
 
         itemAdapters.clear()
         mBoardView.clearBoard()
-        mBoardView.setCustomDragItem(MyDragItem(requireContext(), R.layout.column_item))
+        mBoardView.setCustomDragItem(MyDragItem(requireContext(), R.layout.column_item_with_potential))
 
         val sortedPurchaseMap = linkedMapOf(
             STATUS_WANT to purchaseList.filter { it.stage == STATUS_WANT },

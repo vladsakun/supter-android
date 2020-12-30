@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import com.supter.R
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.databinding.ColumnItemBinding
+import com.supter.databinding.ColumnItemWithPotentialBinding
 import com.supter.utils.STATUS_DONE
 import com.supter.utils.getPrettyDate
 import com.woxthebox.draglistview.DragItemAdapter
@@ -29,7 +30,7 @@ internal class ItemAdapter constructor(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            ColumnItemBinding.inflate(
+            ColumnItemWithPotentialBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -51,7 +52,7 @@ internal class ItemAdapter constructor(
     }
 
     internal inner class ViewHolder(
-        val binding: ColumnItemBinding,
+        val binding: ColumnItemWithPotentialBinding,
         private val listener: OnItemClick,
     ) : DragItemAdapter.ViewHolder(binding.root, mGrabHandleId, mDragOnLongPress) {
 
@@ -72,6 +73,7 @@ internal class ItemAdapter constructor(
         fun bind(purchaseEntity: PurchaseEntity) {
             activeItem = purchaseEntity
             binding.purchase = purchaseEntity
+            binding.potential.progress = purchaseEntity.potential.toFloat()
 
             if(mColumnStage != STATUS_DONE) {
 
