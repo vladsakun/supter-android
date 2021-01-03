@@ -1,4 +1,6 @@
-package com.supter.data.response
+package com.supter.data.response.purchase
+
+import com.supter.data.response.purchase.PurchaseData
 
 data class GetPurchasesResponse(
 	val data: List<PurchaseData>

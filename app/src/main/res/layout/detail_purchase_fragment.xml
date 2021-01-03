@@ -17,112 +17,183 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             style="@style/DefaultParenViewWithPadding"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:transitionName="@string/purchase_card_detail_transition_name">
 
             <me.turkergoksu.lib.PercentageView
                 android:id="@+id/percentageView"
                 style="@style/PercentageView"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/marginBetweenBigViews"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
                 app:percentage="@{purchase.potential}" />
 
-            <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
-                android:id="@+id/thinkingProgress"
-                style="@style/Progress"
-                android:layout_marginTop="@dimen/marginBetweenBigViews"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/percentageView"
-                app:rcProgressColor="?attr/colorSecondary" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/progressHeight"
+                android:layout_marginTop="@dimen/marginBetweenBigViews">
 
-            <TextView
-                android:id="@+id/thinkingTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textColor="#444444"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@id/thinkingProgress"
-                app:layout_constraintEnd_toEndOf="@id/thinkingProgress"
-                app:layout_constraintStart_toStartOf="@+id/thinkingProgress"
-                app:layout_constraintTop_toTopOf="@+id/thinkingProgress"
-                tools:text="18 hours" />
+                <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
+                    android:id="@+id/thinkingProgress"
+                    style="@style/Progress"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:rcProgressColor="?attr/colorSecondary" />
 
-            <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
-                android:id="@+id/availabilityProgress"
-                style="@style/Progress"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/thinkingProgress"
-                app:rcProgressColor="?attr/colorPrimary" />
+                <TextView
+                    android:id="@+id/thinkingTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColor="#444444"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/availabilityTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textColor="@color/black_850"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@id/availabilityProgress"
-                app:layout_constraintEnd_toEndOf="@id/availabilityProgress"
-                app:layout_constraintStart_toStartOf="@+id/availabilityProgress"
-                app:layout_constraintTop_toTopOf="@+id/availabilityProgress"
-                tools:text="3.4 days" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <TextView
-                android:id="@+id/to_increase_potential_hint"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/marginBetweenBigViews"
-                android:text="@string/to_increase_potential"
-                android:textAppearance="@style/TextAppearance.MyTheme.Subtitle1"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/availabilityProgress" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/to_increase_potential_recyclerview"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/marginBetweenHintAndView"
-                android:orientation="horizontal"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintTop_toBottomOf="@+id/to_increase_potential_hint"
-                tools:listitem="@layout/potential_item" />
+                android:layout_marginTop="@dimen/marginBetweenBigViews">
 
-            <TextView
-                android:id="@+id/done_hint"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/marginBetweenBigViews"
-                android:text="@string/done"
-                android:textAppearance="@style/TextAppearance.MyTheme.Subtitle1"
-                app:layout_constraintBottom_toTopOf="@+id/done_recyclerview"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/to_increase_potential_recyclerview" />
+                <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
+                    android:id="@+id/availabilityProgress"
+                    style="@style/Progress"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:rcProgressColor="?attr/colorPrimary" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/done_recyclerview"
+                <TextView
+                    android:id="@+id/availabilityTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColor="@color/black_850"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.google.android.material.card.MaterialCardView
+                style="@style/PurchaseInfoMaterialCardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/marginBetweenHintAndView"
-                android:orientation="horizontal"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/done_hint"
-                tools:listitem="@layout/potential_item" />
+                android:layout_marginTop="@dimen/marginBetweenBigViews">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/to_increase_potential_hint"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/marginBetweenBigViews"
+                            android:text="@string/to_increase_potential"
+                            android:textAppearance="@style/TextAppearance.MyTheme.Subtitle1"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/to_increase_potential_recyclerview"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/marginBetweenHintAndView"
+                            android:orientation="horizontal"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            app:layout_constraintTop_toBottomOf="@+id/to_increase_potential_hint"
+                            tools:listitem="@layout/potential_item" />
+
+                        <TextView
+                            android:id="@+id/well_done_to_increase"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/marginBetweenHintAndView"
+                            android:text="@string/well_done"
+                            android:textAppearance="@style/TextAppearance.MyTheme.Headline6"
+                            android:textColor="?attr/colorSecondary"
+                            android:visibility="gone"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/to_increase_potential_hint"
+                            tools:visibility="visible" />
+
+                        <ProgressBar
+                            android:id="@+id/to_increase_potential_progress"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/done_block"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/done_hint"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/marginBetweenBigViews"
+                            android:text="@string/done"
+                            android:textAppearance="@style/TextAppearance.MyTheme.Subtitle1"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/done_recyclerview"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/marginBetweenHintAndView"
+                            android:orientation="horizontal"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            app:layout_constraintTop_toBottomOf="@+id/done_hint"
+                            tools:listitem="@layout/potential_item" />
+
+                        <ProgressBar
+                            android:id="@+id/done_increase_potential_progress"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </LinearLayout>
+
+
+            </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/purchase_info"
                 style="@style/PurchaseInfoMaterialCardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/done_recyclerview">
+                android:layout_marginTop="@dimen/marginBetweenBigViews">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -131,11 +202,11 @@
 
                     <TextView
                         android:id="@+id/stage"
-                        android:layout_marginTop="13dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textAppearance="@style/TextAppearance.MyTheme.Subtitle1"
+                        android:layout_marginTop="13dp"
                         android:text="@{@string/stage.concat(` `).concat(purchase.stage)}"
+                        android:textAppearance="@style/TextAppearance.MyTheme.Subtitle1"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -168,75 +239,7 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-            <!--            <com.google.android.material.card.MaterialCardView-->
-            <!--                android:id="@+id/materialCardView2"-->
-            <!--                style="@style/DefaultCardView"-->
-            <!--                android:layout_width="0dp"-->
-            <!--                android:layout_height="0dp"-->
-            <!--                android:layout_marginBottom="15dp"-->
-            <!--                app:layout_constraintBottom_toTopOf="@+id/delete"-->
-            <!--                app:layout_constraintEnd_toEndOf="parent"-->
-            <!--                app:layout_constraintStart_toStartOf="@+id/done_recyclerview"-->
-            <!--                app:layout_constraintTop_toBottomOf="@+id/materialCardView">-->
-
-
-            <!--                <com.google.android.material.textfield.TextInputLayout-->
-            <!--                    android:id="@+id/title"-->
-            <!--                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"-->
-            <!--                    android:layout_width="wrap_content"-->
-            <!--                    android:layout_height="wrap_content"-->
-            <!--                    android:hint="@string/title">-->
-
-            <!--                    <com.google.android.material.textfield.TextInputEditText-->
-            <!--                        android:layout_width="wrap_content"-->
-            <!--                        android:layout_height="wrap_content"-->
-            <!--                        android:text="@{purchase.title}" />-->
-
-            <!--                </com.google.android.material.textfield.TextInputLayout>-->
-
-            <!--                <com.google.android.material.textfield.TextInputLayout-->
-            <!--                    android:id="@+id/price"-->
-            <!--                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"-->
-            <!--                    android:layout_width="wrap_content"-->
-            <!--                    android:layout_height="wrap_content"-->
-            <!--                    android:hint="@string/price">-->
-
-            <!--                    <com.google.android.material.textfield.TextInputEditText-->
-            <!--                        android:layout_width="wrap_content"-->
-            <!--                        android:layout_height="wrap_content"-->
-            <!--                        android:text="@{String.valueOf(purchase.price)}" />-->
-
-            <!--                </com.google.android.material.textfield.TextInputLayout>-->
-
-            <!--                <com.google.android.material.textfield.TextInputLayout-->
-            <!--                    android:id="@+id/description"-->
-            <!--                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"-->
-            <!--                    android:layout_width="wrap_content"-->
-            <!--                    android:layout_height="wrap_content"-->
-            <!--                    android:hint="@string/description">-->
-
-            <!--                    <com.google.android.material.textfield.TextInputEditText-->
-            <!--                        android:layout_width="wrap_content"-->
-            <!--                        android:layout_height="wrap_content"-->
-            <!--                        android:text="@{purchase.description}" />-->
-
-            <!--                </com.google.android.material.textfield.TextInputLayout>-->
-
-            <!--                <Button-->
-            <!--                    android:id="@+id/save_changes"-->
-            <!--                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"-->
-            <!--                    android:layout_width="wrap_content"-->
-            <!--                    android:layout_height="wrap_content"-->
-            <!--                    android:text="@string/save_changes"-->
-            <!--                    app:layout_constraintEnd_toEndOf="parent"-->
-            <!--                    app:layout_constraintStart_toStartOf="parent"-->
-            <!--                    app:layout_constraintTop_toBottomOf="@+id/description"-->
-            <!--                    app:strokeColor="?attr/colorPrimary" />-->
-
-
-            <!--            </com.google.android.material.card.MaterialCardView>-->
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
     </ScrollView>
 

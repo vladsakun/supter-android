@@ -1,11 +1,18 @@
 package com.supter.ui.main.purchase.detail
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.*
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,16 +21,16 @@ import com.supter.R
 import com.supter.data.PotentialItem
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.response.ResultWrapper
+import com.supter.data.response.purchase.PurchaseResponse
+import com.supter.data.response.purchase.QuestionsItem
 import com.supter.databinding.DetailPurchaseFragmentBinding
 import com.supter.ui.adapters.PotentialAdapter
 import com.supter.ui.adapters.SimpleDividerItemDecorationLastExcluded
 import com.supter.utils.getPrettyDate
+import com.supter.utils.stringToDate
 import com.supter.utils.themeColor
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
-import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.util.*
 
 @AndroidEntryPoint
 class DetailPurchaseFragment : Fragment() {
@@ -38,12 +45,11 @@ class DetailPurchaseFragment : Fragment() {
     private val viewModel: DetailPurchaseViewModel by viewModels()
 
     private lateinit var purchaseEntity: PurchaseEntity
-    private var isAnimatingPotential = false
-
-    private val cal: Calendar = Calendar.getInstance()
-    private val dayOfMonth = cal.get(Calendar.DAY_OF_MONTH)
 
     companion object {
+        val SEND_ANSWER_ACTION = "SEND_ANSWER_ACTION"
+        val ANSWER_EXTRA = "ANSWER_EXTRA"
+        val QUESTION_ID_EXTRA = "QUESTION_ID_EXTRA"
         fun newInstance() = DetailPurchaseFragment()
     }
 
@@ -84,16 +90,25 @@ class DetailPurchaseFragment : Fragment() {
         setClickListeners()
     }
 
+    override fun onStart() {
+        super.onStart()
+        startAnswerBR()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        stopAnswerBR()
+    }
+
+    private fun bindViews() {
+        initThinkingProgress()
+        bindObservers()
+    }
+
     private fun setClickListeners() {
-//        mBinding.delete.setOnClickListener {
-//            viewModel.deletePurchase(purchaseEntity)
-//            findNavController().navigateUp()
-//        }
 
         mBinding.percentageView.setOnClickListener {
-            if (!isAnimatingPotential) {
-                animatePotential()
-            }
+            animatePotential()
         }
 
 //        mBinding.saveChanges.setOnClickListener {
@@ -108,10 +123,27 @@ class DetailPurchaseFragment : Fragment() {
 //        }
     }
 
-    private fun bindViews() {
-        initQuestionsList()
-        initThinkingProgress()
-        bindObservers()
+    private fun bindObservers() {
+        viewModel.getPurchaseFromApi(purchaseEntity)
+            .observe(viewLifecycleOwner, { purchaseResponse ->
+
+                if (purchaseResponse is ResultWrapper.Success) {
+                    initQuestionsList(purchaseResponse.value)
+                }
+
+            })
+
+        viewModel.updateResponseResultLiveData.observe(viewLifecycleOwner, { updateResult ->
+            when (updateResult) {
+                is ResultWrapper.Success -> {
+                    showSuccessMessage()
+                }
+            }
+        })
+
+        viewModel.timer.observe(viewLifecycleOwner, { time ->
+            mBinding.thinkingProgress.progress = time.toFloat()
+        })
     }
 
     private fun initThinkingProgress() {
@@ -148,75 +180,102 @@ class DetailPurchaseFragment : Fragment() {
         viewModel.timer(currentProgressInPercentage.toFloat(), oneSecPercent)
     }
 
-    private fun stringToDate(dateString: String): Date? {
-        // example date "2010-10-15T09:27:37Z"
-
-        val dotIndex = dateString.indexOf('.')
-        val trulyDateStr = dateString.substring(0, dotIndex) + "Z"
-        val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ENGLISH)
-
-        format.timeZone = TimeZone.getTimeZone("UTC")
-
-        val date: Date
-        date = try {
-            format.parse(trulyDateStr)
-        } catch (e: ParseException) {
-            e.printStackTrace()
-            Date()
-        }
-
-        format.timeZone = TimeZone.getDefault()
-        val formattedDate = format.format(date)
-
-        return format.parse(formattedDate)
-    }
-
-    private fun bindObservers() {
-        viewModel.updateResponseResultLiveData.observe(viewLifecycleOwner, { updateResult ->
-            when (updateResult) {
-                is ResultWrapper.Success -> {
-                    showSuccessMessage()
-                }
-            }
-        })
-
-        viewModel.timer.observe(viewLifecycleOwner, { time ->
-            mBinding.thinkingProgress.progress = time.toFloat()
-        })
-    }
-
     private fun showSuccessMessage() {
         Toasty.success(requireContext(), getString(R.string.successfully_updated)).show()
     }
 
-    private fun initQuestionsList() {
-        val mockPotentialItemList = mutableListOf<PotentialItem>()
+    private fun initQuestionsList(purchaseEntity: PurchaseResponse) {
 
-        for (i in 1..10) {
-            mockPotentialItemList.add(
-                PotentialItem(
-                    true,
-                    "How would the purchase be useful?",
-                    "Test description $i"
-                )
-            )
-        }
-
-        val toIncreasePotentialAdapter =
-            PotentialAdapter(mockPotentialItemList, false, requireActivity())
-        val donePotentialAdapter = PotentialAdapter(mockPotentialItemList, true, requireActivity())
+        val answeredQuestions =
+            purchaseEntity.data.questions.filter { it.purchaseQuestion != null }
+        val toDoQuestions = purchaseEntity.data.questions.filter { it.purchaseQuestion == null }
 
         val itemDecoration = SimpleDividerItemDecorationLastExcluded(10)
 
-        mBinding.toIncreasePotentialRecyclerview.adapter = toIncreasePotentialAdapter
-        mBinding.toIncreasePotentialRecyclerview.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        mBinding.toIncreasePotentialRecyclerview.addItemDecoration(itemDecoration)
+        if (toDoQuestions.isEmpty()) {
+            mBinding.wellDoneToIncrease.isVisible = true
+        } else {
+            val toDoPotentialItemList = convertQuestionListToPotentialItems(toDoQuestions)
 
-        mBinding.doneRecyclerview.adapter = donePotentialAdapter
-        mBinding.doneRecyclerview.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        mBinding.doneRecyclerview.addItemDecoration(itemDecoration)
+            val toIncreasePotentialAdapter =
+                PotentialAdapter(
+                    toDoPotentialItemList,
+                    false,
+                    requireActivity(),
+                    purchaseEntity.data.id
+                )
+
+            mBinding.toIncreasePotentialRecyclerview.adapter = toIncreasePotentialAdapter
+            mBinding.toIncreasePotentialRecyclerview.layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            mBinding.toIncreasePotentialRecyclerview.addItemDecoration(itemDecoration)
+        }
+
+        if (answeredQuestions.isEmpty()) {
+            mBinding.doneBlock.isVisible = false
+        } else {
+            val answeredPotentialItemList = convertQuestionListToPotentialItems(answeredQuestions)
+
+            val donePotentialAdapter =
+                PotentialAdapter(
+                    answeredPotentialItemList,
+                    true,
+                    requireActivity(),
+                    purchaseEntity.data.id
+                )
+
+            mBinding.doneRecyclerview.adapter = donePotentialAdapter
+            mBinding.doneRecyclerview.layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            mBinding.doneRecyclerview.addItemDecoration(itemDecoration)
+        }
+
+        hideQuestionsProgress()
+    }
+
+    private fun hideQuestionsProgress() {
+        mBinding.doneIncreasePotentialProgress.isVisible = false
+        mBinding.toIncreasePotentialProgress.isVisible = false
+    }
+
+    private fun convertQuestionListToPotentialItems(questionsItemList: List<QuestionsItem>?): MutableList<PotentialItem> {
+
+        val potentialItemsListResult = mutableListOf<PotentialItem>()
+
+        if (questionsItemList != null) {
+            for (questionItem in questionsItemList) {
+                potentialItemsListResult.add(
+                    PotentialItem(
+                        true,
+                        questionItem.title,
+                        questionItem.purchaseQuestion?.text ?: "",
+                        questionItem.id
+                    )
+                )
+            }
+        }
+
+        return potentialItemsListResult
+    }
+
+    private fun startAnswerBR() {
+        requireContext().applicationContext.registerReceiver(
+            answerBroadcastReceiver, IntentFilter(
+                SEND_ANSWER_ACTION
+            )
+        )
+    }
+
+    private fun stopAnswerBR() {
+        requireContext().applicationContext.unregisterReceiver(answerBroadcastReceiver)
+    }
+
+    private val answerBroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent) {
+            val answer = intent.getStringExtra(ANSWER_EXTRA)
+            val questionId = intent.getIntExtra(QUESTION_ID_EXTRA, 0)
+            viewModel.sendAnswer(purchaseEntity.id, questionId, answer!!)
+        }
     }
 
     private fun animatePotential() {
@@ -231,6 +290,8 @@ class DetailPurchaseFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         if (item.itemId == R.id.delete) {
+            viewModel.deletePurchase(purchaseEntity)
+            findNavController().navigateUp()
             return true
         }
 

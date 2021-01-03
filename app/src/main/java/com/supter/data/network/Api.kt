@@ -5,10 +5,19 @@ import com.supter.data.body.LoginParams
 import com.supter.data.body.PurchaseBody
 import com.supter.data.body.RegistrationParams
 import com.supter.data.response.*
+import com.supter.data.response.account.AccountResponse
+import com.supter.data.response.account.LoginResponse
+import com.supter.data.response.account.RegistrationResponse
+import com.supter.data.response.purchase.CreatePurchaseResponse
+import com.supter.data.response.purchase.GetPurchasesResponse
+import com.supter.data.response.purchase.PurchaseResponse
+import com.supter.data.response.purchase.UpdatePurchaseResponse
 import com.supter.utils.Authorization
 import retrofit2.http.*
 
 interface Api {
+
+    // ******************************************Account*********************************************
 
     // Login
     @POST("auth/login")
@@ -28,27 +37,36 @@ interface Api {
     //Read user
     @GET("account")
     suspend fun fetchUser(
-            @Header(Authorization) token: String
-    ):AccountResponse
+        @Header(Authorization) token: String
+    ): AccountResponse
+
+    // *************************************************Purchase*********************************************
 
     // Create purchase
     @POST("/purchases")
     suspend fun createPurchase(
         @Header(Authorization) token: String,
         @Body purchaseBody: PurchaseBody
-    ):CreatePurchaseResponse
+    ): CreatePurchaseResponse
 
     // Get purchases
     @GET("/purchases")
     suspend fun getPurchasesList(
         @Header(Authorization) token: String
-    ):GetPurchasesResponse
+    ): GetPurchasesResponse
+
+    // Get purchase by id
+    @GET("/purchases/{id}")
+    suspend fun getPurchase(
+        @Header(Authorization) token: String,
+        @Path("id") purchaseId: Int
+    ): PurchaseResponse
 
     // Update purchase
     @PUT("/purchases/{id}")
     suspend fun updatePurchase(
-        @Header(Authorization) token:String,
-        @Path("id") purchaseId:Int,
+        @Header(Authorization) token: String,
+        @Path("id") purchaseId: Int,
         @Body purchaseBody: PurchaseBody
     ): UpdatePurchaseResponse
 
@@ -59,13 +77,21 @@ interface Api {
         @Path("id") purchaseId: Int
     ): MessageResponse
 
-
+    // Purchase order
     @Headers("Content-Type: application/json")
     @PUT("/purchases/order")
     suspend fun putPurchasesOrder(
-            @Header(Authorization) token:String,
-            @Body ids: HashMap<String, List<Int>>
+        @Header(Authorization) token: String,
+        @Body ids: HashMap<String, List<Int>>
     ): MessageResponse
 
-
+    // ********************************************************Questions******************************************
+    @FormUrlEncoded
+    @POST("/purchases/{purchaseId}/questions/{questionId}")
+    suspend fun postAnswer(
+        @Header(Authorization) token: String,
+        @Path("purchaseId") purchaseId: Int,
+        @Path("questionId") questionId: Int,
+        @Field("text") answer: String
+    ):MessageResponse
 }

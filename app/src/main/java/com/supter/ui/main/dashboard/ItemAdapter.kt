@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.supter.R
 import com.supter.data.db.entity.PurchaseEntity
-import com.supter.databinding.ColumnItemBinding
 import com.supter.databinding.ColumnItemWithPotentialBinding
 import com.supter.utils.STATUS_DONE
 import com.supter.utils.getPrettyDate

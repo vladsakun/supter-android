@@ -1,4 +1,4 @@
-package com.supter.data.response
+package com.supter.data.response.account
 
 data class AccountResponse(
 	val data: Data

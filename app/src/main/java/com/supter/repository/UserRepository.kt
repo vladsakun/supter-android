@@ -1,9 +1,9 @@
 package com.supter.repository
 
 import com.supter.data.db.entity.UserEntity
-import com.supter.data.response.AccountResponse
-import com.supter.data.response.LoginResponse
-import com.supter.data.response.RegistrationResponse
+import com.supter.data.response.account.AccountResponse
+import com.supter.data.response.account.LoginResponse
+import com.supter.data.response.account.RegistrationResponse
 import com.supter.data.response.ResultWrapper
 import kotlinx.coroutines.flow.Flow
 

@@ -14,4 +14,10 @@
         <item name="progressBackgroundColor">@color/dark_gray</item>
         <item name="progressColor">@color/orange_200</item>
     </style>
+
+    <!--Dashboard-->
+    <style name="PotentialProgress" parent="PotentialProgressParent">
+        <item name="rcProgressColor">@color/potential_foreground</item>
+        <item name="rcSecondaryProgress">@color/potential_background</item>
+    </style>
 </resources>

@@ -1,11 +1,9 @@
 package com.supter.ui.auth.signup
 
-import android.util.Log
-import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.supter.repository.UserRepository
-import com.supter.data.response.RegistrationResponse
+import com.supter.data.response.account.RegistrationResponse
 import com.supter.data.response.ResultWrapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

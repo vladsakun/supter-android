@@ -9,7 +9,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.supter.R
-import com.supter.data.response.RegistrationResponse
+import com.supter.data.response.account.RegistrationResponse
 import com.supter.data.response.ResultWrapper
 import com.supter.databinding.SignupFragmentBinding
 import com.supter.ui.main.MainActivity

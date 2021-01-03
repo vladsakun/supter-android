@@ -7,16 +7,39 @@ import android.util.Log
 import com.supter.BuildConfig
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.db.entity.UserEntity
-import com.supter.data.response.Data
-import com.supter.data.response.DataItem
-import com.supter.data.response.PurchaseData
+import com.supter.data.response.purchase.PurchaseData
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.text.ParseException
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.ceil
 import kotlin.math.round
 
 private val TAG = "Supter"
+
+fun stringToDate(dateString: String): Date? {
+    // example date "2010-10-15T09:27:37Z"
+
+    val dotIndex = dateString.indexOf('.')
+    val trulyDateStr = dateString.substring(0, dotIndex) + "Z"
+    val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ENGLISH)
+
+    format.timeZone = TimeZone.getTimeZone("UTC")
+
+    val date: Date
+    date = try {
+        format.parse(trulyDateStr)
+    } catch (e: ParseException) {
+        e.printStackTrace()
+        Date()
+    }
+
+    format.timeZone = TimeZone.getDefault()
+    val formattedDate = format.format(date)
+
+    return format.parse(formattedDate)
+}
 
 fun isOnline(context: Context): Boolean {
     val isOnline: Boolean

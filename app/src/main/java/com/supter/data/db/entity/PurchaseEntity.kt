@@ -3,6 +3,9 @@ package com.supter.data.db.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import com.supter.data.db.DataConverter
+import com.supter.data.response.purchase.QuestionsItem
 import java.io.Serializable
 
 @Entity(tableName = "purchase")

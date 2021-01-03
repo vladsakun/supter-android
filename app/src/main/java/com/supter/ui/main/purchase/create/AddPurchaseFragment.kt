@@ -12,11 +12,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.transition.Slide
 import com.google.android.material.transition.MaterialContainerTransform
 import com.supter.R
-import com.supter.data.response.CreatePurchaseResponse
+import com.supter.data.response.purchase.CreatePurchaseResponse
 import com.supter.data.response.ResultWrapper
 import com.supter.databinding.AddPurchaseFragmentBinding
 import com.supter.ui.main.MainActivity
-import com.supter.utils.SystemUtils.Companion.hideKeyboard
 import com.supter.utils.themeColor
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty

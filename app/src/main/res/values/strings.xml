@@ -39,8 +39,8 @@
     <string name="successfully_updated">Successfully updated</string>
     <string name="dark_theme">Dark theme:</string>
     <string name="info">Info</string>
-    <string name="to_increase_potential">To increase potential:</string>
-    <string name="done">Done:</string>
+    <string name="to_increase_potential">To increase potential</string>
+    <string name="done">Done</string>
     <string name="delete">Delete</string>
 
     <string name="purchase_card_transition_name">purchase_detail_%1$s</string>
@@ -53,4 +53,7 @@
     <string name="edit">Edit</string>
     <string name="answer">Answer</string>
     <string name="some_fields_are_empty">Some fields are empty</string>
+    <string name="well_done">Well done!</string>
+    <string name="answer_some_questions">Answer some questions</string>
+    <string name="answer_cant_be_blank">Answer can\'t be blank</string>
 </resources>

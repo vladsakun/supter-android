@@ -1,13 +1,20 @@
 package com.supter.data.network
 
-import androidx.lifecycle.LiveData
 import com.supter.data.body.AccountBody
 import com.supter.data.body.PurchaseBody
-import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.response.*
+import com.supter.data.response.account.AccountResponse
+import com.supter.data.response.account.LoginResponse
+import com.supter.data.response.account.RegistrationResponse
+import com.supter.data.response.purchase.CreatePurchaseResponse
+import com.supter.data.response.purchase.GetPurchasesResponse
+import com.supter.data.response.purchase.PurchaseResponse
+import com.supter.data.response.purchase.UpdatePurchaseResponse
 
 interface PurchaseNetworkDataSource {
     suspend fun fetchPurchaseList(token: String): ResultWrapper<GetPurchasesResponse>
+
+    suspend fun fetchPurchaseById(token: String, purchaseId: Int): ResultWrapper<PurchaseResponse>
 
     suspend fun createPurchase(
             token: String,
@@ -49,4 +56,11 @@ interface PurchaseNetworkDataSource {
     suspend fun fetchUser(
             token: String
     ):ResultWrapper<AccountResponse>
+
+    suspend fun postAnswer(
+        token: String,
+        purchaseId: Int,
+        questionId:Int,
+        answer:String
+    ): ResultWrapper<MessageResponse>
 }

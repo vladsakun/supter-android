@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.supter.data.response.LoginResponse
+import com.supter.data.response.account.LoginResponse
 import com.supter.data.response.ResultWrapper
 import com.supter.repository.UserRepository
 import kotlinx.coroutines.Dispatchers

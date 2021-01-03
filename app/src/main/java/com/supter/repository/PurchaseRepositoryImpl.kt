@@ -8,6 +8,10 @@ import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.db.entity.UserEntity
 import com.supter.data.network.PurchaseNetworkDataSource
 import com.supter.data.response.*
+import com.supter.data.response.account.AccountResponse
+import com.supter.data.response.purchase.CreatePurchaseResponse
+import com.supter.data.response.purchase.PurchaseResponse
+import com.supter.data.response.purchase.UpdatePurchaseResponse
 import com.supter.utils.SystemUtils
 import com.supter.utils.convertDataItemListToPurchaseEntityList
 import com.supter.utils.updatePurchasesData
@@ -63,6 +67,10 @@ class PurchaseRepositoryImpl @Inject constructor(
         fetchPurchaseList()
 
         return dao.getPurchaseFlowList().map { updatePurchasesData(it, userEntity) }
+    }
+
+    override suspend fun getPurchaseFromApiById(purchaseEntity: PurchaseEntity): ResultWrapper<PurchaseResponse> {
+        return networkDataSource.fetchPurchaseById(SystemUtils.getToken(context), purchaseEntity.id)
     }
 
     //Fetch movies from api
@@ -132,6 +140,10 @@ class PurchaseRepositoryImpl @Inject constructor(
             Log.d(TAG, "fetchUser: ${SystemUtils.getToken(context)}")
             return@withContext networkDataSource.fetchUser(SystemUtils.getToken(context))
         }
+    }
+
+    override suspend fun sendAnswer(purchaseId: Int, questionId: Int, answer: String): ResultWrapper<MessageResponse> {
+        return networkDataSource.postAnswer(SystemUtils.getToken(context), purchaseId, questionId, answer)
     }
 
     override suspend fun createPurchase(createPurchaseBody: PurchaseBody): ResultWrapper<CreatePurchaseResponse> {

@@ -5,9 +5,9 @@ import com.supter.data.body.AccountBody
 import com.supter.data.db.PurchaseDao
 import com.supter.data.db.entity.UserEntity
 import com.supter.data.network.PurchaseNetworkDataSource
-import com.supter.data.response.AccountResponse
-import com.supter.data.response.LoginResponse
-import com.supter.data.response.RegistrationResponse
+import com.supter.data.response.account.AccountResponse
+import com.supter.data.response.account.LoginResponse
+import com.supter.data.response.account.RegistrationResponse
 import com.supter.data.response.ResultWrapper
 import com.supter.utils.SystemUtils
 import com.supter.utils.SystemUtils.Companion.saveToken

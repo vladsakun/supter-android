@@ -8,7 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.db.entity.UserEntity
 import com.supter.data.response.ResultWrapper
-import com.supter.data.response.UpdatePurchaseResponse
+import com.supter.data.response.purchase.PurchaseResponse
+import com.supter.data.response.purchase.UpdatePurchaseResponse
 import com.supter.repository.PurchaseRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -30,24 +31,6 @@ class DetailPurchaseViewModel @ViewModelInject constructor(
     fun deletePurchase(purchaseEntity: PurchaseEntity) {
         viewModelScope.launch(Dispatchers.IO) {
             purchaseRepository.deletePurchase(purchaseEntity)
-        }
-    }
-
-    fun updatePurchase(
-        title: String,
-        description: String,
-        price: Double,
-        purchaseEntity: PurchaseEntity
-    ) {
-        viewModelScope.launch(Dispatchers.IO) {
-            purchaseEntity.title = title
-            purchaseEntity.description = description
-            purchaseEntity.price = price
-            _updateResponseResultLiveData.postValue(
-                purchaseRepository.updateRemotePurchase(
-                    purchaseEntity
-                )
-            )
         }
     }
 
@@ -77,5 +60,22 @@ class DetailPurchaseViewModel @ViewModelInject constructor(
         }
 
         return userEntityMutableLiveData
+    }
+
+    private val _purchase = MutableLiveData<ResultWrapper<PurchaseResponse>>()
+
+    fun getPurchaseFromApi(purchaseEntity: PurchaseEntity):LiveData<ResultWrapper<PurchaseResponse>>{
+
+        viewModelScope.launch(Dispatchers.IO) {
+            _purchase.postValue(purchaseRepository.getPurchaseFromApiById(purchaseEntity))
+        }
+
+        return _purchase
+    }
+
+    fun sendAnswer(purchaseId:Int, questionId: Int, answer: String) {
+        viewModelScope.launch(Dispatchers.IO){
+            purchaseRepository.sendAnswer(purchaseId, questionId, answer)
+        }
     }
 }

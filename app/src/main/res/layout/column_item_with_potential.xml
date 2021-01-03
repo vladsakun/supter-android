@@ -42,13 +42,9 @@
 
                 <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
                     android:id="@+id/potential"
+                    style="@style/PotentialProgress"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    card_view:rcMax="100"
-                    card_view:rcProgressColor="@color/potential_foreground"
-                    card_view:rcRadius="@dimen/cardCornerRadius"
-                    card_view:rcSecondaryProgress="100"
-                    card_view:rcSecondaryProgressColor="@color/potential_background" />
+                    android:layout_height="match_parent" />
 
                 <TextView
                     android:id="@+id/purchase_title"

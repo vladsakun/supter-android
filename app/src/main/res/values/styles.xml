@@ -19,6 +19,18 @@
         <item name="android:textColorHint">@color/textColorHint</item>
     </style>
 
+    <!--Dashboard-->
+    <style name="PotentialProgressParent" parent="">
+        <item name="rcMax">100</item>
+        <item name="rcSecondaryProgress">100</item>
+        <item name="rcRadius">@dimen/cardCornerRadius</item>
+    </style>
+
+    <style name="PotentialProgress" parent="PotentialProgressParent">
+        <item name="rcProgressColor">@color/light_gray</item>
+        <item name="rcSecondaryProgress">@color/white</item>
+    </style>
+
     <!-- Detail Purchase -->
     <style name="DefaultCardView" parent="Widget.MaterialComponents.CardView">
         <item name="cardUseCompatPadding">true</item>
@@ -34,11 +46,10 @@
 
     <style name="Progress" parent="">
         <item name="rcMax">100</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/progressHeight</item>
-        <item name="android:layout_width">wrap_content</item>
         <item name="rcBackgroundColor">@color/gray_100</item>
         <item name="rcRadius">@dimen/cardCornerRadius</item>
-        <item name="android:layout_marginTop">@dimen/marginBetweenBigViews</item>
     </style>
 
     <style name="PotentialItemCardShape" parent="ShapeAppearance.MaterialComponents.MediumComponent">
