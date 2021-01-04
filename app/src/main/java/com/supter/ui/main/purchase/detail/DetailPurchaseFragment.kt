@@ -11,6 +11,7 @@ import android.view.*
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.observe
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -274,7 +275,16 @@ class DetailPurchaseFragment : Fragment() {
         override fun onReceive(context: Context?, intent: Intent) {
             val answer = intent.getStringExtra(ANSWER_EXTRA)
             val questionId = intent.getIntExtra(QUESTION_ID_EXTRA, 0)
+
             viewModel.sendAnswer(purchaseEntity.id, questionId, answer!!)
+                .observe(viewLifecycleOwner) {
+                    requireContext()
+                        .applicationContext
+                        .sendBroadcast(Intent(PotentialAdapter.SUBMIT_ANSWER_ACTION).apply {
+                            putExtra(PotentialAdapter.IS_SUBMIT_SUCCESS, it)
+                        })
+                }
+
         }
     }
 

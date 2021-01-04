@@ -64,7 +64,7 @@ class DetailPurchaseViewModel @ViewModelInject constructor(
 
     private val _purchase = MutableLiveData<ResultWrapper<PurchaseResponse>>()
 
-    fun getPurchaseFromApi(purchaseEntity: PurchaseEntity):LiveData<ResultWrapper<PurchaseResponse>>{
+    fun getPurchaseFromApi(purchaseEntity: PurchaseEntity): LiveData<ResultWrapper<PurchaseResponse>> {
 
         viewModelScope.launch(Dispatchers.IO) {
             _purchase.postValue(purchaseRepository.getPurchaseFromApiById(purchaseEntity))
@@ -73,9 +73,13 @@ class DetailPurchaseViewModel @ViewModelInject constructor(
         return _purchase
     }
 
-    fun sendAnswer(purchaseId:Int, questionId: Int, answer: String) {
-        viewModelScope.launch(Dispatchers.IO){
-            purchaseRepository.sendAnswer(purchaseId, questionId, answer)
+    val _isAnswerSuccessfullySubmitted = MutableLiveData<Boolean>()
+
+    fun sendAnswer(purchaseId: Int, questionId: Int, answer: String): LiveData<Boolean> {
+        viewModelScope.launch(Dispatchers.IO) {
+            val response = purchaseRepository.sendAnswer(purchaseId, questionId, answer)
+            _isAnswerSuccessfullySubmitted.postValue(response is ResultWrapper.Success)
         }
+        return _isAnswerSuccessfullySubmitted
     }
 }

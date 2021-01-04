@@ -56,4 +56,5 @@
     <string name="well_done">Well done!</string>
     <string name="answer_some_questions">Answer some questions</string>
     <string name="answer_cant_be_blank">Answer can\'t be blank</string>
+    <string name="answer_was_submitted_successfully">Answer was submitted successfully</string>
 </resources>
