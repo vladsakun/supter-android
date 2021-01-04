@@ -29,7 +29,7 @@
                 style="@style/PercentageView"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/marginBetweenBigViews"
-                app:percentage="@{purchase.potential}" />
+                app:percentage="@{Math.round(purchase.potential)}" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"

@@ -50,7 +50,7 @@ class PurchaseRepositoryImpl @Inject constructor(
                                 name,
                                 email,
                                 incomeRemainder,
-                                savings,
+                                balance,
                                 period
                             )
                         )
@@ -157,7 +157,8 @@ class PurchaseRepositoryImpl @Inject constructor(
                         id, title, price,
                         order, stage, potential,
                         description, null, remind = 0.0,
-                        realPeriod = 0, thinkingTime, createdAt, null
+                        realPeriod = 0, thinkingTime = thinkingTime,
+                        createdAt = createdAt, image = null
                     )
                 )
             }

@@ -9,7 +9,7 @@ data class User(
     val password: String,
     val period: Any,
     val name: Any,
-    val savings: Any,
+    val balance: Any,
     val id: Int,
     val incomeRemainder: Any,
     val email: String

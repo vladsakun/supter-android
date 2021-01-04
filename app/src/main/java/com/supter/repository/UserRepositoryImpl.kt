@@ -79,7 +79,7 @@ class UserRepositoryImpl @Inject constructor(
                                 this.name,
                                 this.email,
                                 this.incomeRemainder,
-                                this.savings,
+                                this.balance,
                                 this.period,
                                 dateOfSalaryComing
                         )

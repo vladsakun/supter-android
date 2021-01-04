@@ -10,6 +10,6 @@ data class Data(
 	val email: String,
 	val incomeRemainder: Double?,
 	val period: Double?,
-	val savings: Double?,
+	val balance: Double?,
 )
 

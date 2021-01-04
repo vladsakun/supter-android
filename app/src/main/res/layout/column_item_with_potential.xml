@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -29,6 +29,7 @@
             android:layout_height="70dp"
             android:layout_gravity="center"
             android:duplicateParentState="true"
+            card_view:cardElevation="0dp"
             android:transitionName="@{@string/purchase_card_transition_name(purchase.id)}"
             card_view:cardPreventCornerOverlap="true"
             card_view:cardUseCompatPadding="false"
@@ -42,9 +43,16 @@
 
                 <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
                     android:id="@+id/potential"
-                    style="@style/PotentialProgress"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    app:rcAnimationEnable="false"
+                    app:rcBackgroundColor="@color/light_gray"
+                    app:rcMax="100"
+                    app:rcProgress="20"
+                    app:rcProgressColor="#12000000"
+                    app:rcRadius="10dp"
+                    app:rcSecondaryProgress="100"
+                    app:rcSecondaryProgressColor="#C1C1C1"/>
 
                 <TextView
                     android:id="@+id/purchase_title"

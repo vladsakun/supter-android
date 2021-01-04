@@ -1,13 +1,11 @@
 package com.supter.ui.main.profile
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import com.supter.R
 import com.supter.data.db.entity.UserEntity
@@ -87,7 +85,7 @@ class ProfileFragment : Fragment() {
             mBinding.run {
                 incomeRemainder.editText?.setText(it.incomeRemainder.toString())
                 period.editText?.setText(it.period.toString())
-                savings.editText?.setText(it.savings.toString())
+                balance.editText?.setText(it.balance.toString())
                 name.editText?.setText(it.name)
                 numberPicker.value = it.salaryDate
             }
@@ -100,7 +98,7 @@ class ProfileFragment : Fragment() {
             viewModel.upsertUser(
                     mBinding.name.editText?.text.toString(),
                     mBinding.incomeRemainder.editText?.text.toString().toDouble(),
-                    mBinding.savings.editText?.text.toString().toDouble(),
+                    mBinding.balance.editText?.text.toString().toDouble(),
                     mBinding.period.editText?.text.toString().toDouble(),
                     mBinding.numberPicker.value
             )

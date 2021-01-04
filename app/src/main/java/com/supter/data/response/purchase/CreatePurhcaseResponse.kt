@@ -11,7 +11,7 @@ data class PurchaseData(
     val description: String?,
     val stage: String,
     val user: UserData,
-    val potential: Int,
+    val potential: Float,
     val order: Int,
     val thinkingTime:String,
     val createdAt:String,

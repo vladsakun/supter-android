@@ -32,6 +32,7 @@ import com.supter.utils.stringToDate
 import com.supter.utils.themeColor
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
+import kotlin.math.roundToInt
 
 @AndroidEntryPoint
 class DetailPurchaseFragment : Fragment() {
@@ -289,7 +290,7 @@ class DetailPurchaseFragment : Fragment() {
     }
 
     private fun animatePotential() {
-        mBinding.percentageView.setPercentage(purchaseEntity.potential)
+        mBinding.percentageView.setPercentage(purchaseEntity.potential.roundToInt())
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

@@ -12,7 +12,7 @@ data class UserEntity(
     val name: String?,
     val email: String,
     val incomeRemainder:Double?,
-    val savings: Double?,
+    val balance: Double?,
     val period:Double?,
     val salaryDate:Int = 1,
 )
