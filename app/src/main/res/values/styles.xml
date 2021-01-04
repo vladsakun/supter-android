@@ -23,12 +23,12 @@
     <style name="PotentialProgressParent" parent="">
         <item name="rcMax">100</item>
         <item name="rcSecondaryProgress">100</item>
-        <item name="rcRadius">@dimen/cardCornerRadius</item>
+        <item name="rcRadius">10dp</item>
     </style>
 
     <style name="PotentialProgress" parent="PotentialProgressParent">
-        <item name="rcProgressColor">@color/light_gray</item>
-        <item name="rcSecondaryProgress">@color/white</item>
+        <item name="rcProgressColor">#12000000</item>
+        <item name="rcSecondaryProgressColor">#C1C1C1</item>
     </style>
 
     <!-- Detail Purchase -->

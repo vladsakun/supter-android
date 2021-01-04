@@ -12,7 +12,7 @@ android {
 
     signingConfigs {
         release {
-            storeFile file('D:\\Documents\\Supter-Key\\supter.jks')
+            storeFile file('D:\\Programming\\Supter-Key\\supter.jks')
             storePassword 'Supter#2020$'
             keyAlias 'key0'
             keyPassword 'Supter#2020$'
