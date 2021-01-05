@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isVisible
@@ -17,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
 import com.supter.R
-import com.supter.data.PotentialItem
+import com.supter.data.model.PotentialItem
 import com.supter.ui.main.purchase.detail.DetailPurchaseFragment
 import com.supter.utils.logException
 import com.supter.views.LoadingButton

@@ -137,7 +137,6 @@ class PurchaseRepositoryImpl @Inject constructor(
 
     override suspend fun fetchUser(): ResultWrapper<AccountResponse> {
         return withContext(Dispatchers.IO) {
-            Log.d(TAG, "fetchUser: ${SystemUtils.getToken(context)}")
             return@withContext networkDataSource.fetchUser(SystemUtils.getToken(context))
         }
     }

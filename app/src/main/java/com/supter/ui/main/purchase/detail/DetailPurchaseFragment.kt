@@ -6,11 +6,11 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.observe
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -19,11 +19,12 @@ import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialContainerTransform
 import com.supter.R
-import com.supter.data.PotentialItem
+import com.supter.data.model.PotentialItem
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.response.ResultWrapper
 import com.supter.data.response.purchase.PurchaseResponse
 import com.supter.data.response.purchase.QuestionsItem
+import com.supter.data.response.purchase.UpdatePurchaseResponse
 import com.supter.databinding.DetailPurchaseFragmentBinding
 import com.supter.ui.adapters.PotentialAdapter
 import com.supter.ui.adapters.SimpleDividerItemDecorationLastExcluded
@@ -126,16 +127,14 @@ class DetailPurchaseFragment : Fragment() {
     }
 
     private fun bindObservers() {
-        viewModel.getPurchaseFromApi(purchaseEntity)
-            .observe(viewLifecycleOwner, { purchaseResponse ->
-
+        viewModel.getPurchaseFromApi(purchaseEntity).observe(viewLifecycleOwner,
+            Observer<ResultWrapper<PurchaseResponse>> { purchaseResponse->
                 if (purchaseResponse is ResultWrapper.Success) {
                     initQuestionsList(purchaseResponse.value)
                 }
-
             })
 
-        viewModel.updateResponseResultLiveData.observe(viewLifecycleOwner, { updateResult ->
+        viewModel.updateResponseResultLiveData.observe(viewLifecycleOwner, Observer<ResultWrapper<UpdatePurchaseResponse>>{ updateResult ->
             when (updateResult) {
                 is ResultWrapper.Success -> {
                     showSuccessMessage()
@@ -143,7 +142,7 @@ class DetailPurchaseFragment : Fragment() {
             }
         })
 
-        viewModel.timer.observe(viewLifecycleOwner, { time ->
+        viewModel.timer.observe(viewLifecycleOwner, Observer{ time ->
             mBinding.thinkingProgress.progress = time.toFloat()
         })
     }

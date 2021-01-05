@@ -57,4 +57,6 @@
     <string name="answer_some_questions">Answer some questions</string>
     <string name="answer_cant_be_blank">Answer can\'t be blank</string>
     <string name="answer_was_submitted_successfully">Answer was submitted successfully</string>
+    <string name="ok">Ok</string>
+    <string name="fill_account">Fill account</string>
 </resources>

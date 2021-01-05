@@ -1,4 +1,4 @@
-package com.supter.data
+package com.supter.data.model
 
 data class PotentialItem (
     val isDone:Boolean,

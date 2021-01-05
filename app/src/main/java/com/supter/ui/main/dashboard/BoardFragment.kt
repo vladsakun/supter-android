@@ -1,23 +1,24 @@
 package com.supter.ui.main.dashboard
 
+import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.observe
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.transition.MaterialElevationScale
 import com.supter.R
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.db.entity.UserEntity
+import com.supter.data.response.ResultWrapper
 import com.supter.databinding.FragmentDashboardBinding
 import com.supter.utils.STATUS_DONE
 import com.supter.utils.STATUS_PROCESS
@@ -71,19 +72,22 @@ class BoardFragment : ScopedFragment(), OnItemClick {
         bindViews()
     }
 
-    private fun resetBoard(purchaseList: List<PurchaseEntity>, user: UserEntity) {
+    private fun resetBoard(purchaseList: List<PurchaseEntity>, period: Double, salaryDate: Int) {
 
         itemAdapters.clear()
         mBoardView.clearBoard()
-        mBoardView.setCustomDragItem(MyDragItem(requireContext(), R.layout.column_item_with_potential))
+        mBoardView.setCustomDragItem(
+            MyDragItem(
+                requireContext(),
+                R.layout.column_item_with_potential
+            )
+        )
 
         val sortedPurchaseMap = linkedMapOf(
             STATUS_WANT to purchaseList.filter { it.stage == STATUS_WANT },
             STATUS_PROCESS to purchaseList.filter { it.stage == STATUS_PROCESS },
             STATUS_DONE to purchaseList.filter { it.stage == STATUS_DONE }
         )
-
-        val period: Double = user.period!!
 
         for ((key, value) in sortedPurchaseMap) {
 
@@ -94,12 +98,13 @@ class BoardFragment : ScopedFragment(), OnItemClick {
                 true,
                 this,
                 period,
-                user.salaryDate
+                salaryDate
             )
 
             addColumn(
                 itemAdapter,
-                key.capitalize(Locale.ROOT))
+                key.capitalize(Locale.ROOT)
+            )
 
             itemAdapters.add(itemAdapter)
 
@@ -112,7 +117,7 @@ class BoardFragment : ScopedFragment(), OnItemClick {
 
     }
 
-    private fun initBoard(){
+    private fun initBoard() {
         mBoardView = mBinding.boardView
         mBoardView.overScrollMode = View.OVER_SCROLL_NEVER
 
@@ -213,44 +218,41 @@ class BoardFragment : ScopedFragment(), OnItemClick {
         initBoard()
 
         launch {
-            val user = viewModel.getUserSuspend()
+            val user = viewModel.fetchUser()
 
-            if(user != null){
-                viewModel.getPurchaseLiveData().observe(viewLifecycleOwner, {purchaseList ->
-                    if (purchaseList != null) {
+            if (user != null &&
+                user is ResultWrapper.Success &&
+                user.value.data.period != null &&
+                user.value.data.incomeRemainder != null
+            ) {
+                viewModel.getPurchaseLiveData().observe(viewLifecycleOwner,
+                    Observer<List<PurchaseEntity>> { purchaseList ->
+                        if (purchaseList != null) {
 
-                        if (isBoardInitted) {
+                            if (isBoardInitted) {
 
-                            val wantList = purchaseList.filter { it.stage == STATUS_WANT }
-                            val processList = purchaseList.filter { it.stage == STATUS_PROCESS }
-                            val doneList = purchaseList.filter { it.stage == STATUS_DONE }
+                                val wantList = purchaseList.filter { it.stage == STATUS_WANT }
+                                val processList = purchaseList.filter { it.stage == STATUS_PROCESS }
+                                val doneList = purchaseList.filter { it.stage == STATUS_DONE }
 
-                            itemAdapters[0].updateList(wantList)
-                            itemAdapters[1].updateList(processList)
-                            itemAdapters[2].updateList(doneList)
+                                itemAdapters[0].updateList(wantList)
+                                itemAdapters[1].updateList(processList)
+                                itemAdapters[2].updateList(doneList)
 
-                        } else {
-                            resetBoard(purchaseList, user)
-                            isBoardInitted = true
-                            hideProgress()
+                            } else {
+                                resetBoard(purchaseList, user.value.data.period, 1)
+                                isBoardInitted = true
+                                hideProgress()
+                            }
+
                         }
-
-                    }
-                })
+                    })
+            } else {
+                showFillUserDialog()
             }
         }
 
-//        viewModel.getUser().observe(viewLifecycleOwner, { user ->
-//
-//            if (user?.period != null && user.incomeRemainder != null) {
-//
-//            } else {
-//                showFillUserDialog()
-//            }
-//
-//        })
-
-        viewModel.errorMessageLiveData.observe(viewLifecycleOwner, {
+        viewModel.errorMessageLiveData.observe(viewLifecycleOwner, Observer {
             showErrorMessage(it)
         })
 
@@ -264,9 +266,9 @@ class BoardFragment : ScopedFragment(), OnItemClick {
 
             val header = View.inflate(activity, R.layout.column_header, null)
 
-            (header.findViewById<View>(R.id.header_title) as TextView).text = columnName
-            (header.findViewById<View>(R.id.item_count) as TextView).text =
-                listAdapter.itemCount.toString()
+            header.findViewById<TextView>(R.id.header_title).text = columnName
+            header.findViewById<TextView>(R.id.item_count).text =
+                listAdapter.purchaseList.size.toString()
 
             val layoutManager = LinearLayoutManager(context)
             val columnProperties = ColumnProperties.Builder.newBuilder(listAdapter)
@@ -287,8 +289,6 @@ class BoardFragment : ScopedFragment(), OnItemClick {
 
     override fun onItemClick(cardView: View, purchaseEntity: PurchaseEntity) {
 
-        Log.d(TAG, "onItemClick: ")
-
         val detailPurchaseTransitionName = getString(R.string.purchase_card_detail_transition_name)
         val extras = FragmentNavigatorExtras(cardView to detailPurchaseTransitionName)
 
@@ -308,7 +308,16 @@ class BoardFragment : ScopedFragment(), OnItemClick {
     }
 
     private fun showFillUserDialog() {
+        val dialog = MaterialAlertDialogBuilder(requireActivity())
+            .setTitle(getString(R.string.fill_account))
+            .setMessage("We need to know some info about your financial situation to make calculations")
+            .setPositiveButton(getString(R.string.ok)) { dialog: DialogInterface?, which: Int ->
+                dialog?.dismiss()
+                findNavController().navigate(R.id.nav_profile)
+            }
+            .setCancelable(false)
 
+        dialog.show()
     }
 
     private fun showErrorMessage(it: String?) {
