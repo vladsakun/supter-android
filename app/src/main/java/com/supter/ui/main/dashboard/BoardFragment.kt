@@ -127,11 +127,21 @@ class BoardFragment : ScopedFragment(), OnItemClick {
         mBoardView.setSnapToColumnInLandscape(false)
         mBoardView.setColumnSnapPosition(BoardView.ColumnSnapPosition.CENTER)
 
-        var dragItem: PurchaseEntity? = null
+        var dragItem: PurchaseEntity?
 
         mBoardView.setBoardListener(object : BoardListener {
             override fun onItemDragStarted(column: Int, row: Int) {
                 dragItem = mBoardView.getAdapter(column).itemList[row] as PurchaseEntity
+                if (column == 0) {
+                    dragItem?.let {
+                        if (it.potential < 70f) {
+                            Toasty.warning(
+                                requireContext(),
+                                requireContext().getString(R.string.potential_less_70, it.title)
+                            ).show()
+                        }
+                    }
+                }
             }
 
             override fun onItemDragEnded(fromColumn: Int, fromRow: Int, toColumn: Int, toRow: Int) {
@@ -310,7 +320,7 @@ class BoardFragment : ScopedFragment(), OnItemClick {
     private fun showFillUserDialog() {
         val dialog = MaterialAlertDialogBuilder(requireActivity())
             .setTitle(getString(R.string.fill_account))
-            .setMessage("We need to know some info about your financial situation to make calculations")
+            .setMessage(getString(R.string.financial_situation_to_make_calculations))
             .setPositiveButton(getString(R.string.ok)) { dialog: DialogInterface?, which: Int ->
                 dialog?.dismiss()
                 findNavController().navigate(R.id.nav_profile)

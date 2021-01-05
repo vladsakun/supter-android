@@ -13,7 +13,6 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
-
     <string name="menu_dashboard">Dashboard</string>
     <string name="menu_settings">Settings</string>
     <string name="menu_profile">Profile</string>
@@ -42,7 +41,6 @@
     <string name="to_increase_potential">To increase potential</string>
     <string name="done">Done</string>
     <string name="delete">Delete</string>
-
     <string name="purchase_card_transition_name">purchase_detail_%1$s</string>
     <string name="purchase_card_detail_transition_name">purchase_card_detail</string>
     <string name="date_of_salary_coming">Date of salary coming:</string>
@@ -57,6 +55,9 @@
     <string name="answer_some_questions">Answer some questions</string>
     <string name="answer_cant_be_blank">Answer can\'t be blank</string>
     <string name="answer_was_submitted_successfully">Answer was submitted successfully</string>
-    <string name="ok">Ok</string>
+    <string name="ok">OK</string>
     <string name="fill_account">Fill account</string>
+    <string name="financial_situation_to_make_calculations">We need to know some info about your financial situation to make calculations</string>
+    <string name="potential_less_70">Potential of %s &lt; 70</string>  <!-- &lt; == '<' -->
+
 </resources>
