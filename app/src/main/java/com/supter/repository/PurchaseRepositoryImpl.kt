@@ -134,8 +134,30 @@ class PurchaseRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun sendAnswer(purchaseId: Int, questionId: Int, answer: String): ResultWrapper<MessageResponse> {
-        return networkDataSource.postAnswer(SystemUtils.getToken(context), purchaseId, questionId, answer)
+    override suspend fun sendStringAnswer(
+        purchaseId: Int,
+        questionId: Int,
+        answer: String
+    ): ResultWrapper<MessageResponse> {
+        return networkDataSource.postStringAnswer(
+            SystemUtils.getToken(context),
+            purchaseId,
+            questionId,
+            answer
+        )
+    }
+
+    override suspend fun sendBooleanAnswer(
+        purchaseId: Int,
+        questionId: Int,
+        answer: Boolean
+    ): ResultWrapper<MessageResponse> {
+        return networkDataSource.postBooleanAnswer(
+            SystemUtils.getToken(context),
+            purchaseId,
+            questionId,
+            answer
+        )
     }
 
     override suspend fun createPurchase(createPurchaseBody: PurchaseBody): ResultWrapper<CreatePurchaseResponse> {

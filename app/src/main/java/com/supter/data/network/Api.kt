@@ -88,10 +88,19 @@ interface Api {
     // ********************************************************Questions******************************************
     @FormUrlEncoded
     @POST("/purchases/{purchaseId}/questions/{questionId}")
-    suspend fun postAnswer(
+    suspend fun postStringAnswer(
         @Header(Authorization) token: String,
         @Path("purchaseId") purchaseId: Int,
         @Path("questionId") questionId: Int,
-        @Field("text") answer: String
+        @Field("text") text: String
+    ):MessageResponse
+
+    @FormUrlEncoded
+    @POST("/purchases/{purchaseId}/questions/{questionId}")
+    suspend fun postBooleanAnswer(
+        @Header(Authorization) token: String,
+        @Path("purchaseId") purchaseId: Int,
+        @Path("questionId") questionId: Int,
+        @Field("isTrue") isTrue: Boolean
     ):MessageResponse
 }

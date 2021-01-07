@@ -93,13 +93,22 @@ class PurchaseNetworkDataSourceImpl @Inject constructor(
         return safeApiCall(Dispatchers.IO) {api.fetchUser(token)}
     }
 
-    override suspend fun postAnswer(
+    override suspend fun postStringAnswer(
         token: String,
         purchaseId: Int,
         questionId: Int,
-        answer: String
+        text: String
     ): ResultWrapper<MessageResponse> {
-        return safeApiCall(Dispatchers.IO) {api.postAnswer(token, purchaseId, questionId, answer)}
+        return safeApiCall(Dispatchers.IO) {api.postStringAnswer(token, purchaseId, questionId, text)}
+    }
+
+    override suspend fun postBooleanAnswer(
+        token: String,
+        purchaseId: Int,
+        questionId: Int,
+        isTrue: Boolean
+    ): ResultWrapper<MessageResponse> {
+        return safeApiCall(Dispatchers.IO) {api.postBooleanAnswer(token, purchaseId, questionId, isTrue)}
     }
 
 

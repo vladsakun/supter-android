@@ -52,7 +52,8 @@ class DetailPurchaseFragment : Fragment() {
 
     companion object {
         val SEND_ANSWER_ACTION = "SEND_ANSWER_ACTION"
-        val ANSWER_EXTRA = "ANSWER_EXTRA"
+        val STRING_ANSWER_EXTRA = "STRING_ANSWER_EXTRA"
+        val BOOLEAN_ANSWER_EXTRA = "BOOLEAN_ANSWER_EXTRA"
         val QUESTION_ID_EXTRA = "QUESTION_ID_EXTRA"
         fun newInstance() = DetailPurchaseFragment()
     }
@@ -109,10 +110,10 @@ class DetailPurchaseFragment : Fragment() {
         bindObservers()
 
         mBinding.link.setOnClickListener {
-            if(purchaseEntity.link == null) {
+            if (purchaseEntity.link == null) {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(purchaseEntity.link))
                 requireContext().startActivity(intent)
-            }else{
+            } else {
                 Toasty.info(requireContext(), getString(R.string.link_is_empty)).show()
             }
         }
@@ -138,21 +139,23 @@ class DetailPurchaseFragment : Fragment() {
 
     private fun bindObservers() {
         viewModel.getPurchaseFromApi(purchaseEntity).observe(viewLifecycleOwner,
-            Observer<ResultWrapper<DetailPurchaseResponse>> { purchaseResponse->
+            Observer<ResultWrapper<DetailPurchaseResponse>> { purchaseResponse ->
                 if (purchaseResponse is ResultWrapper.Success) {
                     initQuestionsList(purchaseResponse.value)
                 }
             })
 
-        viewModel.updateResponseResultLiveData.observe(viewLifecycleOwner, Observer<ResultWrapper<UpdatePurchaseResponse>>{ updateResult ->
-            when (updateResult) {
-                is ResultWrapper.Success -> {
-                    showSuccessMessage()
+        viewModel.updateResponseResultLiveData.observe(
+            viewLifecycleOwner,
+            Observer<ResultWrapper<UpdatePurchaseResponse>> { updateResult ->
+                when (updateResult) {
+                    is ResultWrapper.Success -> {
+                        showSuccessMessage()
+                    }
                 }
-            }
-        })
+            })
 
-        viewModel.timer.observe(viewLifecycleOwner, Observer{ time ->
+        viewModel.timer.observe(viewLifecycleOwner, Observer { time ->
             mBinding.thinkingProgress.progress = time.toFloat()
         })
     }
@@ -199,7 +202,8 @@ class DetailPurchaseFragment : Fragment() {
 
         val answeredQuestions =
             detailPurchaseEntity.data.questions.filter { it.purchaseQuestion != null }
-        val toDoQuestions = detailPurchaseEntity.data.questions.filter { it.purchaseQuestion == null }
+        val toDoQuestions =
+            detailPurchaseEntity.data.questions.filter { it.purchaseQuestion == null }
 
         val itemDecoration = SimpleDividerItemDecorationLastExcluded(10)
 
@@ -212,8 +216,7 @@ class DetailPurchaseFragment : Fragment() {
                 PotentialAdapter(
                     toDoPotentialItemList,
                     false,
-                    requireActivity(),
-                    detailPurchaseEntity.data.id
+                    requireActivity()
                 )
 
             mBinding.toIncreasePotentialRecyclerview.adapter = toIncreasePotentialAdapter
@@ -231,8 +234,7 @@ class DetailPurchaseFragment : Fragment() {
                 PotentialAdapter(
                     answeredPotentialItemList,
                     true,
-                    requireActivity(),
-                    detailPurchaseEntity.data.id
+                    requireActivity()
                 )
 
             mBinding.doneRecyclerview.adapter = donePotentialAdapter
@@ -260,7 +262,8 @@ class DetailPurchaseFragment : Fragment() {
                         true,
                         questionItem.title,
                         questionItem.purchaseQuestion?.text ?: "",
-                        questionItem.id
+                        questionItem.id,
+                        2
                     )
                 )
             }
@@ -283,17 +286,18 @@ class DetailPurchaseFragment : Fragment() {
 
     private val answerBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent) {
-            val answer = intent.getStringExtra(ANSWER_EXTRA)
+            val stringAnswer: String? = intent.getStringExtra(STRING_ANSWER_EXTRA)
+            val booleanAnswer = intent.getBooleanExtra(BOOLEAN_ANSWER_EXTRA, false)
             val questionId = intent.getIntExtra(QUESTION_ID_EXTRA, 0)
 
-            viewModel.sendAnswer(purchaseEntity.id, questionId, answer!!)
-                .observe(viewLifecycleOwner) {
+            viewModel.sendAnswer(purchaseEntity.id, questionId, stringAnswer, booleanAnswer)
+                .observe(viewLifecycleOwner, Observer{
                     requireContext()
                         .applicationContext
                         .sendBroadcast(Intent(PotentialAdapter.SUBMIT_ANSWER_ACTION).apply {
                             putExtra(PotentialAdapter.IS_SUBMIT_SUCCESS, it)
                         })
-                }
+                })
 
         }
     }

@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.RadioButton
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
@@ -26,7 +27,6 @@ class PotentialAdapter(
     val potentialItemList: MutableList<PotentialItem>,
     val isDone: Boolean,
     val activity: Activity,
-    val purchaseId: Int,
 ) : RecyclerView.Adapter<PotentialAdapter.PotentialViewHolder>() {
 
     companion object {
@@ -52,68 +52,94 @@ class PotentialAdapter(
         holder.itemView.setOnClickListener {
             val dialogBuilder = MaterialAlertDialogBuilder(activity).create()
             val layoutInflater = activity.layoutInflater
-            val dialogView = layoutInflater.inflate(R.layout.question_alert_dialog, null)
 
-            val questionTitle = dialogView.findViewById<TextView>(R.id.question_title)
-            questionTitle.text = potentialItem.title
+            val dialogView:View
 
-            val answerEditText = dialogView.findViewById<TextInputLayout>(R.id.question_answer)
+            if(potentialItem.questionType == 1){
+                dialogView = layoutInflater.inflate(R.layout.string_question_alert_dialog, null)
 
-            val submitBtn = dialogView.findViewById<LoadingButton>(R.id.submit)
-            submitBtn.setOnClickListener {
+                val questionTitle = dialogView.findViewById<TextView>(R.id.question_title)
+                questionTitle.text = potentialItem.title
 
-                val answer = answerEditText.editText?.text.toString().trim()
+                val answerEditText = dialogView.findViewById<TextInputLayout>(R.id.question_answer)
 
-                if (answer.isBlank()) {
-                    Toasty.warning(activity, activity.getString(R.string.answer_cant_be_blank))
-                } else {
+                val submitBtn = dialogView.findViewById<LoadingButton>(R.id.submit)
+                submitBtn.setOnClickListener {
 
-                    mSubmitAnswerResponseBR = object : BroadcastReceiver() {
-                        override fun onReceive(context: Context, intent: Intent) {
-                            submitBtn.cancelLoading()
+                    val answer = answerEditText.editText?.text.toString().trim()
 
-                            val isSuccessSubmitted =
-                                intent.getBooleanExtra(IS_SUBMIT_SUCCESS, false)
+                    if (answer.isBlank()) {
+                        Toasty.warning(activity, activity.getString(R.string.answer_cant_be_blank))
+                    } else {
 
-                            if (isSuccessSubmitted) {
-                                Toasty.success(
-                                    activity,
-                                    activity.getString(R.string.answer_was_submitted_successfully)
-                                ).show()
-                                dialogBuilder.dismiss()
-                            } else {
-                                Toasty.error(
-                                    activity,
-                                    activity.getString(R.string.no_internet_connection)
-                                ).show()
+                        mSubmitAnswerResponseBR = object : BroadcastReceiver() {
+                            override fun onReceive(context: Context, intent: Intent) {
+                                submitBtn.cancelLoading()
+
+                                val isSuccessSubmitted =
+                                    intent.getBooleanExtra(IS_SUBMIT_SUCCESS, false)
+
+                                if (isSuccessSubmitted) {
+                                    Toasty.success(
+                                        activity,
+                                        activity.getString(R.string.answer_was_submitted_successfully)
+                                    ).show()
+                                    dialogBuilder.dismiss()
+                                } else {
+                                    Toasty.error(
+                                        activity,
+                                        activity.getString(R.string.no_internet_connection)
+                                    ).show()
+                                }
+
+                                stopListeningSubmitAnswerResultBR()
+
                             }
-
-                            stopListeningSubmitAnswerResultBR()
-
                         }
+
+                        startListeningSubmitAnswerResultBR()
+
+                        submitBtn.startLoading()
+
+                        val intent = Intent(DetailPurchaseFragment.SEND_ANSWER_ACTION).apply {
+                            putExtra(DetailPurchaseFragment.STRING_ANSWER_EXTRA, answer)
+                            putExtra(DetailPurchaseFragment.QUESTION_ID_EXTRA, potentialItem.questionId)
+                        }
+
+                        activity.applicationContext.sendBroadcast(intent)
                     }
-
-                    startListeningSubmitAnswerResultBR()
-
-                    submitBtn.startLoading()
-
-                    val intent = Intent(DetailPurchaseFragment.SEND_ANSWER_ACTION).apply {
-                        putExtra(DetailPurchaseFragment.ANSWER_EXTRA, answer)
-                        putExtra(DetailPurchaseFragment.QUESTION_ID_EXTRA, potentialItem.questionId)
-                    }
-
-                    activity.applicationContext.sendBroadcast(intent)
                 }
-            }
 
-            val cancelBtn = dialogView.findViewById<Button>(R.id.cancel)
-            cancelBtn.setOnClickListener {
-                dialogBuilder.dismiss()
+                val cancelBtn = dialogView.findViewById<Button>(R.id.cancel)
+                cancelBtn.setOnClickListener {
+                    dialogBuilder.dismiss()
+                }
+            }else{
+                dialogView = layoutInflater.inflate(R.layout.boolean_question_alert_dialog, null)
+
+                val questionTitle = dialogView.findViewById<TextView>(R.id.question_title)
+                questionTitle.text = potentialItem.title
+
+                val yesBtn:RadioButton = dialogView.findViewById(R.id.yes)
+                val clickListener = View.OnClickListener { sendBooleanAnswer(yesBtn.isChecked, potentialItem.questionId) }
+                yesBtn.setOnClickListener(clickListener)
+
+                val noBtn:RadioButton = dialogView.findViewById(R.id.no)
+                noBtn.setOnClickListener(clickListener)
             }
 
             dialogBuilder.setView(dialogView)
             dialogBuilder.show()
         }
+    }
+
+    private fun sendBooleanAnswer(checked: Boolean, questionId:Int) {
+        val intent = Intent(DetailPurchaseFragment.SEND_ANSWER_ACTION).apply {
+            putExtra(DetailPurchaseFragment.BOOLEAN_ANSWER_EXTRA, checked)
+            putExtra(DetailPurchaseFragment.QUESTION_ID_EXTRA, questionId)
+        }
+
+        activity.applicationContext.sendBroadcast(intent)
     }
 
     override fun getItemCount(): Int {

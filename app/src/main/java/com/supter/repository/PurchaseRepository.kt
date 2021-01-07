@@ -34,6 +34,7 @@ interface PurchaseRepository {
 
     suspend fun fetchUser(): ResultWrapper<AccountResponse>
 
-    suspend fun sendAnswer(purchaseId:Int, questionId:Int, answer:String): ResultWrapper<MessageResponse>
+    suspend fun sendStringAnswer(purchaseId:Int, questionId:Int, answer:String): ResultWrapper<MessageResponse>
 
+    suspend fun sendBooleanAnswer(purchaseId:Int, questionId:Int, answer:Boolean): ResultWrapper<MessageResponse>
 }
