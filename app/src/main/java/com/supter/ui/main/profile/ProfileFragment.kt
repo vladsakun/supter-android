@@ -5,6 +5,7 @@ import android.view.*
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import com.supter.R
@@ -12,6 +13,7 @@ import com.supter.data.db.entity.UserEntity
 import com.supter.data.response.ResultWrapper
 import com.supter.databinding.FragmentProfileBinding
 import com.supter.ui.auth.LoginActivity
+import com.supter.utils.MONTH_IN_DAYS
 import com.supter.utils.SystemUtils
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
@@ -26,9 +28,9 @@ class ProfileFragment : Fragment() {
     private val viewModel: ProfileViewModel by viewModels()
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View? {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         mBinding.numberPicker.maxValue = 27
@@ -54,11 +56,11 @@ class ProfileFragment : Fragment() {
 
     private fun bindObservers() {
 
-        viewModel.getUser().observe(viewLifecycleOwner, {
+        viewModel.getUser().observe(viewLifecycleOwner, Observer {
             performUserData(it)
         })
 
-        viewModel.accountResponse.observe(viewLifecycleOwner, { result ->
+        viewModel.accountResponse.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is ResultWrapper.Success -> {
                     showSuccessToast()
@@ -66,14 +68,14 @@ class ProfileFragment : Fragment() {
 
                 is ResultWrapper.GenericError -> {
                     showErrorMessage(
-                            result.error?.message
-                                    ?: requireContext().getString(R.string.no_internet_connection)
+                        result.error?.message
+                            ?: requireContext().getString(R.string.no_internet_connection)
                     )
                 }
 
                 is ResultWrapper.NetworkError -> {
                     showErrorMessage(
-                            requireContext().getString(R.string.no_internet_connection)
+                        requireContext().getString(R.string.no_internet_connection)
                     )
                 }
             }
@@ -96,16 +98,28 @@ class ProfileFragment : Fragment() {
 
         mBinding.save.setOnClickListener {
             viewModel.upsertUser(
-                    mBinding.name.editText?.text.toString(),
-                    mBinding.incomeRemainder.editText?.text.toString().toDouble(),
-                    mBinding.balance.editText?.text.toString().toDouble(),
-                    mBinding.period.editText?.text.toString().toDouble(),
-                    mBinding.numberPicker.value
+                mBinding.name.editText?.text.toString(),
+                mBinding.incomeRemainder.editText?.text.toString().toDouble(),
+                mBinding.balance.editText?.text.toString().toDouble(),
+                mBinding.period.editText?.text.toString().toDouble(),
+                mBinding.numberPicker.value
             )
         }
 
         mBinding.incomeRemainder.setEndIconOnClickListener {
             Toasty.info(requireContext(), getString(R.string.hint_income_remainder)).show()
+        }
+
+        mBinding.period.setEndIconOnClickListener {
+            Toasty.info(requireContext(), getString(R.string.hint_period)).show()
+        }
+
+        mBinding.balance.setEndIconOnClickListener {
+            Toasty.info(requireContext(), getString(R.string.hint_balance)).show()
+        }
+
+        mBinding.monthly.setOnClickListener {
+            mBinding.period.editText?.setText(MONTH_IN_DAYS)
         }
     }
 
@@ -115,7 +129,7 @@ class ProfileFragment : Fragment() {
 
     private fun showSuccessToast() {
         Toasty.success(requireContext(), requireContext().getString(R.string.successfully_updated))
-                .show()
+            .show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

@@ -11,3 +11,5 @@ const val STATUS_PROCESS = "process"
 const val STATUS_DONE = "done"
 
 const val Authorization = "Authorization"
+
+const val MONTH_IN_DAYS = "30.4"
