@@ -15,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class DetailPurchaseViewModel @ViewModelInject constructor(
     private val purchaseRepository: PurchaseRepository
@@ -71,6 +72,17 @@ class DetailPurchaseViewModel @ViewModelInject constructor(
         }
 
         return _purchase
+    }
+
+    suspend fun fetchPurchase(purchaseEntity: PurchaseEntity):DetailPurchaseResponse?{
+        return withContext(Dispatchers.IO){
+            val resp = purchaseRepository.getPurchaseFromApiById(purchaseEntity)
+            if(resp is ResultWrapper.Success){
+                return@withContext resp.value
+            }else{
+                return@withContext null
+            }
+        }
     }
 
     val _isAnswerSuccessfullySubmitted = MutableLiveData<Boolean>()

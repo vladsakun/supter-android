@@ -7,6 +7,7 @@ import android.content.IntentFilter
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -18,6 +19,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.transition.MaterialContainerTransform
 import com.supter.R
 import com.supter.data.model.PotentialItem
@@ -29,15 +31,20 @@ import com.supter.data.response.purchase.UpdatePurchaseResponse
 import com.supter.databinding.DetailPurchaseFragmentBinding
 import com.supter.ui.adapters.PotentialAdapter
 import com.supter.ui.adapters.SimpleDividerItemDecorationLastExcluded
+import com.supter.utils.ScopedFragment
 import com.supter.utils.getPrettyDate
 import com.supter.utils.stringToDate
 import com.supter.utils.themeColor
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @AndroidEntryPoint
-class DetailPurchaseFragment : Fragment() {
+class DetailPurchaseFragment : ScopedFragment() {
 
     private val TAG = "DetailPurchaseFragment"
 
@@ -49,12 +56,18 @@ class DetailPurchaseFragment : Fragment() {
     private val viewModel: DetailPurchaseViewModel by viewModels()
 
     private lateinit var purchaseEntity: PurchaseEntity
+    private var toIncreasePotentialAdapter: PotentialAdapter? = null
+    private var donePotentialAdapter: PotentialAdapter? = null
 
     companion object {
         val SEND_ANSWER_ACTION = "SEND_ANSWER_ACTION"
+
         val STRING_ANSWER_EXTRA = "STRING_ANSWER_EXTRA"
         val BOOLEAN_ANSWER_EXTRA = "BOOLEAN_ANSWER_EXTRA"
+        val UPDATE_EXTRA = "UPDATE_EXTRA"
+
         val QUESTION_ID_EXTRA = "QUESTION_ID_EXTRA"
+
         fun newInstance() = DetailPurchaseFragment()
     }
 
@@ -98,6 +111,30 @@ class DetailPurchaseFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         startAnswerBR()
+    }
+
+    private fun updateQuestionAdapters() {
+        launch {
+            val purchase = viewModel.fetchPurchase(purchaseEntity)
+            if (purchase != null) {
+
+                val answeredQuestions =
+                    purchase.data.questions.filter { it.purchaseQuestion != null }
+                val toDoQuestions =
+                    purchase.data.questions.filter { it.purchaseQuestion == null }
+
+                donePotentialAdapter?.updateItems(
+                    convertQuestionListToPotentialItems(
+                        answeredQuestions
+                    )
+                )
+                toIncreasePotentialAdapter?.updateItems(
+                    convertQuestionListToPotentialItems(
+                        toDoQuestions
+                    )
+                )
+            }
+        }
     }
 
     override fun onStop() {
@@ -212,7 +249,7 @@ class DetailPurchaseFragment : Fragment() {
         } else {
             val toDoPotentialItemList = convertQuestionListToPotentialItems(toDoQuestions)
 
-            val toIncreasePotentialAdapter =
+            toIncreasePotentialAdapter =
                 PotentialAdapter(
                     toDoPotentialItemList,
                     false,
@@ -230,7 +267,7 @@ class DetailPurchaseFragment : Fragment() {
         } else {
             val answeredPotentialItemList = convertQuestionListToPotentialItems(answeredQuestions)
 
-            val donePotentialAdapter =
+            donePotentialAdapter =
                 PotentialAdapter(
                     answeredPotentialItemList,
                     true,
@@ -261,9 +298,9 @@ class DetailPurchaseFragment : Fragment() {
                     PotentialItem(
                         true,
                         questionItem.title,
-                        questionItem.purchaseQuestion?.text ?: "",
+                        questionItem.purchaseQuestion?.text,
                         questionItem.id,
-                        2
+                        1
                     )
                 )
             }
@@ -290,8 +327,15 @@ class DetailPurchaseFragment : Fragment() {
             val booleanAnswer = intent.getBooleanExtra(BOOLEAN_ANSWER_EXTRA, false)
             val questionId = intent.getIntExtra(QUESTION_ID_EXTRA, 0)
 
+            val isUpdate = intent.getBooleanExtra(UPDATE_EXTRA, false)
+
+            if (isUpdate) {
+                updateQuestionAdapters()
+                return
+            }
+
             viewModel.sendAnswer(purchaseEntity.id, questionId, stringAnswer, booleanAnswer)
-                .observe(viewLifecycleOwner, Observer{
+                .observe(viewLifecycleOwner, Observer {
                     requireContext()
                         .applicationContext
                         .sendBroadcast(Intent(PotentialAdapter.SUBMIT_ANSWER_ACTION).apply {
