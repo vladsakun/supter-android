@@ -1,7 +1,6 @@
 package com.supter.repository
 
 import android.content.Context
-import android.util.Log
 import com.supter.data.body.PurchaseBody
 import com.supter.data.db.PurchaseDao
 import com.supter.data.db.entity.PurchaseEntity
@@ -13,6 +12,7 @@ import com.supter.data.response.purchase.CreatePurchaseResponse
 import com.supter.data.response.purchase.PurchaseResponse
 import com.supter.data.response.purchase.UpdatePurchaseResponse
 import com.supter.utils.SystemUtils
+import com.supter.utils.convertAccountResponseToUserEntity
 import com.supter.utils.convertDataItemListToPurchaseEntityList
 import com.supter.utils.updatePurchasesData
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -45,14 +45,7 @@ class PurchaseRepositoryImpl @Inject constructor(
                 with(accountResponse.value.data) {
                     if (incomeRemainder != null && period != null) {
                         dao.upsertUser(
-                            UserEntity(
-                                id,
-                                name,
-                                email,
-                                incomeRemainder,
-                                balance,
-                                period
-                            )
+                            convertAccountResponseToUserEntity(accountResponse.value)
                         )
                     }
                 }

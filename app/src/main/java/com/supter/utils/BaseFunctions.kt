@@ -7,6 +7,7 @@ import android.util.Log
 import com.supter.BuildConfig
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.db.entity.UserEntity
+import com.supter.data.response.account.AccountResponse
 import com.supter.data.response.purchase.PurchaseData
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -103,15 +104,21 @@ fun convertDataItemToPurchaseEntity(dataItem: PurchaseData): PurchaseEntity {
             null,
             remind = 0.0,
             realPeriod = 0,
-            thinkingTime,
-            createdAt,
-            null
+            thinkingTime = thinkingTime,
+            createdAt = createdAt,
+            image = null
         )
     }
 }
 
-fun getPrettyDate(date: Double): String {
-    val time = date * 24 // hours
+fun convertAccountResponseToUserEntity(accountResponse: AccountResponse):UserEntity{
+    with(accountResponse.data) {
+        return UserEntity(id, name, email,incomeRemainder?.toFloat(), balance?.toFloat(), period, salaryDay)
+    }
+}
+
+fun getPrettyDate(date: Number): String {
+    val time = date.toDouble() * 24 // hours
 
     return if (time >= 24.0 && time < (31.0 * 24)) {
         (BigDecimal(time / 24).setScale(1, RoundingMode.HALF_EVEN)).toString() + " days"

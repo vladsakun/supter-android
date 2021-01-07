@@ -2,7 +2,8 @@ package com.supter.data.body
 
 data class AccountBody(
     val name: String,
-    val incomeRemainder: Double,
-    val savings: Double,
-    val period: Double,
+    val incomeRemainder: Float,
+    val balance: Float,
+    val period: Float,
+    val salaryDay: Int,
 )

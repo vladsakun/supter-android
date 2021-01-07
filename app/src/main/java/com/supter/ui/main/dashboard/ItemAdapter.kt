@@ -17,8 +17,8 @@ internal class ItemAdapter constructor(
     private val mGrabHandleId: Int,
     private val mDragOnLongPress: Boolean,
     private val onItemClick: OnItemClick,
-    private val period: Double,
-    private val salaryDate: Int,
+    private val period: Number,
+    private val salaryDay: Int,
 ) : DragItemAdapter<PurchaseEntity, ItemAdapter.ViewHolder>() {
 
     init {
@@ -72,11 +72,11 @@ internal class ItemAdapter constructor(
         fun bind(purchaseEntity: PurchaseEntity) {
             activeItem = purchaseEntity
             binding.purchase = purchaseEntity
-            binding.potential.progress = purchaseEntity.potential.toFloat()
+            binding.potential.progress = purchaseEntity.potential
 
             if(mColumnStage != STATUS_DONE) {
 
-                val realPeriod = period * purchaseEntity.realPeriod - dayOfMonth + salaryDate
+                val realPeriod = period.toFloat() * purchaseEntity.realPeriod - dayOfMonth + salaryDay
 
                 binding.realPeriod.text = getPrettyDate(realPeriod)
             }

@@ -11,6 +11,7 @@ import com.supter.data.response.account.RegistrationResponse
 import com.supter.data.response.ResultWrapper
 import com.supter.utils.SystemUtils
 import com.supter.utils.SystemUtils.Companion.saveToken
+import com.supter.utils.convertAccountResponseToUserEntity
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -19,9 +20,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
-        @ApplicationContext var context: Context,
-        var dao: PurchaseDao,
-        var networkDataSource: PurchaseNetworkDataSource,
+    @ApplicationContext var context: Context,
+    var dao: PurchaseDao,
+    var networkDataSource: PurchaseNetworkDataSource,
 ) : UserRepository {
 
     init {
@@ -29,9 +30,9 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun register(
-            name: String,
-            email: String,
-            password: String,
+        name: String,
+        email: String,
+        password: String,
     ): ResultWrapper<RegistrationResponse> {
         return networkDataSource.registerWithCoroutines(name, email, password)
     }
@@ -42,7 +43,6 @@ class UserRepositoryImpl @Inject constructor(
 
         if (response is ResultWrapper.Success) {
             saveToken(context, response.value.accessToken)
-//            putUser(response.value)
         }
 
         return response
@@ -59,32 +59,22 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun putUser(
-            name: String,
-            incomeRemainder: Double,
-            savings: Double,
-            period: Double,
-            dateOfSalaryComing: Int,
+        name: String,
+        incomeRemainder: Float,
+        savings: Float,
+        period: Float,
+        salaryDay: Int,
     ): ResultWrapper<AccountResponse> {
 
         val account = networkDataSource.putUser(
-                SystemUtils.getToken(context.applicationContext),
-                AccountBody(name, incomeRemainder, savings, period)
+            SystemUtils.getToken(context.applicationContext),
+            AccountBody(name, incomeRemainder, savings, period, salaryDay)
         )
 
         if (account is ResultWrapper.Success) {
-            account.value.data.apply {
-                upsertUser(
-                        UserEntity(
-                                this.id,
-                                this.name,
-                                this.email,
-                                this.incomeRemainder,
-                                this.balance,
-                                this.period,
-                                dateOfSalaryComing
-                        )
-                )
-            }
+            upsertUser(
+                convertAccountResponseToUserEntity(account.value)
+            )
         }
 
         return account

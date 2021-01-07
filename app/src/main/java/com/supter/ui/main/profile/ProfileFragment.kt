@@ -89,7 +89,7 @@ class ProfileFragment : Fragment() {
                 period.editText?.setText(it.period.toString())
                 balance.editText?.setText(it.balance.toString())
                 name.editText?.setText(it.name)
-                numberPicker.value = it.salaryDate
+                numberPicker.value = it.salaryDay
             }
         }
     }
@@ -99,9 +99,9 @@ class ProfileFragment : Fragment() {
         mBinding.save.setOnClickListener {
             viewModel.upsertUser(
                 mBinding.name.editText?.text.toString(),
-                mBinding.incomeRemainder.editText?.text.toString().toDouble(),
-                mBinding.balance.editText?.text.toString().toDouble(),
-                mBinding.period.editText?.text.toString().toDouble(),
+                mBinding.incomeRemainder.editText?.text.toString().toFloat(),
+                mBinding.balance.editText?.text.toString().toFloat(),
+                mBinding.period.editText?.text.toString().toFloat(),
                 mBinding.numberPicker.value
             )
         }

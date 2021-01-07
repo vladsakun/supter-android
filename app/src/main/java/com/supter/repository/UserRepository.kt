@@ -29,9 +29,9 @@ interface UserRepository {
     // Update user on the server side
     suspend fun putUser(
         name: String,
-        incomeRemainder:Double,
-        savings:Double,
-        period:Double,
+        incomeRemainder:Float,
+        savings:Float,
+        period:Float,
         dateOfSalaryComing:Int
     ): ResultWrapper<AccountResponse>
 

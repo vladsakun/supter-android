@@ -11,8 +11,8 @@ data class UserEntity(
 
     val name: String?,
     val email: String,
-    val incomeRemainder:Double?,
-    val balance: Double?,
-    val period:Double?,
-    val salaryDate:Int = 1,
+    val incomeRemainder: Float?,
+    val balance: Float?,
+    val period: Float?,
+    val salaryDay: Int,
 )

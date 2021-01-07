@@ -72,7 +72,7 @@ class BoardFragment : ScopedFragment(), OnItemClick {
         bindViews()
     }
 
-    private fun resetBoard(purchaseList: List<PurchaseEntity>, period: Double, salaryDate: Int) {
+    private fun resetBoard(purchaseList: List<PurchaseEntity>, period: Number, salaryDate: Int) {
 
         itemAdapters.clear()
         mBoardView.clearBoard()
@@ -230,11 +230,8 @@ class BoardFragment : ScopedFragment(), OnItemClick {
         launch {
             val user = viewModel.fetchUser()
 
-            if (user != null &&
-                user is ResultWrapper.Success &&
-                user.value.data.period != null &&
-                user.value.data.incomeRemainder != null
-            ) {
+            if (user?.period != null &&
+                user.incomeRemainder != null) {
                 viewModel.getPurchaseLiveData().observe(viewLifecycleOwner,
                     Observer<List<PurchaseEntity>> { purchaseList ->
                         if (purchaseList != null) {
@@ -250,7 +247,7 @@ class BoardFragment : ScopedFragment(), OnItemClick {
                                 itemAdapters[2].updateList(doneList)
 
                             } else {
-                                resetBoard(purchaseList, user.value.data.period, 1)
+                                resetBoard(purchaseList, user.period, 1)
                                 isBoardInitted = true
                                 hideProgress()
                             }

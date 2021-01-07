@@ -24,11 +24,11 @@ class ProfileViewModel @ViewModelInject constructor(
     val account: LiveData<UserEntity?> get() = _account
 
     fun upsertUser(
-            name: String,
-            incomeRemainder: Double,
-            savings: Double,
-            period: Double,
-            dateOfSalaryComing: Int,
+        name: String,
+        incomeRemainder: Float,
+        savings: Float,
+        period: Float,
+        salaryDay: Int,
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             _accountResponse.postValue(
@@ -37,7 +37,7 @@ class ProfileViewModel @ViewModelInject constructor(
                             incomeRemainder,
                             savings,
                             period,
-                            dateOfSalaryComing
+                            salaryDay
                     )
             )
         }
