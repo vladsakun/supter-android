@@ -10,7 +10,7 @@ import com.supter.data.response.account.LoginResponse
 import com.supter.data.response.account.RegistrationResponse
 import com.supter.data.response.purchase.CreatePurchaseResponse
 import com.supter.data.response.purchase.GetPurchasesResponse
-import com.supter.data.response.purchase.PurchaseResponse
+import com.supter.data.response.purchase.DetailPurchaseResponse
 import com.supter.data.response.purchase.UpdatePurchaseResponse
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
@@ -31,7 +31,7 @@ class PurchaseNetworkDataSourceImpl @Inject constructor(
     override suspend fun fetchPurchaseById(
         token: String,
         purchaseId: Int
-    ): ResultWrapper<PurchaseResponse> {
+    ): ResultWrapper<DetailPurchaseResponse> {
         return safeApiCall(Dispatchers.IO) {api.getPurchase(token, purchaseId)}
     }
 

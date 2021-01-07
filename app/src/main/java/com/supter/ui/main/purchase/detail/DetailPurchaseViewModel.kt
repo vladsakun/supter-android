@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.db.entity.UserEntity
 import com.supter.data.response.ResultWrapper
-import com.supter.data.response.purchase.PurchaseResponse
+import com.supter.data.response.purchase.DetailPurchaseResponse
 import com.supter.data.response.purchase.UpdatePurchaseResponse
 import com.supter.repository.PurchaseRepository
 import kotlinx.coroutines.Dispatchers
@@ -62,9 +62,9 @@ class DetailPurchaseViewModel @ViewModelInject constructor(
         return userEntityMutableLiveData
     }
 
-    private val _purchase = MutableLiveData<ResultWrapper<PurchaseResponse>>()
+    private val _purchase = MutableLiveData<ResultWrapper<DetailPurchaseResponse>>()
 
-    fun getPurchaseFromApi(purchaseEntity: PurchaseEntity): LiveData<ResultWrapper<PurchaseResponse>> {
+    fun getPurchaseFromApi(purchaseEntity: PurchaseEntity): LiveData<ResultWrapper<DetailPurchaseResponse>> {
 
         viewModelScope.launch(Dispatchers.IO) {
             _purchase.postValue(purchaseRepository.getPurchaseFromApiById(purchaseEntity))

@@ -6,7 +6,7 @@ import com.supter.data.db.entity.UserEntity
 import com.supter.data.response.*
 import com.supter.data.response.account.AccountResponse
 import com.supter.data.response.purchase.CreatePurchaseResponse
-import com.supter.data.response.purchase.PurchaseResponse
+import com.supter.data.response.purchase.DetailPurchaseResponse
 import com.supter.data.response.purchase.UpdatePurchaseResponse
 import kotlinx.coroutines.flow.Flow
 
@@ -14,7 +14,7 @@ interface PurchaseRepository {
 
     fun getPurchaseList(userEntity: UserEntity): Flow<List<PurchaseEntity>>
 
-    suspend fun getPurchaseFromApiById(purchaseEntity: PurchaseEntity): ResultWrapper<PurchaseResponse>
+    suspend fun getPurchaseFromApiById(purchaseEntity: PurchaseEntity): ResultWrapper<DetailPurchaseResponse>
 
     suspend fun createPurchase(createPurchaseBody: PurchaseBody): ResultWrapper<CreatePurchaseResponse>
 

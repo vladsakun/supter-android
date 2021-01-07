@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import androidx.core.view.isVisible
@@ -22,7 +23,7 @@ import com.supter.R
 import com.supter.data.model.PotentialItem
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.response.ResultWrapper
-import com.supter.data.response.purchase.PurchaseResponse
+import com.supter.data.response.purchase.DetailPurchaseResponse
 import com.supter.data.response.purchase.QuestionsItem
 import com.supter.data.response.purchase.UpdatePurchaseResponse
 import com.supter.databinding.DetailPurchaseFragmentBinding
@@ -106,6 +107,15 @@ class DetailPurchaseFragment : Fragment() {
     private fun bindViews() {
         initThinkingProgress()
         bindObservers()
+
+        mBinding.link.setOnClickListener {
+            if(purchaseEntity.link == null) {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(purchaseEntity.link))
+                requireContext().startActivity(intent)
+            }else{
+                Toasty.info(requireContext(), getString(R.string.link_is_empty)).show()
+            }
+        }
     }
 
     private fun setClickListeners() {
@@ -128,7 +138,7 @@ class DetailPurchaseFragment : Fragment() {
 
     private fun bindObservers() {
         viewModel.getPurchaseFromApi(purchaseEntity).observe(viewLifecycleOwner,
-            Observer<ResultWrapper<PurchaseResponse>> { purchaseResponse->
+            Observer<ResultWrapper<DetailPurchaseResponse>> { purchaseResponse->
                 if (purchaseResponse is ResultWrapper.Success) {
                     initQuestionsList(purchaseResponse.value)
                 }
@@ -185,11 +195,11 @@ class DetailPurchaseFragment : Fragment() {
         Toasty.success(requireContext(), getString(R.string.successfully_updated)).show()
     }
 
-    private fun initQuestionsList(purchaseEntity: PurchaseResponse) {
+    private fun initQuestionsList(detailPurchaseEntity: DetailPurchaseResponse) {
 
         val answeredQuestions =
-            purchaseEntity.data.questions.filter { it.purchaseQuestion != null }
-        val toDoQuestions = purchaseEntity.data.questions.filter { it.purchaseQuestion == null }
+            detailPurchaseEntity.data.questions.filter { it.purchaseQuestion != null }
+        val toDoQuestions = detailPurchaseEntity.data.questions.filter { it.purchaseQuestion == null }
 
         val itemDecoration = SimpleDividerItemDecorationLastExcluded(10)
 
@@ -203,7 +213,7 @@ class DetailPurchaseFragment : Fragment() {
                     toDoPotentialItemList,
                     false,
                     requireActivity(),
-                    purchaseEntity.data.id
+                    detailPurchaseEntity.data.id
                 )
 
             mBinding.toIncreasePotentialRecyclerview.adapter = toIncreasePotentialAdapter
@@ -222,7 +232,7 @@ class DetailPurchaseFragment : Fragment() {
                     answeredPotentialItemList,
                     true,
                     requireActivity(),
-                    purchaseEntity.data.id
+                    detailPurchaseEntity.data.id
                 )
 
             mBinding.doneRecyclerview.adapter = donePotentialAdapter

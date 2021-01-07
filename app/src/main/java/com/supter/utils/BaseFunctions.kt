@@ -106,7 +106,8 @@ fun convertDataItemToPurchaseEntity(dataItem: PurchaseData): PurchaseEntity {
             realPeriod = 0,
             thinkingTime = thinkingTime,
             createdAt = createdAt,
-            image = null
+            link = link,
+            image = null,
         )
     }
 }

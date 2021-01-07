@@ -10,7 +10,7 @@ import com.supter.data.response.account.LoginResponse
 import com.supter.data.response.account.RegistrationResponse
 import com.supter.data.response.purchase.CreatePurchaseResponse
 import com.supter.data.response.purchase.GetPurchasesResponse
-import com.supter.data.response.purchase.PurchaseResponse
+import com.supter.data.response.purchase.DetailPurchaseResponse
 import com.supter.data.response.purchase.UpdatePurchaseResponse
 import com.supter.utils.Authorization
 import retrofit2.http.*
@@ -60,7 +60,7 @@ interface Api {
     suspend fun getPurchase(
         @Header(Authorization) token: String,
         @Path("id") purchaseId: Int
-    ): PurchaseResponse
+    ): DetailPurchaseResponse
 
     // Update purchase
     @PUT("/purchases/{id}")

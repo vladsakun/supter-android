@@ -9,7 +9,7 @@ import com.supter.data.network.PurchaseNetworkDataSource
 import com.supter.data.response.*
 import com.supter.data.response.account.AccountResponse
 import com.supter.data.response.purchase.CreatePurchaseResponse
-import com.supter.data.response.purchase.PurchaseResponse
+import com.supter.data.response.purchase.DetailPurchaseResponse
 import com.supter.data.response.purchase.UpdatePurchaseResponse
 import com.supter.utils.SystemUtils
 import com.supter.utils.convertAccountResponseToUserEntity
@@ -62,7 +62,7 @@ class PurchaseRepositoryImpl @Inject constructor(
         return dao.getPurchaseFlowList().map { updatePurchasesData(it, userEntity) }
     }
 
-    override suspend fun getPurchaseFromApiById(purchaseEntity: PurchaseEntity): ResultWrapper<PurchaseResponse> {
+    override suspend fun getPurchaseFromApiById(purchaseEntity: PurchaseEntity): ResultWrapper<DetailPurchaseResponse> {
         return networkDataSource.fetchPurchaseById(SystemUtils.getToken(context), purchaseEntity.id)
     }
 
@@ -150,7 +150,7 @@ class PurchaseRepositoryImpl @Inject constructor(
                         order, stage, potential,
                         description, null, remind = 0.0,
                         realPeriod = 0, thinkingTime = thinkingTime,
-                        createdAt = createdAt, image = null
+                        createdAt = createdAt, link = link, image = null,
                     )
                 )
             }

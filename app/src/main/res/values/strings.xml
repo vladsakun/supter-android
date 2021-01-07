@@ -60,6 +60,8 @@
     <string name="ok">OK</string>
     <string name="fill_account">Fill account</string>
     <string name="financial_situation_to_make_calculations">We need to know some info about your financial situation to make calculations</string>
-    <string name="potential_less_70">Potential of %s &lt; 70</string>  <!-- &lt; == '<' -->
+    <string name="potential_less_70">Potential of %s &lt; 70</string> <!-- &lt; == '<' -->
+    <string name="link"><u>Link</u></string>
+    <string name="link_is_empty">Link is empty</string>
 
 </resources>

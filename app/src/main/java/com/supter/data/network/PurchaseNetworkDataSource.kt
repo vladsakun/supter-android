@@ -8,13 +8,13 @@ import com.supter.data.response.account.LoginResponse
 import com.supter.data.response.account.RegistrationResponse
 import com.supter.data.response.purchase.CreatePurchaseResponse
 import com.supter.data.response.purchase.GetPurchasesResponse
-import com.supter.data.response.purchase.PurchaseResponse
+import com.supter.data.response.purchase.DetailPurchaseResponse
 import com.supter.data.response.purchase.UpdatePurchaseResponse
 
 interface PurchaseNetworkDataSource {
     suspend fun fetchPurchaseList(token: String): ResultWrapper<GetPurchasesResponse>
 
-    suspend fun fetchPurchaseById(token: String, purchaseId: Int): ResultWrapper<PurchaseResponse>
+    suspend fun fetchPurchaseById(token: String, purchaseId: Int): ResultWrapper<DetailPurchaseResponse>
 
     suspend fun createPurchase(
             token: String,

@@ -1,6 +1,6 @@
 package com.supter.data.response.purchase
 
-data class PurchaseResponse(
+data class DetailPurchaseResponse(
 	val data: Data
 )
 
