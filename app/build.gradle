@@ -166,5 +166,7 @@ dependencies {
     // CircularView
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 
+    // Circular progress TODO DO NOT UPDATE
+    implementation 'com.github.guilhe:circular-progress-view:1.4.2'
 
 }

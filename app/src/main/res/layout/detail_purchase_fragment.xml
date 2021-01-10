@@ -24,34 +24,25 @@
             android:orientation="vertical"
             android:transitionName="@string/purchase_card_detail_transition_name">
 
-            <com.timqi.sectorprogressview.ColorfulRingProgressView
-                style="@style/PercentageView"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/marginBetweenBigViews"
-                app:percent="@{purchase.potential}" />
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/progressHeight"
-                android:layout_marginTop="@dimen/marginBetweenBigViews">
+                android:layout_height="wrap_content">
 
-                <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
-                    android:id="@+id/thinkingProgress"
-                    style="@style/Progress"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                <com.github.guilhe.views.CircularProgressView
+                    style="@style/MyCircularProgressView"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:rcProgressColor="?attr/colorSecondary" />
+                    app:progress="20" />
 
-                <TextView
-                    android:id="@+id/thinkingTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:textColor="#444444"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="@dimen/potentialProgressViewSize"
+                    android:layout_height="@dimen/potentialProgressViewSize"
+                    android:padding="30dp"
+                    android:src="@mipmap/ic_launcher"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -63,25 +54,37 @@
                 android:layout_marginTop="@dimen/marginBetweenBigViews">
 
                 <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
-                    android:id="@+id/availabilityProgress"
+                    android:id="@+id/thinkingProgress"
                     style="@style/Progress"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:rcProgressColor="?attr/colorPrimary" />
-
-                <TextView
-                    android:id="@+id/availabilityTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:textColor="@color/black_850"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <com.supter.views.OutlineTextView
+                    android:id="@+id/thinkingTime"
+                    style="@style/OutlinedProgressText"
+                    app:layout_constraintBottom_toBottomOf="@id/thinkingProgress"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/thinkingProgress" />
+
+                <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
+                    android:id="@+id/availabilityProgress"
+                    style="@style/Progress"
+                    android:layout_marginTop="@dimen/marginBetweenBigViews"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/thinkingProgress"
+                    app:rcProgress="80" />
+
+
+                <com.supter.views.OutlineTextView
+                    android:id="@+id/availabilityTime"
+                    style="@style/OutlinedProgressText"
+                    android:text="3 hours"
+                    app:layout_constraintBottom_toBottomOf="@id/availabilityProgress"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/availabilityProgress"
+                    tools:text="3 days" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -280,6 +283,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/stage"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"

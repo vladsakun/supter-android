@@ -51,8 +51,23 @@
         <item name="rcMax">100</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/progressHeight</item>
-        <item name="rcBackgroundColor">@color/gray_100</item>
-        <item name="rcRadius">@dimen/cardCornerRadius</item>
+        <item name="rcProgressColor">?attr/colorPrimary</item>
+        <item name="rcSecondaryProgress">100</item>
+        <item name="rcRadius">0dp</item>
+        <item name="android:background">@drawable/progress_border</item>
+        <item name="rcSecondaryProgressColor">?android:colorBackground</item>
+    </style>
+
+    <style name="OutlinedProgressText" parent="Widget.MaterialComponents.TextView">
+        <item name="strokeColor">?android:colorBackground</item>
+        <item name="strokeJoinStyle">miter</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
     </style>
 
     <style name="DetailPurchaseTextView" parent="Widget.MaterialComponents.TextView">
@@ -68,16 +83,19 @@
         <item name="android:background">@drawable/border</item>
     </style>
 
-    <style name="ParentPercentageView" parent="">
+    <style name="ParentCircularProgressView" parent="">
         <item name="android:layout_width">@dimen/potentialProgressViewSize</item>
         <item name="android:layout_height">@dimen/potentialProgressViewSize</item>
-        <item name="strokeWidth">21dp</item>
+        <item name="backgroundAlphaEnabled">false</item>
+        <item name="progressBarRounded">false</item>
+        <item name="shadow">false</item>
+        <item name="startingAngle">90</item>
+        <item name="progressBarColor">?attr/colorPrimary</item>
+        <item name="progressBarThickness">14dp</item>
     </style>
 
-    <style name="PercentageView" parent="ParentPercentageView">
-        <item name="bgColor">@color/light_gray</item>
-        <item name="fgColorEnd">@color/orange_700</item>
-        <item name="fgColorStart">@color/orange_500</item>
+    <style name="MyCircularProgressView" parent="ParentCircularProgressView">
+        <item name="backgroundColor">@color/light_gray</item>
     </style>
 
     <!--Profile-->

@@ -20,7 +20,7 @@
     <!-- Detail purchase-->
     <dimen name="marginBetweenHintAndView">5dp</dimen>
     <dimen name="marginBetweenBigViews">16dp</dimen>
-    <dimen name="progressHeight">30dp</dimen>
+    <dimen name="progressHeight">40dp</dimen>
 
     <!--Potential item-->
     <dimen name="cardWidth">150dp</dimen>
@@ -33,7 +33,7 @@
 
     <!--  ColorfulRingProgressView  -->
     <dimen name="strokeWidth">21dp</dimen>
-    <dimen name="potentialProgressViewSize">200dp</dimen>
+    <dimen name="potentialProgressViewSize">230dp</dimen>
 
     <!--  Button  -->
     <dimen name="buttonMinWidth">150dp</dimen>
