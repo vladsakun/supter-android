@@ -118,8 +118,12 @@ fun convertAccountResponseToUserEntity(accountResponse: AccountResponse):UserEnt
     }
 }
 
-fun getPrettyDate(date: Number): String {
-    val time = date.toDouble() * 24 // hours
+/**
+ * @param days
+ */
+
+fun getPrettyDate(days: Number): String {
+    val time = days.toDouble() * 24 // convert days to hours
 
     return if (time >= 24.0 && time < (31.0 * 24)) {
         (BigDecimal(time / 24).setScale(1, RoundingMode.HALF_EVEN)).toString() + " days"

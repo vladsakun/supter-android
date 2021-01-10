@@ -1,5 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
+    <!--Default-->
     <style name="SplashTheme" parent="Theme.MaterialComponents.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_screen</item>
     </style>
@@ -8,6 +9,11 @@
         <item name="android:paddingTop">@dimen/activity_vertical_margin</item>
         <item name="android:paddingLeft">@dimen/activity_horizontal_margin</item>
         <item name="android:paddingRight">@dimen/activity_horizontal_margin</item>
+    </style>
+
+    <style name="DefaultCardView" parent="Widget.MaterialComponents.CardView">
+        <item name="cardCornerRadius">@dimen/cardCornerRadius</item>
+        <item name="cardElevation">@dimen/cardElevation</item>
     </style>
 
     <style name="AuthButton" parent="Widget.MaterialComponents.Button">
@@ -20,6 +26,7 @@
     </style>
 
     <!--Dashboard-->
+
     <style name="PotentialProgressParent" parent="">
         <item name="rcMax">100</item>
         <item name="rcSecondaryProgress">100</item>
@@ -32,14 +39,10 @@
     </style>
 
     <!-- Detail Purchase -->
-    <style name="DefaultCardView" parent="Widget.MaterialComponents.CardView">
-        <item name="cardUseCompatPadding">true</item>
-        <item name="cardCornerRadius">@dimen/cardCornerRadius</item>
-        <item name="cardElevation">@dimen/cardElevation</item>
-    </style>
 
     <style name="PurchaseInfoMaterialCardView" parent="DefaultCardView">
         <item name="contentPaddingBottom">@dimen/cardPaddingHorizontal</item>
+        <item name="contentPaddingTop">@dimen/cardPaddingHorizontal</item>
         <item name="contentPaddingRight">@dimen/cardPaddingHorizontal</item>
         <item name="contentPaddingLeft">@dimen/cardPaddingHorizontal</item>
     </style>
@@ -52,32 +55,33 @@
         <item name="rcRadius">@dimen/cardCornerRadius</item>
     </style>
 
-    <style name="PotentialItemCardShape" parent="ShapeAppearance.MaterialComponents.MediumComponent">
-        <item name="cornerFamilyTopRight">cut</item>
-        <item name="cornerSizeTopRight">13dp</item>
-    </style>
-
     <style name="DetailPurchaseTextView" parent="Widget.MaterialComponents.TextView">
         <item name="android:layout_marginTop">10dp</item>
         <item name="android:textAppearance">@style/TextAppearance.MyTheme.Subtitle1</item>
     </style>
 
+    <style name="DetailPurchaseInfoEditText" parent="">
+        <item name="android:paddingStart">13dp</item>
+        <item name="android:paddingEnd">13dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:background">@drawable/border</item>
+    </style>
+
     <style name="ParentPercentageView" parent="">
         <item name="android:layout_width">@dimen/potentialProgressViewSize</item>
         <item name="android:layout_height">@dimen/potentialProgressViewSize</item>
-        <item name="percentageWidth">50</item>
-        <item name="centerColor">?android:colorBackground</item>
-        <item name="animDuration">1000</item>
-        <item name="textSize">42sp</item>
-        <item name="textColor">?android:textColorPrimary</item>
+        <item name="strokeWidth">21dp</item>
     </style>
 
     <style name="PercentageView" parent="ParentPercentageView">
-        <item name="progressBackgroundColor">@color/light_gray</item>
-        <item name="progressColor">@color/orange_700</item>
+        <item name="bgColor">@color/light_gray</item>
+        <item name="fgColorEnd">@color/orange_700</item>
+        <item name="fgColorStart">@color/orange_500</item>
     </style>
 
     <!--Profile-->
+
     <style name="ProfileTextView" parent="Widget.MaterialComponents.TextView">
         <item name="android:paddingTop">20dp</item>
         <item name="android:paddingBottom">20dp</item>
@@ -91,24 +95,8 @@
         <item name="endIconMode">custom</item>
     </style>
 
-    <!--Bottom Sheets-->
-    <style name="ThemeOverlay.MyTheme.BottomSheetDialog" parent="ThemeOverlay.MaterialComponents.Dialog">
-        <item name="android:windowIsFloating">false</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowAnimationStyle">@style/Animation.MyTheme.BottomSheet.Modal</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="bottomSheetStyle">@style/Widget.MyTheme.BottomSheet.Modal</item>
-        <item name="android:navigationBarColor">?attr/colorSurface</item>
-        <item name="android:navigationBarDividerColor" tools:ignore="NewApi">
-            @android:color/transparent
-        </item>
-    </style>
-
-    <style name="Widget.MyTheme.BottomSheet.Modal" parent="Widget.MaterialComponents.BottomSheet.Modal">
-        <item name="shapeAppearanceOverlay">?attr/shapeAppearanceLargeComponent</item>
-    </style>
-
     <!--Navigation Drawer-->
+
     <style name="Widget.MyTheme.NavigationView" parent="Widget.MaterialComponents.NavigationView">
         <item name="itemTextAppearance">?attr/textAppearanceBody2</item>
     </style>
@@ -129,4 +117,5 @@
         <item name="android:paddingRight">5dp</item>
         <item name="backgroundTint">?attr/colorSecondary</item>
     </style>
+
 </resources>

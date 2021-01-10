@@ -103,7 +103,7 @@ class DetailPurchaseFragment : ScopedFragment() {
         purchaseEntity = args.purchaseEntity
 
         mBinding.purchase = purchaseEntity
-        mBinding.description.text = requireContext().getString(R.string.description, purchaseEntity.description ?: "")
+        mBinding.description.setText(purchaseEntity.description ?: "")
 
         bindViews()
         setClickListeners()
@@ -134,10 +134,6 @@ class DetailPurchaseFragment : ScopedFragment() {
     }
 
     private fun setClickListeners() {
-
-        mBinding.percentageView.setOnClickListener {
-            animatePotential()
-        }
 
 //        mBinding.saveChanges.setOnClickListener {
 //            with(mBinding) {
@@ -224,7 +220,7 @@ class DetailPurchaseFragment : ScopedFragment() {
 
         } else {
             mBinding.thinkingTime.text =
-                getPrettyDate((currentProgressInPercentage * 60 * 60).toDouble())
+                getPrettyDate((currentProgressInHours / 24).toDouble())
         }
 
         val oneSecPercent: Float = 1 * 100 / (thinkingTimeInSeconds - createdAtInSeconds).toFloat()
@@ -341,10 +337,6 @@ class DetailPurchaseFragment : ScopedFragment() {
                 })
 
         }
-    }
-
-    private fun animatePotential() {
-        mBinding.percentageView.setPercentage(purchaseEntity.potential.roundToInt())
     }
 
     private fun showSuccessMessage() {

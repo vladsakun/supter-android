@@ -76,7 +76,7 @@ internal class ItemAdapter constructor(
 
             if(mColumnStage != STATUS_DONE) {
 
-                val realPeriod = period.toFloat() * purchaseEntity.realPeriod - dayOfMonth + salaryDay
+                val realPeriod = period.toFloat() * purchaseEntity.realPeriod - dayOfMonth + salaryDay // in days
 
                 binding.realPeriod.text = getPrettyDate(realPeriod)
             }

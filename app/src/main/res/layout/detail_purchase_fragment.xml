@@ -24,12 +24,11 @@
             android:orientation="vertical"
             android:transitionName="@string/purchase_card_detail_transition_name">
 
-            <me.turkergoksu.lib.PercentageView
-                android:id="@+id/percentageView"
+            <com.timqi.sectorprogressview.ColorfulRingProgressView
                 style="@style/PercentageView"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/marginBetweenBigViews"
-                app:percentage="@{Math.round(purchase.potential)}" />
+                app:percent="@{purchase.potential}" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -185,7 +184,6 @@
 
                 </LinearLayout>
 
-
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
@@ -200,58 +198,95 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/stage"
-                        android:layout_width="wrap_content"
+                    <FrameLayout
+                        style="@style/DetailPurchaseInfoEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@null"
+                            android:hint="@string/title"
+                            android:text="@{purchase.title}" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        style="@style/DetailPurchaseInfoEditText"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="13dp"
-                        android:text="@{@string/stage.concat(` `).concat(purchase.stage)}"
-                        android:textAppearance="@style/TextAppearance.MyTheme.Subtitle1"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        tools:text="Stage: wish" />
+                        android:layout_marginTop="@dimen/marginBetweenBigViews">
+
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@null"
+                            android:hint="@string/price"
+                            android:inputType="numberDecimal"
+                            android:text="@{String.valueOf(purchase.price)}" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        style="@style/DetailPurchaseInfoEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/marginBetweenBigViews">
+
+                        <EditText
+                            android:id="@+id/description"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@null"
+                            android:hint="@string/description"
+                            android:inputType="textMultiLine" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        style="@style/DetailPurchaseInfoEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/marginBetweenBigViews">
+
+                        <EditText
+                            android:id="@+id/link"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@null"
+                            android:hint="@string/link" />
+                    </FrameLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                style="@style/PurchaseInfoMaterialCardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/marginBetweenBigViews">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/real_period"
-                        style="@style/DetailPurchaseTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{@string/real_period.concat(` `).concat(String.valueOf(purchase.realPeriod))}"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/stage"
-                        tools:text="Real period: 60 days" />
+                        android:layout_gravity="center_horizontal"
+                        android:text="@string/stage"
+                        android:textAppearance="@style/TextAppearance.MyTheme.Headline6"
+                        android:textColor="?attr/colorPrimary"
+                        android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/order"
-                        style="@style/DetailPurchaseTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{@string/order.concat(` `).concat(String.valueOf(purchase.order))}"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/real_period"
-                        tools:text="Order: 4" />
-
-                    <TextView
-                        android:id="@+id/description"
-                        style="@style/DetailPurchaseTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/real_period"
-                        tools:text="Description Trlalalalalla" />
-
-                    <TextView
-                        style="@style/DetailPurchaseTextView"
-                        android:id="@+id/link"
-                        android:textStyle=""
-                        android:textColor="?attr/colorSecondaryVariant"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/link"/>
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="@dimen/marginBetweenHintAndView"
+                        android:text="@{purchase.stage}"
+                        android:textAppearance="@style/TextAppearance.MyTheme.Body1"
+                        tools:text="Want" />
 
                 </LinearLayout>
 

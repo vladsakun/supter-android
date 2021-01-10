@@ -32,17 +32,19 @@ public class OutlineTextView extends androidx.appcompat.widget.AppCompatTextView
         init(attrs);
     }
 
+
     public void init(AttributeSet attrs) {
 
         if (attrs != null) {
-            TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.CoustomTextView);
 
-            if (a.hasValue(R.styleable.CoustomTextView_strokeColor)) {
-                float strokeWidth = a.getDimensionPixelSize(R.styleable.CoustomTextView_strokeWidth, 1);
-                int strokeColor = a.getColor(R.styleable.CoustomTextView_strokeColor, 0xff000000);
-                float strokeMiter = a.getDimensionPixelSize(R.styleable.CoustomTextView_strokeMiter, 10);
+            TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.OutlinedTextView);
+
+            if (a.hasValue(R.styleable.OutlinedTextView_strokeColor)) {
+                float strokeWidth = a.getDimensionPixelSize(R.styleable.OutlinedTextView_strokeWidth, 1);
+                int strokeColor = a.getColor(R.styleable.OutlinedTextView_strokeColor, 0xff000000);
+                float strokeMiter = a.getDimensionPixelSize(R.styleable.OutlinedTextView_strokeMiter, 10);
                 Paint.Join strokeJoin = null;
-                switch (a.getInt(R.styleable.CoustomTextView_strokeJoinStyle, 0)) {
+                switch (a.getInt(R.styleable.OutlinedTextView_strokeJoinStyle, 0)) {
                     case (0):
                         strokeJoin = Paint.Join.MITER;
                         break;
