@@ -103,6 +103,7 @@ class DetailPurchaseFragment : ScopedFragment() {
         purchaseEntity = args.purchaseEntity
 
         mBinding.purchase = purchaseEntity
+        mBinding.description.text = requireContext().getString(R.string.description, purchaseEntity.description ?: "")
 
         bindViews()
         setClickListeners()
@@ -111,30 +112,6 @@ class DetailPurchaseFragment : ScopedFragment() {
     override fun onStart() {
         super.onStart()
         startAnswerBR()
-    }
-
-    private fun updateQuestionAdapters() {
-        launch {
-            val purchase = viewModel.fetchPurchase(purchaseEntity)
-            if (purchase != null) {
-
-                val answeredQuestions =
-                    purchase.data.questions.filter { it.purchaseQuestion != null }
-                val toDoQuestions =
-                    purchase.data.questions.filter { it.purchaseQuestion == null }
-
-                donePotentialAdapter?.updateItems(
-                    convertQuestionListToPotentialItems(
-                        answeredQuestions
-                    )
-                )
-                toIncreasePotentialAdapter?.updateItems(
-                    convertQuestionListToPotentialItems(
-                        toDoQuestions
-                    )
-                )
-            }
-        }
     }
 
     override fun onStop() {
@@ -147,7 +124,7 @@ class DetailPurchaseFragment : ScopedFragment() {
         bindObservers()
 
         mBinding.link.setOnClickListener {
-            if (purchaseEntity.link == null) {
+            if (purchaseEntity.link != null) {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(purchaseEntity.link))
                 requireContext().startActivity(intent)
             } else {
@@ -197,6 +174,30 @@ class DetailPurchaseFragment : ScopedFragment() {
         })
     }
 
+    private fun updateQuestionAdapters() {
+        launch {
+            val purchase = viewModel.fetchPurchase(purchaseEntity)
+            if (purchase != null) {
+
+                val answeredQuestions =
+                    purchase.data.questions.filter { it.purchaseQuestion != null }
+                val toDoQuestions =
+                    purchase.data.questions.filter { it.purchaseQuestion == null }
+
+                donePotentialAdapter?.updateItems(
+                    convertQuestionListToPotentialItems(
+                        answeredQuestions
+                    )
+                )
+                toIncreasePotentialAdapter?.updateItems(
+                    convertQuestionListToPotentialItems(
+                        toDoQuestions
+                    )
+                )
+            }
+        }
+    }
+
     private fun initThinkingProgress() {
 
         val thinkingTimeInSeconds =
@@ -229,10 +230,6 @@ class DetailPurchaseFragment : ScopedFragment() {
         val oneSecPercent: Float = 1 * 100 / (thinkingTimeInSeconds - createdAtInSeconds).toFloat()
 
         viewModel.timer(currentProgressInPercentage.toFloat(), oneSecPercent)
-    }
-
-    private fun showSuccessMessage() {
-        Toasty.success(requireContext(), getString(R.string.successfully_updated)).show()
     }
 
     private fun initQuestionsList(detailPurchaseEntity: DetailPurchaseResponse) {
@@ -348,6 +345,10 @@ class DetailPurchaseFragment : ScopedFragment() {
 
     private fun animatePotential() {
         mBinding.percentageView.setPercentage(purchaseEntity.potential.roundToInt())
+    }
+
+    private fun showSuccessMessage() {
+        Toasty.success(requireContext(), getString(R.string.successfully_updated)).show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

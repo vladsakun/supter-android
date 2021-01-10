@@ -10,4 +10,17 @@
         <attr name="lb_btnDisabledColor" format="reference|color" />
         <attr name="lb_disabledTextColor" format="reference|string" />
     </declare-styleable>
+
+    <declare-styleable name="OutlinedTextView">
+        <attr name="outerShadowRadius" format="dimension" />
+        <attr name="strokeWidth" format="dimension" />
+        <attr name="strokeMiter" format="dimension" />
+        <attr name="strokeColor" format="color" />
+        <attr name="strokeJoinStyle">
+            <enum name="miter" value="0" />
+            <enum name="bevel" value="1" />
+            <enum name="round" value="2" />
+        </attr>
+    </declare-styleable>
+
 </resources>

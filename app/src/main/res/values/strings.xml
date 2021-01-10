@@ -27,7 +27,7 @@
     <string name="real_period">Real period</string>
     <string name="order">Order</string>
     <string name="price">Price</string>
-    <string name="description">Description</string>
+    <string name="description">Description %s</string>
     <string name="save">Save</string>
     <string name="save_changes">Save changes</string>
     <string name="how_would_the_purchase_be_useful">How would the purchase be useful?</string>

@@ -239,11 +239,10 @@
                         style="@style/DetailPurchaseTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{@string/description.concat(` `).concat(String.valueOf(purchase.description))}"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/real_period"
-                        tools:text="Description: Trlalalalalla" />
+                        tools:text="Description Trlalalalalla" />
 
                     <TextView
                         style="@style/DetailPurchaseTextView"

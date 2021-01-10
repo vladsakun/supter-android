@@ -12,9 +12,6 @@
     <color name="lineColor">#00c0c9</color>
 
     <!--Color palette-->
-    <color name="purple_200">#bb86fc</color> <!--Color primary (dark)-->
-    <color name="purple_500">#6200ee</color> <!--Color primary (light)-->
-
     <color name="orange_200">#ffcd80</color> <!--Color primary (dark)-->
     <color name="orange_500">#ff9900</color> <!--Color primary (light)-->
 
