@@ -1,5 +1,6 @@
 package com.supter.ui.main.purchase.detail
 
+import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -22,6 +23,8 @@ class DetailPurchaseViewModel @ViewModelInject constructor(
     private val purchaseRepository: PurchaseRepository
 ) : ViewModel() {
 
+    private val TAG = "DetailPurchaseViewModel"
+
     private val _updateResponseResultLiveData =
         MutableLiveData<ResultWrapper<UpdatePurchaseResponse>>()
 
@@ -38,7 +41,9 @@ class DetailPurchaseViewModel @ViewModelInject constructor(
 
     fun updatePurchase(purchaseEntity: PurchaseEntity){
         viewModelScope.launch(Dispatchers.IO){
-            _updateResponseResultLiveData.postValue(purchaseRepository.updateRemotePurchase(purchaseEntity))
+            val resp = purchaseRepository.updateRemotePurchase(purchaseEntity)
+            Log.d(TAG, "updatePurchase: $resp")
+            _updateResponseResultLiveData.postValue(resp)
         }
     }
 

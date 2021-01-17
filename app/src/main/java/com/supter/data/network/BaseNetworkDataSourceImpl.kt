@@ -4,6 +4,7 @@ import android.util.Log
 import com.google.gson.Gson
 import com.supter.data.response.ErrorResponse
 import com.supter.data.response.ResultWrapper
+import com.supter.utils.logException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
@@ -31,7 +32,12 @@ open class BaseNetworkDataSourceImpl : BaseNetworkDataSource {
 
             } catch (throwable: Throwable) {
                 when (throwable) {
-                    is IOException -> return@withContext ResultWrapper.NetworkError
+
+                    is IOException -> {
+                        logException(throwable)
+                        return@withContext ResultWrapper.NetworkError
+                    }
+
                     is HttpException -> {
                         val code = throwable.code()
                         val errorResponse = convertErrorBody(throwable)

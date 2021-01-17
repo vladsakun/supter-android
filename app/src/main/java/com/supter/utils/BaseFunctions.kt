@@ -74,9 +74,7 @@ fun logException(e: Exception) {
      =======
          """.trimIndent()
 
-    if (BuildConfig.DEBUG) {
-        Log.e(TAG, message, e)
-    }
+    Log.e(TAG, message, e)
 
 }
 
@@ -112,9 +110,17 @@ fun convertDataItemToPurchaseEntity(dataItem: PurchaseData): PurchaseEntity {
     }
 }
 
-fun convertAccountResponseToUserEntity(accountResponse: AccountResponse):UserEntity{
+fun convertAccountResponseToUserEntity(accountResponse: AccountResponse): UserEntity {
     with(accountResponse.data) {
-        return UserEntity(id, name, email,incomeRemainder?.toFloat(), balance?.toFloat(), period, salaryDay)
+        return UserEntity(
+            id,
+            name,
+            email,
+            incomeRemainder?.toFloat(),
+            balance?.toFloat(),
+            period,
+            salaryDay
+        )
     }
 }
 
@@ -142,7 +148,10 @@ fun getPrettyDate(days: Number): String {
     }
 }
 
-fun updatePurchasesData(purchaseList: List<PurchaseEntity>, user: UserEntity): List<PurchaseEntity> {
+fun updatePurchasesData(
+    purchaseList: List<PurchaseEntity>,
+    user: UserEntity
+): List<PurchaseEntity> {
 
     if (user.incomeRemainder != null && user.period != null) {
 

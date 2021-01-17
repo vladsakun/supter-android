@@ -30,10 +30,7 @@ import com.supter.data.response.purchase.UpdatePurchaseResponse
 import com.supter.databinding.DetailPurchaseFragmentBinding
 import com.supter.ui.adapters.PotentialAdapter
 import com.supter.ui.adapters.SimpleDividerItemDecorationLastExcluded
-import com.supter.utils.ScopedFragment
-import com.supter.utils.getPrettyDate
-import com.supter.utils.stringToDate
-import com.supter.utils.themeColor
+import com.supter.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.launch
@@ -147,8 +144,9 @@ class DetailPurchaseFragment : ScopedFragment() {
         mBinding.save.setOnClickListener {
             with(mBinding) {
                 purchaseEntity.title = title.editText?.text.toString()
-                purchaseEntity.description = description.editText?.text.toString()
                 purchaseEntity.price = price.editText?.text.toString().toDouble()
+                purchaseEntity.description = description.editText?.text.toString()
+                purchaseEntity.link = link.editText?.text.toString()
 
                 viewModel.updatePurchase(purchaseEntity)
             }
@@ -172,7 +170,7 @@ class DetailPurchaseFragment : ScopedFragment() {
             Observer<ResultWrapper<UpdatePurchaseResponse>> { updateResult ->
                 when (updateResult) {
                     is ResultWrapper.Success -> {
-                        refreshView(updateResult.value.data)
+                        refreshView(convertDataItemToPurchaseEntity(updateResult.value.data))
                         showSuccessMessage()
                     }
                     is ResultWrapper.GenericError -> {
@@ -390,7 +388,7 @@ class DetailPurchaseFragment : ScopedFragment() {
 
     }
 
-    fun onRingsClick() {
+    private fun onRingsClick() {
         if (areBigRingsVisible) {
             showSmallRings()
         } else {

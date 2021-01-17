@@ -26,8 +26,8 @@
             android:transitionName="@string/purchase_card_detail_transition_name">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
                 android:id="@+id/rings_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <androidx.constraintlayout.widget.Guideline
@@ -184,6 +184,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:gravity="center"
+                    android:text='@{String.valueOf((int)Math.ceil((double)purchase.potential)).concat("/100%")}'
                     android:textAppearance="@style/TextAppearance.MyTheme.Subtitle1"
                     android:textColor="@color/red_foreground"
                     android:textStyle="bold"
