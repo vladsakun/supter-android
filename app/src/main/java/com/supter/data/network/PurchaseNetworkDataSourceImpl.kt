@@ -1,9 +1,6 @@
 package com.supter.data.network
 
-import com.supter.data.body.AccountBody
-import com.supter.data.body.LoginParams
-import com.supter.data.body.PurchaseBody
-import com.supter.data.body.RegistrationParams
+import com.supter.data.body.*
 import com.supter.data.response.*
 import com.supter.data.response.account.AccountResponse
 import com.supter.data.response.account.LoginResponse
@@ -60,6 +57,14 @@ class PurchaseNetworkDataSourceImpl @Inject constructor(
     override suspend fun postPurchaseIdsList(token: String, purchaseIdsList: List<Int>): ResultWrapper<MessageResponse> {
         val ids = hashMapOf("ids" to purchaseIdsList)
         return safeApiCall(Dispatchers.IO) {api.putPurchasesOrder(token, ids)}
+    }
+
+    override suspend fun postPurchaseStage(
+        token: String,
+        purchaseId: Int,
+        changeStageBody: ChangeStageBody
+    ): ResultWrapper<CreatePurchaseResponse> {
+        return safeApiCall(Dispatchers.IO) {api.updatePurchaseStage(token, purchaseId, changeStageBody)}
     }
 
     override suspend fun registerWithCoroutines(

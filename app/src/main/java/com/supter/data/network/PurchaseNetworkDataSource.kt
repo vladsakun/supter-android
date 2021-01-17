@@ -1,6 +1,7 @@
 package com.supter.data.network
 
 import com.supter.data.body.AccountBody
+import com.supter.data.body.ChangeStageBody
 import com.supter.data.body.PurchaseBody
 import com.supter.data.response.*
 import com.supter.data.response.account.AccountResponse
@@ -39,6 +40,12 @@ interface PurchaseNetworkDataSource {
         token: String,
         purchaseIdsList: List<Int>,
     ): ResultWrapper<MessageResponse>
+
+    suspend fun postPurchaseStage(
+        token: String,
+        purchaseId: Int,
+        changeStageBody: ChangeStageBody
+    ): ResultWrapper<CreatePurchaseResponse>
 
     suspend fun registerWithCoroutines(
         name: String,

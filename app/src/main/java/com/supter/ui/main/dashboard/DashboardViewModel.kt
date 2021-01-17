@@ -2,11 +2,12 @@ package com.supter.ui.main.dashboard
 
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
+import com.supter.data.body.ChangeStageBody
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.db.entity.UserEntity
 import com.supter.data.response.ResultWrapper
 import com.supter.repository.PurchaseRepository
-import com.supter.utils.STATUS_PROCESS
+import com.supter.utils.STATUS_DECIDED
 import com.supter.utils.STATUS_WANT
 import com.supter.utils.convertAccountResponseToUserEntity
 import kotlinx.coroutines.Dispatchers
@@ -57,6 +58,22 @@ class DashboardViewModel @ViewModelInject constructor(
 
     }
 
+    fun moveToAnotherStage(
+        columnName: String,
+        purchaseListOfColumn: List<PurchaseEntity>,
+        purchaseEntity: PurchaseEntity
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.changePurchaseStage(
+                purchaseEntity.id,
+                ChangeStageBody(
+                    columnName,
+                    purchaseListOfColumn.indexOf(purchaseEntity)
+                )
+            )
+        }
+    }
+
     private val _purchaseList = MutableLiveData<List<PurchaseEntity>>()
 
     fun getPurchaseLiveData(): LiveData<List<PurchaseEntity>> {
@@ -69,7 +86,7 @@ class DashboardViewModel @ViewModelInject constructor(
 
     }
 
-    fun updatePurchasesData(purchaseList: List<PurchaseEntity>): List<PurchaseEntity> {
+    private fun updatePurchasesData(purchaseList: List<PurchaseEntity>): List<PurchaseEntity> {
 
         userEntity?.let { user ->
 
@@ -79,7 +96,7 @@ class DashboardViewModel @ViewModelInject constructor(
                 val purchaseListWithoutDoneAndSortedByStage = mutableListOf<PurchaseEntity>()
 
                 val processList =
-                    purchaseList.filter { it.stage == STATUS_PROCESS }.sortedBy { it.order }
+                    purchaseList.filter { it.stage == STATUS_DECIDED }.sortedBy { it.order }
 
                 for (purchase in processList) {
                     purchaseListWithoutDoneAndSortedByStage.add(purchase)

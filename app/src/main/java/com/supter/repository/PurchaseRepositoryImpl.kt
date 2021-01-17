@@ -1,6 +1,7 @@
 package com.supter.repository
 
 import android.content.Context
+import com.supter.data.body.ChangeStageBody
 import com.supter.data.body.PurchaseBody
 import com.supter.data.db.PurchaseDao
 import com.supter.data.db.entity.PurchaseEntity
@@ -100,6 +101,13 @@ class PurchaseRepositoryImpl @Inject constructor(
 
     override suspend fun putPurchasesOrder(purchaseIdsList: List<Int>): ResultWrapper<MessageResponse> {
         return networkDataSource.postPurchaseIdsList(SystemUtils.getToken(context), purchaseIdsList)
+    }
+
+    override suspend fun changePurchaseStage(
+        purchaseId: Int,
+        changeStageBody: ChangeStageBody
+    ): ResultWrapper<CreatePurchaseResponse> {
+        return networkDataSource.postPurchaseStage(SystemUtils.getToken(context), purchaseId, changeStageBody)
     }
 
     override suspend fun updateRemotePurchase(purchaseEntity: PurchaseEntity): ResultWrapper<UpdatePurchaseResponse> {

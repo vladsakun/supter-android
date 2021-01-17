@@ -1,5 +1,6 @@
 package com.supter.repository
 
+import com.supter.data.body.ChangeStageBody
 import com.supter.data.body.PurchaseBody
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.db.entity.UserEntity
@@ -23,6 +24,8 @@ interface PurchaseRepository {
     suspend fun deletePurchase(purchaseEntity: PurchaseEntity)
 
     suspend fun putPurchasesOrder(purchaseIdsList: List<Int>): ResultWrapper<MessageResponse>
+
+    suspend fun changePurchaseStage(purchaseId: Int, changeStageBody: ChangeStageBody): ResultWrapper<CreatePurchaseResponse>
 
     suspend fun updateRemotePurchase(purchaseEntity: PurchaseEntity): ResultWrapper<UpdatePurchaseResponse>
 

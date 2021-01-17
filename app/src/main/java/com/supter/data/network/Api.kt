@@ -1,9 +1,6 @@
 package com.supter.data.network
 
-import com.supter.data.body.AccountBody
-import com.supter.data.body.LoginParams
-import com.supter.data.body.PurchaseBody
-import com.supter.data.body.RegistrationParams
+import com.supter.data.body.*
 import com.supter.data.response.*
 import com.supter.data.response.account.AccountResponse
 import com.supter.data.response.account.LoginResponse
@@ -84,6 +81,14 @@ interface Api {
         @Header(Authorization) token: String,
         @Body ids: HashMap<String, List<Int>>
     ): MessageResponse
+
+    // Change purchase stage
+    @POST("/purchases/{id}/stage")
+    suspend fun updatePurchaseStage(
+        @Header(Authorization) token: String,
+        @Path("id") purchaseId: Int,
+        @Body changeStageBody: ChangeStageBody
+    ):CreatePurchaseResponse
 
     // ********************************************************Questions******************************************
     @FormUrlEncoded

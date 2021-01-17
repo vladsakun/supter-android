@@ -150,7 +150,7 @@ fun updatePurchasesData(purchaseList: List<PurchaseEntity>, user: UserEntity): L
         val purchaseListWithoutDoneAndSortedByStage = mutableListOf<PurchaseEntity>()
 
         val processList =
-            purchaseList.filter { it.stage == STATUS_PROCESS }.sortedBy { it.order }
+            purchaseList.filter { it.stage == STATUS_DECIDED }.sortedBy { it.order }
 
         for (purchase in processList) {
             purchaseListWithoutDoneAndSortedByStage.add(purchase)

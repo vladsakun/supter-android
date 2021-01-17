@@ -2,6 +2,7 @@ package com.supter.ui.main.dashboard
 
 import android.content.DialogInterface
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,11 +18,9 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.transition.MaterialElevationScale
 import com.supter.R
 import com.supter.data.db.entity.PurchaseEntity
-import com.supter.data.db.entity.UserEntity
-import com.supter.data.response.ResultWrapper
 import com.supter.databinding.FragmentDashboardBinding
 import com.supter.utils.STATUS_DONE
-import com.supter.utils.STATUS_PROCESS
+import com.supter.utils.STATUS_DECIDED
 import com.supter.utils.STATUS_WANT
 import com.supter.utils.ScopedFragment
 import com.supter.views.MyDragItem
@@ -85,7 +84,7 @@ class BoardFragment : ScopedFragment(), OnItemClick {
 
         val sortedPurchaseMap = linkedMapOf(
             STATUS_WANT to purchaseList.filter { it.stage == STATUS_WANT },
-            STATUS_PROCESS to purchaseList.filter { it.stage == STATUS_PROCESS },
+            STATUS_DECIDED to purchaseList.filter { it.stage == STATUS_DECIDED },
             STATUS_DONE to purchaseList.filter { it.stage == STATUS_DONE }
         )
 
@@ -127,11 +126,12 @@ class BoardFragment : ScopedFragment(), OnItemClick {
         mBoardView.setSnapToColumnInLandscape(false)
         mBoardView.setColumnSnapPosition(BoardView.ColumnSnapPosition.CENTER)
 
-        var dragItem: PurchaseEntity?
+        var dragItem: PurchaseEntity? = null
 
         mBoardView.setBoardListener(object : BoardListener {
             override fun onItemDragStarted(column: Int, row: Int) {
                 dragItem = mBoardView.getAdapter(column).itemList[row] as PurchaseEntity
+                Log.d(TAG, "onItemDragStarted: $dragItem")
                 if (column == 0) {
                     dragItem?.let {
                         if (it.potential < 70f) {
@@ -168,6 +168,14 @@ class BoardFragment : ScopedFragment(), OnItemClick {
 
                     viewModel.upsertPurchaseList(copyList)
                 }
+
+                if(fromColumn != toColumn){ // Move to another column
+                    dragItem?.let{
+                        val currentRecyclerView = mBoardView.getAdapter(toColumn) as ItemAdapter
+                        Log.d(TAG, "onItemDragEnded: ${currentRecyclerView.mColumnStage}")
+                        viewModel.moveToAnotherStage(currentRecyclerView.mColumnStage, currentRecyclerView.purchaseList, it)
+                    }
+                }
             }
 
             override fun onItemChangedPosition(
@@ -176,14 +184,14 @@ class BoardFragment : ScopedFragment(), OnItemClick {
                 newColumn: Int,
                 newRow: Int,
             ) {
-//                mBoardView.getRecyclerView(oldColumn).adapter?.notifyDataSetChanged()
-                //Toast.makeText(mBoardView.getContext(), "Position changed - column: " + newColumn + " row: " + newRow, Toast.LENGTH_SHORT).show();
             }
 
             override fun onItemChangedColumn(oldColumn: Int, newColumn: Int) {
+                
                 val itemCount1 =
                     mBoardView.getHeaderView(oldColumn).findViewById<TextView>(R.id.item_count)
                 itemCount1.text = mBoardView.getAdapter(oldColumn).itemCount.toString()
+
                 val itemCount2 =
                     mBoardView.getHeaderView(newColumn).findViewById<TextView>(R.id.item_count)
                 itemCount2.text = mBoardView.getAdapter(newColumn).itemCount.toString()
@@ -239,7 +247,7 @@ class BoardFragment : ScopedFragment(), OnItemClick {
                             if (isBoardInitted) {
 
                                 val wantList = purchaseList.filter { it.stage == STATUS_WANT }
-                                val processList = purchaseList.filter { it.stage == STATUS_PROCESS }
+                                val processList = purchaseList.filter { it.stage == STATUS_DECIDED }
                                 val doneList = purchaseList.filter { it.stage == STATUS_DONE }
 
                                 itemAdapters[0].updateList(wantList)
