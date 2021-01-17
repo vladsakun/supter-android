@@ -7,23 +7,22 @@ import android.content.IntentFilter
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.*
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.Animation
+import android.view.animation.ScaleAnimation
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.observe
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.transition.MaterialContainerTransform
 import com.supter.R
-import com.supter.data.model.PotentialItem
 import com.supter.data.db.entity.PurchaseEntity
+import com.supter.data.model.PotentialItem
 import com.supter.data.response.ResultWrapper
 import com.supter.data.response.purchase.DetailPurchaseResponse
 import com.supter.data.response.purchase.QuestionsItem
@@ -37,11 +36,8 @@ import com.supter.utils.stringToDate
 import com.supter.utils.themeColor
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.math.roundToInt
+
 
 @AndroidEntryPoint
 class DetailPurchaseFragment : ScopedFragment() {
@@ -58,6 +54,9 @@ class DetailPurchaseFragment : ScopedFragment() {
     private lateinit var purchaseEntity: PurchaseEntity
     private var toIncreasePotentialAdapter: PotentialAdapter? = null
     private var donePotentialAdapter: PotentialAdapter? = null
+    private var areBigRingsVisible = true
+    private val duration = 300L
+    private val interpolator = AccelerateDecelerateInterpolator()
 
     companion object {
         val SEND_ANSWER_ACTION = "SEND_ANSWER_ACTION"
@@ -100,10 +99,7 @@ class DetailPurchaseFragment : ScopedFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        purchaseEntity = args.purchaseEntity
-
-        mBinding.purchase = purchaseEntity
-        mBinding.description.editText?.setText(purchaseEntity.description ?: "")
+        refreshView(args.purchaseEntity)
 
         bindViews()
         setClickListeners()
@@ -120,7 +116,6 @@ class DetailPurchaseFragment : ScopedFragment() {
     }
 
     private fun bindViews() {
-        initThinkingProgress()
         bindObservers()
 
         mBinding.link.setOnClickListener {
@@ -133,18 +128,35 @@ class DetailPurchaseFragment : ScopedFragment() {
         }
     }
 
+    private fun refreshView(newPurchaseEntity: PurchaseEntity) {
+        purchaseEntity = newPurchaseEntity
+        mBinding.purchase = newPurchaseEntity
+        mBinding.description.editText?.setText(purchaseEntity.description ?: "")
+
+        mBinding.potentialRing.progress = purchaseEntity.potential
+        mBinding.secondaryPotentialRing.progress = purchaseEntity.potential
+
+        mBinding.notifyChange()
+
+        initThinkingProgress()
+
+    }
+
     private fun setClickListeners() {
 
-//        mBinding.saveChanges.setOnClickListener {
-//            with(mBinding) {
-//                viewModel.updatePurchase(
-//                    title.editText?.text.toString(),
-//                    description.editText?.text.toString(),
-//                    price.editText?.text.toString().toDouble(),
-//                    purchaseEntity
-//                )
-//            }
-//        }
+        mBinding.save.setOnClickListener {
+            with(mBinding) {
+                purchaseEntity.title = title.editText?.text.toString()
+                purchaseEntity.description = description.editText?.text.toString()
+                purchaseEntity.price = price.editText?.text.toString().toDouble()
+
+                viewModel.updatePurchase(purchaseEntity)
+            }
+        }
+
+        mBinding.ringsParent.setOnClickListener {
+            onRingsClick()
+        }
     }
 
     private fun bindObservers() {
@@ -160,14 +172,25 @@ class DetailPurchaseFragment : ScopedFragment() {
             Observer<ResultWrapper<UpdatePurchaseResponse>> { updateResult ->
                 when (updateResult) {
                     is ResultWrapper.Success -> {
+                        refreshView(updateResult.value.data)
                         showSuccessMessage()
+                    }
+                    is ResultWrapper.GenericError -> {
+                        showErrorMessage(
+                            updateResult.error?.message
+                                ?: requireContext().getString(R.string.no_internet_connection)
+                        )
+                    }
+                    is ResultWrapper.NetworkError -> {
+                        showErrorMessage()
                     }
                 }
             })
 
-//        viewModel.timer.observe(viewLifecycleOwner, Observer { time ->
-//            mBinding.thinkingProgress.progress = time.toFloat()
-//        })
+        viewModel.timer.observe(viewLifecycleOwner, Observer { time ->
+            mBinding.thinkingRing.progress = time.toFloat()
+            mBinding.secondaryThinkingRing.progress = time.toFloat()
+        })
     }
 
     private fun updateQuestionAdapters() {
@@ -209,19 +232,19 @@ class DetailPurchaseFragment : ScopedFragment() {
 
         val currentProgressInHours = (thinkingTimeInSeconds - currentTimeInSeconds) / 60 / 60
 
-//        if (currentProgressInHours < 24) {
-//
-//            if (currentProgressInHours <= 0) {
-//                mBinding.thinkingTime.text = getString(R.string.zero_hours)
-//            } else {
-//                mBinding.thinkingTime.text =
-//                    getString(R.string.hours, currentProgressInHours.toString())
-//            }
-//
-//        } else {
-//            mBinding.thinkingTime.text =
-//                getPrettyDate((currentProgressInHours / 24).toDouble())
-//        }
+        if (currentProgressInHours < 24) {
+
+            if (currentProgressInHours <= 0) {
+                mBinding.thinking.text = getString(R.string.zero_hours)
+            } else {
+                mBinding.thinking.text =
+                    getString(R.string.hours, currentProgressInHours.toString())
+            }
+
+        } else {
+            mBinding.thinking.text =
+                getPrettyDate((currentProgressInHours / 24).toDouble())
+        }
 
         val oneSecPercent: Float = 1 * 100 / (thinkingTimeInSeconds - createdAtInSeconds).toFloat()
 
@@ -343,6 +366,10 @@ class DetailPurchaseFragment : ScopedFragment() {
         Toasty.success(requireContext(), getString(R.string.successfully_updated)).show()
     }
 
+    private fun showErrorMessage(message: String = requireContext().getString(R.string.no_internet_connection)) {
+        Toasty.error(requireContext(), message).show()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.detail_purchase_menu, menu)
@@ -360,6 +387,144 @@ class DetailPurchaseFragment : ScopedFragment() {
             item,
             mBinding.root.findNavController()
         ) || super.onOptionsItemSelected(item)
+
+    }
+
+    fun onRingsClick() {
+        if (areBigRingsVisible) {
+            showSmallRings()
+        } else {
+            showBigRings()
+        }
+        areBigRingsVisible = !areBigRingsVisible
+    }
+
+    private fun showSmallRings() {
+        val views = listOf(
+            mBinding.potentialRing,
+            mBinding.thinkingRing,
+            mBinding.availabilityRing,
+            mBinding.purchaseImage,
+            mBinding.percentImage,
+            mBinding.potentialImage,
+            mBinding.dollar
+        )
+
+        for ((index, view) in views.withIndex()) {
+            if (index == views.size - 1) {
+                val animation = reduceScaleAnimation()
+                animation.setAnimationListener(object:Animation.AnimationListener{
+                    override fun onAnimationRepeat(animation: Animation?) {
+                    }
+
+                    override fun onAnimationEnd(animation: Animation?) {
+                        val smallRingsViews = listOf(
+                            mBinding.secondaryPotentialRing,
+                            mBinding.secondaryThinkingRing,
+                            mBinding.secondaryAvailabilityRing,
+                            mBinding.potential,
+                            mBinding.potentialHint,
+                            mBinding.thinking,
+                            mBinding.thinkingHint,
+                            mBinding.availability,
+                            mBinding.availabilityHint
+                        )
+
+                        for(smallRingView in smallRingsViews){
+                            smallRingView.startAnimation(increaseScaleAnimation())
+                        }
+                    }
+
+                    override fun onAnimationStart(animation: Animation?) {
+                    }
+
+                })
+                view.startAnimation(animation)
+            }else{
+                view.startAnimation(reduceScaleAnimation())
+            }
+        }
+    }
+
+    private fun reduceScaleAnimation(): ScaleAnimation {
+        val scaleAnimation = ScaleAnimation(
+            1f,
+            0f,
+            1f,
+            0f,
+            ScaleAnimation.RELATIVE_TO_SELF,
+            0.5f,
+            ScaleAnimation.RELATIVE_TO_SELF,
+            0.5f
+        )
+        scaleAnimation.interpolator = interpolator
+        scaleAnimation.duration = duration
+        scaleAnimation.fillAfter = true
+        return scaleAnimation
+    }
+
+    private fun increaseScaleAnimation(): ScaleAnimation {
+        val reduceScaleAnimation = ScaleAnimation(
+            0f,
+            1f,
+            0f,
+            1f,
+            ScaleAnimation.RELATIVE_TO_SELF,
+            0.5f,
+            ScaleAnimation.RELATIVE_TO_SELF,
+            0.5f
+        )
+        reduceScaleAnimation.interpolator = interpolator
+        reduceScaleAnimation.duration = duration
+        reduceScaleAnimation.fillAfter = true
+        return reduceScaleAnimation
+    }
+
+    private fun showBigRings() {
+        val smallRingsViews = listOf(
+            mBinding.secondaryPotentialRing,
+            mBinding.secondaryThinkingRing,
+            mBinding.secondaryAvailabilityRing,
+            mBinding.potential,
+            mBinding.potentialHint,
+            mBinding.thinking,
+            mBinding.thinkingHint,
+            mBinding.availability,
+            mBinding.availabilityHint
+        )
+
+        for ((index, smallView) in smallRingsViews.withIndex()) {
+            if (index == smallRingsViews.size - 1) {
+                val animation = reduceScaleAnimation()
+                animation.setAnimationListener(object:Animation.AnimationListener{
+                    override fun onAnimationRepeat(animation: Animation?) {
+                    }
+
+                    override fun onAnimationEnd(animation: Animation?) {
+                        val views = listOf(
+                            mBinding.potentialRing,
+                            mBinding.thinkingRing,
+                            mBinding.availabilityRing,
+                            mBinding.purchaseImage,
+                            mBinding.percentImage,
+                            mBinding.potentialImage,
+                            mBinding.dollar
+                        )
+
+                        for(view in views){
+                            view.startAnimation(increaseScaleAnimation())
+                        }
+                    }
+
+                    override fun onAnimationStart(animation: Animation?) {
+                    }
+
+                })
+                smallView.startAnimation(animation)
+            }else{
+                smallView.startAnimation(reduceScaleAnimation())
+            }
+        }
     }
 
 }

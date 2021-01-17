@@ -27,6 +27,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
+                android:id="@+id/rings_parent"
                 android:layout_height="wrap_content">
 
                 <androidx.constraintlayout.widget.Guideline
@@ -55,7 +56,18 @@
                     style="@style/ParentRingProgressView"
                     android:layout_width="275dp"
                     android:layout_height="275dp"
-                    app:f_progress="70"
+                    app:f_ringBgColor="@color/red_background"
+                    app:f_ringColor="@color/red_foreground"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.mtdhllf.widget.progress.RingProgressView
+                    style="@style/ParentRingProgressView"
+                    android:layout_width="275dp"
+                    android:layout_height="275dp"
+                    android:visibility="invisible"
                     app:f_ringBgColor="@color/red_background"
                     app:f_ringColor="@color/red_foreground"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -91,7 +103,7 @@
                     app:layout_constraintTop_toTopOf="@id/potential_ring" />
 
                 <ImageView
-                    android:id="@+id/brain_image"
+                    android:id="@+id/potential_image"
                     android:layout_width="18dp"
                     android:layout_height="18dp"
                     android:layout_marginTop="1dp"
@@ -144,7 +156,6 @@
                     android:id="@+id/secondary_potential_ring"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    app:f_progress="65"
                     app:f_ringBgColor="@color/red_background"
                     app:f_ringColor="@color/red_foreground"
                     app:f_strokeCap="round"
@@ -161,7 +172,6 @@
                     android:layout_marginStart="10dp"
                     android:gravity="center"
                     android:text="Potential"
-
                     android:textAppearance="@style/TextAppearance.MyTheme.Subtitle2"
                     app:layout_constraintBottom_toTopOf="@+id/potential"
                     app:layout_constraintStart_toStartOf="@+id/vertical_guideline"
@@ -174,13 +184,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:gravity="center"
-                    android:text="65/100%"
                     android:textAppearance="@style/TextAppearance.MyTheme.Subtitle1"
                     android:textColor="@color/red_foreground"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toTopOf="@+id/guideline_top"
                     app:layout_constraintStart_toStartOf="@+id/vertical_guideline"
-                    app:layout_constraintTop_toBottomOf="@+id/potential_hint" />
+                    app:layout_constraintTop_toBottomOf="@+id/potential_hint"
+                    tools:text="40/100 %" />
 
                 <com.mtdhllf.widget.progress.RingProgressView
                     android:id="@+id/secondary_thinking_ring"
@@ -265,22 +275,23 @@
                     app:layout_constraintTop_toBottomOf="@+id/availability_hint" />
 
                 <androidx.constraintlayout.widget.Group
-                    android:id="@+id/rings"
+                    android:id="@+id/big_rings_group"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:visibility="invisible"
+                    android:visibility="visible"
                     app:constraint_referenced_ids="availability_ring,
                                                      potential_ring,
                                                       thinking_ring,
                                                        purchase_image,
                                                         percent_image,
-                                                         brain_image,
+                                                         potential_image,
                                                           dollar" />
 
                 <androidx.constraintlayout.widget.Group
-                    android:id="@+id/rings_description"
+                    android:id="@+id/small_rings_group"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:visibility="invisible"
                     app:constraint_referenced_ids="secondary_potential_ring,
                                                      potential,
                                                       potential_hint,
@@ -461,6 +472,14 @@
                             android:text="@{purchase.link}"
                             tools:text="Text" />
                     </com.google.android.material.textfield.TextInputLayout>
+
+                    <Button
+                        android:id="@+id/save"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:layout_marginTop="@dimen/marginBetweenBigViews"
+                        android:text="@string/save" />
 
                 </LinearLayout>
 

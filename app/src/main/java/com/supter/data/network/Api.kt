@@ -64,7 +64,7 @@ interface Api {
     suspend fun updatePurchase(
         @Header(Authorization) token: String,
         @Path("id") purchaseId: Int,
-        @Body purchaseBody: PurchaseBody
+        @Body purchaseBody: UpdatePurchaseBody
     ): UpdatePurchaseResponse
 
     // Delete purchase

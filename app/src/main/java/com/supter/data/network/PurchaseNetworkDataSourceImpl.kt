@@ -42,9 +42,9 @@ class PurchaseNetworkDataSourceImpl @Inject constructor(
     override suspend fun updatePurchase(
         token: String,
         purchaseId: Int,
-        purchaseBody: PurchaseBody
+        updatePurchaseBody: UpdatePurchaseBody
     ): ResultWrapper<UpdatePurchaseResponse> {
-        return safeApiCall(Dispatchers.IO) {api.updatePurchase(token, purchaseId, purchaseBody)}
+        return safeApiCall(Dispatchers.IO) {api.updatePurchase(token, purchaseId, updatePurchaseBody)}
     }
 
     override suspend fun deletePurchase(

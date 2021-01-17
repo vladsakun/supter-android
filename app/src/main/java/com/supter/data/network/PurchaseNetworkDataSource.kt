@@ -3,6 +3,7 @@ package com.supter.data.network
 import com.supter.data.body.AccountBody
 import com.supter.data.body.ChangeStageBody
 import com.supter.data.body.PurchaseBody
+import com.supter.data.body.UpdatePurchaseBody
 import com.supter.data.response.*
 import com.supter.data.response.account.AccountResponse
 import com.supter.data.response.account.LoginResponse
@@ -28,7 +29,7 @@ interface PurchaseNetworkDataSource {
     suspend fun updatePurchase(
         token: String,
         purchaseId: Int,
-        purchaseBody: PurchaseBody,
+        updatePurchaseBody: UpdatePurchaseBody,
     ): ResultWrapper<UpdatePurchaseResponse>
 
     suspend fun deletePurchase(

@@ -3,6 +3,7 @@ package com.supter.repository
 import android.content.Context
 import com.supter.data.body.ChangeStageBody
 import com.supter.data.body.PurchaseBody
+import com.supter.data.body.UpdatePurchaseBody
 import com.supter.data.db.PurchaseDao
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.db.entity.UserEntity
@@ -115,12 +116,13 @@ class PurchaseRepositoryImpl @Inject constructor(
         val updateResponse = networkDataSource.updatePurchase(
             SystemUtils.getToken(context),
             purchaseEntity.id,
-            PurchaseBody(purchaseEntity.title, purchaseEntity.price)
+            UpdatePurchaseBody(purchaseEntity.title, purchaseEntity.price, purchaseEntity.description, purchaseEntity.link)
         )
 
         if (updateResponse is ResultWrapper.Success) {
             upsertPurchase(purchaseEntity)
         }
+
         return updateResponse
     }
 

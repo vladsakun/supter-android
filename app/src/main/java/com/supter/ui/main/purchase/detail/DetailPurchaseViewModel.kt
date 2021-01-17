@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.recyclerview.widget.RecyclerView
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.db.entity.UserEntity
 import com.supter.data.response.ResultWrapper
@@ -24,14 +25,20 @@ class DetailPurchaseViewModel @ViewModelInject constructor(
     private val _updateResponseResultLiveData =
         MutableLiveData<ResultWrapper<UpdatePurchaseResponse>>()
 
+    val updateResponseResultLiveData: LiveData<ResultWrapper<UpdatePurchaseResponse>> get() = _updateResponseResultLiveData
+
     private val _timer = MutableLiveData(0.0f)
     val timer: LiveData<Float> get() = _timer
-
-    val updateResponseResultLiveData: LiveData<ResultWrapper<UpdatePurchaseResponse>> get() = _updateResponseResultLiveData
 
     fun deletePurchase(purchaseEntity: PurchaseEntity) {
         viewModelScope.launch(Dispatchers.IO) {
             purchaseRepository.deletePurchase(purchaseEntity)
+        }
+    }
+
+    fun updatePurchase(purchaseEntity: PurchaseEntity){
+        viewModelScope.launch(Dispatchers.IO){
+            _updateResponseResultLiveData.postValue(purchaseRepository.updateRemotePurchase(purchaseEntity))
         }
     }
 
