@@ -15,7 +15,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:overScrollMode="never">
 
         <LinearLayout
             style="@style/DefaultParenViewWithPadding"
@@ -28,63 +29,266 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <com.github.guilhe.views.CircularProgressView
-                    style="@style/MyCircularProgressView"
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/vertical_guideline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.4" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline_top"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintGuide_percent="0.32" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline_bottom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintGuide_percent="0.65" />
+
+                <com.mtdhllf.widget.progress.RingProgressView
+                    android:id="@+id/potential_ring"
+                    style="@style/ParentRingProgressView"
+                    android:layout_width="275dp"
+                    android:layout_height="275dp"
+                    app:f_progress="70"
+                    app:f_ringBgColor="@color/red_background"
+                    app:f_ringColor="@color/red_foreground"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:progress="20" />
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/percent_image"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_marginTop="1dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_percent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/potential_ring"
+                    app:tint="@color/black" />
+
+                <com.mtdhllf.widget.progress.RingProgressView
+                    android:id="@+id/thinking_ring"
+                    style="@style/ParentRingProgressView"
+                    android:layout_width="228dp"
+                    android:layout_height="228dp"
+                    app:f_progress="50"
+                    app:f_ringBgColor="@color/green_background"
+                    app:f_ringColor="@color/green_foreground"
+                    app:layout_constraintBottom_toBottomOf="@+id/potential_ring"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/potential_ring" />
+
+                <ImageView
+                    android:id="@+id/brain_image"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_marginTop="1dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_brain"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/thinking_ring" />
+
+                <com.mtdhllf.widget.progress.RingProgressView
+                    android:id="@+id/availability_ring"
+                    style="@style/ParentRingProgressView"
+                    android:layout_width="182dp"
+                    android:layout_height="182dp"
+                    app:f_progress="30"
+                    app:f_ringBgColor="@color/blue_background"
+                    app:f_ringColor="@color/blue_foreground"
+                    app:layout_constraintBottom_toBottomOf="@+id/thinking_ring"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/thinking_ring" />
+
+                <TextView
+                    android:id="@+id/dollar"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_marginTop="1dp"
+                    android:gravity="center"
+                    android:text="$"
+                    android:textColor="@color/black"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/availability_ring" />
 
                 <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_width="@dimen/potentialProgressViewSize"
-                    android:layout_height="@dimen/potentialProgressViewSize"
-                    android:padding="30dp"
+                    android:id="@+id/purchase_image"
+                    android:layout_width="136dp"
+                    android:layout_height="136dp"
                     android:src="@mipmap/ic_launcher"
+                    app:layout_constraintBottom_toBottomOf="@id/availability_ring"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="@+id/availability_ring" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                <com.mtdhllf.widget.progress.RingProgressView
+                    android:id="@+id/secondary_potential_ring"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    app:f_progress="65"
+                    app:f_ringBgColor="@color/red_background"
+                    app:f_ringColor="@color/red_foreground"
+                    app:f_strokeCap="round"
+                    app:layout_constraintBottom_toBottomOf="@+id/potential"
+                    app:layout_constraintDimensionRatio="1:1"
+                    app:layout_constraintEnd_toStartOf="@+id/vertical_guideline"
+                    app:layout_constraintTop_toTopOf="@+id/potential_hint"
+                    app:layout_constraintVertical_bias="0.0" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/marginBetweenBigViews">
+                <TextView
+                    android:id="@+id/potential_hint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:gravity="center"
+                    android:text="Potential"
 
-                <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
-                    android:id="@+id/thinkingProgress"
-                    style="@style/Progress"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:textAppearance="@style/TextAppearance.MyTheme.Subtitle2"
+                    app:layout_constraintBottom_toTopOf="@+id/potential"
+                    app:layout_constraintStart_toStartOf="@+id/vertical_guideline"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_chainStyle="packed" />
 
-                <com.supter.views.OutlineTextView
-                    android:id="@+id/thinkingTime"
-                    style="@style/OutlinedProgressText"
-                    app:layout_constraintBottom_toBottomOf="@id/thinkingProgress"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/thinkingProgress" />
+                <TextView
+                    android:id="@+id/potential"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:gravity="center"
+                    android:text="65/100%"
+                    android:textAppearance="@style/TextAppearance.MyTheme.Subtitle1"
+                    android:textColor="@color/red_foreground"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline_top"
+                    app:layout_constraintStart_toStartOf="@+id/vertical_guideline"
+                    app:layout_constraintTop_toBottomOf="@+id/potential_hint" />
 
-                <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
-                    android:id="@+id/availabilityProgress"
-                    style="@style/Progress"
-                    android:layout_marginTop="@dimen/marginBetweenBigViews"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/thinkingProgress"
-                    app:rcProgress="80" />
+                <com.mtdhllf.widget.progress.RingProgressView
+                    android:id="@+id/secondary_thinking_ring"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    app:f_progress="45"
+                    app:f_ringBgColor="@color/green_background"
+                    app:f_ringColor="@color/green_foreground"
+                    app:f_strokeCap="round"
+                    app:layout_constraintBottom_toBottomOf="@+id/thinking"
+                    app:layout_constraintDimensionRatio="1:1"
+                    app:layout_constraintEnd_toStartOf="@+id/vertical_guideline"
+                    app:layout_constraintTop_toTopOf="@+id/thinking_hint"
+                    app:layout_constraintVertical_bias="0.0" />
 
+                <TextView
+                    android:id="@+id/thinking_hint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:gravity="center"
+                    android:text="Thinking time"
 
-                <com.supter.views.OutlineTextView
-                    android:id="@+id/availabilityTime"
-                    style="@style/OutlinedProgressText"
-                    android:text="3 hours"
-                    app:layout_constraintBottom_toBottomOf="@id/availabilityProgress"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/availabilityProgress"
-                    tools:text="3 days" />
+                    android:textAppearance="@style/TextAppearance.MyTheme.Subtitle2"
+                    app:layout_constraintBottom_toTopOf="@+id/thinking"
+                    app:layout_constraintStart_toStartOf="@+id/vertical_guideline"
+                    app:layout_constraintTop_toBottomOf="@+id/guideline_top"
+                    app:layout_constraintVertical_chainStyle="packed" />
+
+                <TextView
+                    android:id="@+id/thinking"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:gravity="center"
+                    android:text="2/5 days"
+                    android:textAppearance="@style/TextAppearance.MyTheme.Subtitle1"
+                    android:textColor="@color/green_foreground"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline_bottom"
+                    app:layout_constraintStart_toStartOf="@+id/vertical_guideline"
+                    app:layout_constraintTop_toBottomOf="@+id/thinking_hint" />
+
+                <com.mtdhllf.widget.progress.RingProgressView
+                    android:id="@+id/secondary_availability_ring"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    app:f_progress="20"
+                    app:f_ringBgColor="@color/blue_background"
+                    app:f_ringColor="@color/blue_foreground"
+                    app:f_strokeCap="round"
+                    app:layout_constraintBottom_toBottomOf="@+id/availability"
+                    app:layout_constraintDimensionRatio="1:1"
+                    app:layout_constraintEnd_toStartOf="@+id/vertical_guideline"
+                    app:layout_constraintTop_toTopOf="@+id/availability_hint" />
+
+                <TextView
+                    android:id="@+id/availability_hint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:gravity="center"
+                    android:text="Availability time"
+                    android:textAppearance="@style/TextAppearance.MyTheme.Subtitle2"
+                    app:layout_constraintBottom_toTopOf="@+id/availability"
+                    app:layout_constraintStart_toStartOf="@+id/vertical_guideline"
+                    app:layout_constraintTop_toBottomOf="@+id/guideline_bottom"
+                    app:layout_constraintVertical_chainStyle="packed" />
+
+                <TextView
+                    android:id="@+id/availability"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:gravity="center"
+                    android:text="3/14 days"
+                    android:textAppearance="@style/TextAppearance.MyTheme.Subtitle1"
+                    android:textColor="@color/blue_foreground"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/vertical_guideline"
+                    app:layout_constraintTop_toBottomOf="@+id/availability_hint" />
+
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/rings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="invisible"
+                    app:constraint_referenced_ids="availability_ring,
+                                                     potential_ring,
+                                                      thinking_ring,
+                                                       purchase_image,
+                                                        percent_image,
+                                                         brain_image,
+                                                          dollar" />
+
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/rings_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:constraint_referenced_ids="secondary_potential_ring,
+                                                     potential,
+                                                      potential_hint,
+                                                       secondary_thinking_ring,
+                                                        thinking, thinking_hint,
+                                                         secondary_availability_ring,
+                                                          availability_hint,
+                                                           availability" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -107,7 +311,6 @@
                             android:id="@+id/to_increase_potential_hint"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/marginBetweenBigViews"
                             android:text="@string/to_increase_potential"
                             android:textAppearance="@style/TextAppearance.MyTheme.Subtitle1"
                             app:layout_constraintStart_toStartOf="parent"
@@ -201,62 +404,63 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <FrameLayout
-                        style="@style/DetailPurchaseInfoEditText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <EditText
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@null"
-                            android:hint="@string/title"
-                            android:text="@{purchase.title}" />
-                    </FrameLayout>
-
-                    <FrameLayout
-                        style="@style/DetailPurchaseInfoEditText"
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/title"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/marginBetweenBigViews">
+                        android:hint="@string/title">
 
-                        <EditText
+                        <com.google.android.material.textfield.TextInputEditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@null"
-                            android:hint="@string/price"
-                            android:inputType="numberDecimal"
-                            android:text="@{String.valueOf(purchase.price)}" />
-                    </FrameLayout>
+                            android:text="@{purchase.title}"
+                            tools:text="Samsung s3" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                    <FrameLayout
-                        style="@style/DetailPurchaseInfoEditText"
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/price"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/marginBetweenBigViews">
+                        android:layout_marginTop="@dimen/marginBetweenBigViews"
+                        android:hint="@string/price">
 
-                        <EditText
-                            android:id="@+id/description"
+                        <com.google.android.material.textfield.TextInputEditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@null"
-                            android:hint="@string/description"
-                            android:inputType="textMultiLine" />
-                    </FrameLayout>
+                            android:text="@{String.valueOf(purchase.price)}"
+                            tools:text="3000" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                    <FrameLayout
-                        style="@style/DetailPurchaseInfoEditText"
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/description"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/marginBetweenBigViews">
+                        android:layout_marginTop="@dimen/marginBetweenBigViews"
+                        android:hint="@string/description">
 
-                        <EditText
-                            android:id="@+id/link"
+                        <com.google.android.material.textfield.TextInputEditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@null"
-                            android:hint="@string/link" />
-                    </FrameLayout>
+                            tools:text="Text" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/link"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/marginBetweenBigViews"
+                        android:hint="@string/link">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@{purchase.link}"
+                            tools:text="Text" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
                 </LinearLayout>
 
@@ -288,7 +492,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="@dimen/marginBetweenHintAndView"
-                        android:text="@{purchase.stage}"
+                        android:text="@{String.valueOf(purchase.stage.charAt(0)).toUpperCase() + purchase.stage.substring(1)}"
                         android:textAppearance="@style/TextAppearance.MyTheme.Body1"
                         tools:text="Want" />
 

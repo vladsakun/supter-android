@@ -10,7 +10,7 @@
     <dimen name="fab_margin">16dp</dimen>
 
     <!--  Card  -->
-    <dimen name="cardElevation">3dp</dimen>
+    <dimen name="cardElevation">5dp</dimen>
     <dimen name="cardCornerRadius">4dp</dimen>
     <dimen name="cardMarginVertical">5dp</dimen>
     <dimen name="cardPaddingHorizontal">13dp</dimen>
@@ -23,17 +23,16 @@
     <dimen name="progressHeight">40dp</dimen>
 
     <!--Potential item-->
-    <dimen name="cardWidth">150dp</dimen>
-    <dimen name="cardHeight">65dp</dimen>
+    <dimen name="cardWidth">180dp</dimen>
+    <dimen name="cardHeight">85dp</dimen>
     <dimen name="potentialItemSpacing">5dp</dimen>
 
     <!--  BoardView  -->
     <dimen name="boardEdges">0dp</dimen>
     <dimen name="columnSpacing">10dp</dimen>
 
-    <!--  ColorfulRingProgressView  -->
-    <dimen name="strokeWidth">21dp</dimen>
-    <dimen name="potentialProgressViewSize">230dp</dimen>
+    <!--  RingProgressView  -->
+    <dimen name="roundWidth">20dp</dimen>
 
     <!--  Button  -->
     <dimen name="buttonMinWidth">150dp</dimen>

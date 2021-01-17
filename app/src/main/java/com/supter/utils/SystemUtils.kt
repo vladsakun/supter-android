@@ -46,9 +46,10 @@ class SystemUtils {
         }
 
         fun getColorMode(applicationContext: Context): Int {
-            val sharedPreferences =
-                applicationContext.getSharedPreferences(THEME_SPRF_NAME, Context.MODE_PRIVATE)
-            return sharedPreferences.getInt(COLOR_MODE, Configuration.UI_MODE_NIGHT_YES)
+//            val sharedPreferences =
+//                applicationContext.getSharedPreferences(THEME_SPRF_NAME, Context.MODE_PRIVATE)
+//            return sharedPreferences.getInt(COLOR_MODE, AppCompatDelegate.MODE_NIGHT_YES)
+            return AppCompatDelegate.MODE_NIGHT_YES
         }
 
         fun saveToken(applicationContext: Context, token: String) {

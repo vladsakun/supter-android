@@ -7,6 +7,7 @@
 
     <style name="DefaultParenViewWithPadding">
         <item name="android:paddingTop">@dimen/activity_vertical_margin</item>
+        <item name="android:paddingBottom">@dimen/activity_vertical_margin</item>
         <item name="android:paddingLeft">@dimen/activity_horizontal_margin</item>
         <item name="android:paddingRight">@dimen/activity_horizontal_margin</item>
     </style>
@@ -14,6 +15,7 @@
     <style name="DefaultCardView" parent="Widget.MaterialComponents.CardView">
         <item name="cardCornerRadius">@dimen/cardCornerRadius</item>
         <item name="cardElevation">@dimen/cardElevation</item>
+        <item name="cardUseCompatPadding">true</item>
     </style>
 
     <style name="AuthButton" parent="Widget.MaterialComponents.Button">
@@ -40,11 +42,8 @@
 
     <!-- Detail Purchase -->
 
-    <style name="PurchaseInfoMaterialCardView" parent="DefaultCardView">
-        <item name="contentPaddingBottom">@dimen/cardPaddingHorizontal</item>
-        <item name="contentPaddingTop">@dimen/cardPaddingHorizontal</item>
-        <item name="contentPaddingRight">@dimen/cardPaddingHorizontal</item>
-        <item name="contentPaddingLeft">@dimen/cardPaddingHorizontal</item>
+    <style name="PurchaseInfoMaterialCardView" parent="Widget.MaterialComponents.CardView">
+        <item name="contentPadding">@dimen/cardPaddingHorizontal</item>
     </style>
 
     <style name="Progress" parent="">
@@ -83,20 +82,11 @@
         <item name="android:background">@drawable/border</item>
     </style>
 
-    <style name="ParentCircularProgressView" parent="">
-        <item name="android:layout_width">@dimen/potentialProgressViewSize</item>
-        <item name="android:layout_height">@dimen/potentialProgressViewSize</item>
-        <item name="backgroundAlphaEnabled">false</item>
-        <item name="progressBarRounded">false</item>
-        <item name="shadow">false</item>
-        <item name="startingAngle">90</item>
-        <item name="progressBarColor">?attr/colorPrimary</item>
-        <item name="progressBarThickness">14dp</item>
+    <style name="ParentRingProgressView" parent="">
+        <item name="f_roundWidth">@dimen/roundWidth</item>
+        <item name="f_strokeCap">round</item>
     </style>
 
-    <style name="MyCircularProgressView" parent="ParentCircularProgressView">
-        <item name="backgroundColor">@color/light_gray</item>
-    </style>
 
     <!--Profile-->
 

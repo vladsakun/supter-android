@@ -103,7 +103,7 @@ class DetailPurchaseFragment : ScopedFragment() {
         purchaseEntity = args.purchaseEntity
 
         mBinding.purchase = purchaseEntity
-        mBinding.description.setText(purchaseEntity.description ?: "")
+        mBinding.description.editText?.setText(purchaseEntity.description ?: "")
 
         bindViews()
         setClickListeners()
@@ -165,9 +165,9 @@ class DetailPurchaseFragment : ScopedFragment() {
                 }
             })
 
-        viewModel.timer.observe(viewLifecycleOwner, Observer { time ->
-            mBinding.thinkingProgress.progress = time.toFloat()
-        })
+//        viewModel.timer.observe(viewLifecycleOwner, Observer { time ->
+//            mBinding.thinkingProgress.progress = time.toFloat()
+//        })
     }
 
     private fun updateQuestionAdapters() {
@@ -209,19 +209,19 @@ class DetailPurchaseFragment : ScopedFragment() {
 
         val currentProgressInHours = (thinkingTimeInSeconds - currentTimeInSeconds) / 60 / 60
 
-        if (currentProgressInHours < 24) {
-
-            if (currentProgressInHours <= 0) {
-                mBinding.thinkingTime.text = getString(R.string.zero_hours)
-            } else {
-                mBinding.thinkingTime.text =
-                    getString(R.string.hours, currentProgressInHours.toString())
-            }
-
-        } else {
-            mBinding.thinkingTime.text =
-                getPrettyDate((currentProgressInHours / 24).toDouble())
-        }
+//        if (currentProgressInHours < 24) {
+//
+//            if (currentProgressInHours <= 0) {
+//                mBinding.thinkingTime.text = getString(R.string.zero_hours)
+//            } else {
+//                mBinding.thinkingTime.text =
+//                    getString(R.string.hours, currentProgressInHours.toString())
+//            }
+//
+//        } else {
+//            mBinding.thinkingTime.text =
+//                getPrettyDate((currentProgressInHours / 24).toDouble())
+//        }
 
         val oneSecPercent: Float = 1 * 100 / (thinkingTimeInSeconds - createdAtInSeconds).toFloat()
 

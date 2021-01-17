@@ -32,7 +32,7 @@
     <!--Color on secondary (light), color on background (light),-->
     <!--color on surface (light)-->
     <color name="black_900">#000000</color>
-    
+
     <color name="light_gray">#e1e1e1</color>
     <color name="gray_100">#0A000000</color>
     <color name="dark_gray">#424242</color>
@@ -41,5 +41,14 @@
 
     <color name="potential_foreground">#272727</color>
     <color name="potential_background">#474747</color>
+
+    <color name="red_background">#66AC341A</color>
+    <color name="red_foreground">#FF5733</color>
+
+    <color name="green_background">#6655C215</color>
+    <color name="green_foreground">#71F722</color>
+
+    <color name="blue_background">#661594C2</color>
+    <color name="blue_foreground">#1FBDF6</color>
 
 </resources>

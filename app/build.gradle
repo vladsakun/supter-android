@@ -151,12 +151,6 @@ dependencies {
     // Pretty Toast
     implementation 'com.github.GrenderG:Toasty:1.5.0'
 
-    // Sector progress view
-    implementation 'com.timqi.sectorprogressview:library:2.0.1'
-
-    // Progress
-    implementation 'com.github.turkergoksu:PercentageView:1.0.2'
-
     // Thinking time progress
     implementation 'com.akexorcist:round-corner-progress-bar:2.1.1'
 
@@ -166,7 +160,6 @@ dependencies {
     // CircularView
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 
-    // Circular progress TODO DO NOT UPDATE
-    implementation 'com.github.guilhe:circular-progress-view:1.4.2'
+    implementation 'com.mtdhllf.widget:ring-progress:1.1.0'
 
 }
