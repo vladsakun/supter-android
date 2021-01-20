@@ -8,10 +8,7 @@ import com.supter.data.response.*
 import com.supter.data.response.account.AccountResponse
 import com.supter.data.response.account.LoginResponse
 import com.supter.data.response.account.RegistrationResponse
-import com.supter.data.response.purchase.CreatePurchaseResponse
-import com.supter.data.response.purchase.GetPurchasesResponse
-import com.supter.data.response.purchase.DetailPurchaseResponse
-import com.supter.data.response.purchase.UpdatePurchaseResponse
+import com.supter.data.response.purchase.*
 
 interface PurchaseNetworkDataSource {
     suspend fun fetchPurchaseList(token: String): ResultWrapper<GetPurchasesResponse>
@@ -73,12 +70,12 @@ interface PurchaseNetworkDataSource {
         purchaseId: Int,
         questionId: Int,
         text: String,
-    ): ResultWrapper<MessageResponse>
+    ): ResultWrapper<AnswerQuestionResponse>
 
     suspend fun postBooleanAnswer(
         token: String,
         purchaseId: Int,
         questionId: Int,
         isTrue: Boolean,
-    ): ResultWrapper<MessageResponse>
+    ): ResultWrapper<AnswerQuestionResponse>
 }

@@ -102,7 +102,7 @@ class BoardFragment : ScopedFragment(), OnItemClick {
 
             addColumn(
                 itemAdapter,
-                key.capitalize(Locale.ROOT)
+                key.capitalize()
             )
 
             itemAdapters.add(itemAdapter)

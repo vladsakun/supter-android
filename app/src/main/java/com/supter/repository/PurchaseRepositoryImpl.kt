@@ -10,6 +10,7 @@ import com.supter.data.db.entity.UserEntity
 import com.supter.data.network.PurchaseNetworkDataSource
 import com.supter.data.response.*
 import com.supter.data.response.account.AccountResponse
+import com.supter.data.response.purchase.AnswerQuestionResponse
 import com.supter.data.response.purchase.CreatePurchaseResponse
 import com.supter.data.response.purchase.DetailPurchaseResponse
 import com.supter.data.response.purchase.UpdatePurchaseResponse
@@ -148,7 +149,7 @@ class PurchaseRepositoryImpl @Inject constructor(
         purchaseId: Int,
         questionId: Int,
         answer: String
-    ): ResultWrapper<MessageResponse> {
+    ): ResultWrapper<AnswerQuestionResponse> {
         return networkDataSource.postStringAnswer(
             SystemUtils.getToken(context),
             purchaseId,
@@ -161,7 +162,7 @@ class PurchaseRepositoryImpl @Inject constructor(
         purchaseId: Int,
         questionId: Int,
         answer: Boolean
-    ): ResultWrapper<MessageResponse> {
+    ): ResultWrapper<AnswerQuestionResponse> {
         return networkDataSource.postBooleanAnswer(
             SystemUtils.getToken(context),
             purchaseId,

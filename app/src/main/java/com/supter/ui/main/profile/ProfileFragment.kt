@@ -8,6 +8,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
+import by.kirich1409.viewbindingdelegate.CreateMethod
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.supter.R
 import com.supter.data.db.entity.UserEntity
 import com.supter.data.response.ResultWrapper
@@ -19,11 +21,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 
 @AndroidEntryPoint
-class ProfileFragment : Fragment() {
+class ProfileFragment : Fragment(R.layout.fragment_profile) {
     private val TAG = "ProfileFragment"
 
-    private var _binding: FragmentProfileBinding? = null
-    private val mBinding: FragmentProfileBinding get() = _binding!!
+    private val mBinding: FragmentProfileBinding by viewBinding(createMethod = CreateMethod.INFLATE)
 
     private val viewModel: ProfileViewModel by viewModels()
 
@@ -32,16 +33,10 @@ class ProfileFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        _binding = FragmentProfileBinding.inflate(inflater, container, false)
         mBinding.numberPicker.maxValue = 27
         mBinding.numberPicker.minValue = 1
         setHasOptionsMenu(true)
         return mBinding.root
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

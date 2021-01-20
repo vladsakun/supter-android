@@ -5,10 +5,7 @@ import com.supter.data.response.*
 import com.supter.data.response.account.AccountResponse
 import com.supter.data.response.account.LoginResponse
 import com.supter.data.response.account.RegistrationResponse
-import com.supter.data.response.purchase.CreatePurchaseResponse
-import com.supter.data.response.purchase.GetPurchasesResponse
-import com.supter.data.response.purchase.DetailPurchaseResponse
-import com.supter.data.response.purchase.UpdatePurchaseResponse
+import com.supter.data.response.purchase.*
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
@@ -103,7 +100,7 @@ class PurchaseNetworkDataSourceImpl @Inject constructor(
         purchaseId: Int,
         questionId: Int,
         text: String
-    ): ResultWrapper<MessageResponse> {
+    ): ResultWrapper<AnswerQuestionResponse> {
         return safeApiCall(Dispatchers.IO) {api.postStringAnswer(token, purchaseId, questionId, text)}
     }
 
@@ -112,7 +109,7 @@ class PurchaseNetworkDataSourceImpl @Inject constructor(
         purchaseId: Int,
         questionId: Int,
         isTrue: Boolean
-    ): ResultWrapper<MessageResponse> {
+    ): ResultWrapper<AnswerQuestionResponse> {
         return safeApiCall(Dispatchers.IO) {api.postBooleanAnswer(token, purchaseId, questionId, isTrue)}
     }
 

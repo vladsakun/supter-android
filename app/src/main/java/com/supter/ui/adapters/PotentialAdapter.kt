@@ -80,7 +80,7 @@ class PotentialAdapter(
                     val answerEditText =
                         dialogView.findViewById<TextInputLayout>(R.id.question_answer)
 
-                    val submitBtn = dialogView.findViewById<LoadingButton>(R.id.submit)
+                    val submitBtn = dialogView.findViewById<Button>(R.id.submit)
                     submitBtn.setOnClickListener {
 
                         val answer = answerEditText.editText?.text.toString().trim()
@@ -94,8 +94,6 @@ class PotentialAdapter(
 
                             mSubmitAnswerResponseBR = object : BroadcastReceiver() {
                                 override fun onReceive(context: Context, intent: Intent) {
-                                    submitBtn.cancelLoading()
-
                                     val isSuccessSubmitted =
                                         intent.getBooleanExtra(IS_SUBMIT_SUCCESS, false)
 
@@ -119,24 +117,26 @@ class PotentialAdapter(
 
                             startListeningSubmitAnswerResultBR()
 
-                            submitBtn.startLoading()
-
                             val intent = Intent(DetailPurchaseFragment.SEND_ANSWER_ACTION).apply {
                                 putExtra(DetailPurchaseFragment.STRING_ANSWER_EXTRA, answer)
                                 putExtra(
                                     DetailPurchaseFragment.QUESTION_ID_EXTRA,
                                     potentialItem.questionId
                                 )
+                                putExtra(DetailPurchaseFragment.UPDATE_EXTRA, true)
                             }
 
                             activity.applicationContext.sendBroadcast(intent)
                         }
+
+                        dialogBuilder.dismiss()
                     }
 
                     val cancelBtn = dialogView.findViewById<Button>(R.id.cancel)
                     cancelBtn.setOnClickListener {
                         dialogBuilder.dismiss()
                     }
+
                 } else {
                     dialogView =
                         layoutInflater.inflate(R.layout.boolean_question_alert_dialog, null)
@@ -157,9 +157,6 @@ class PotentialAdapter(
                     noBtn.setOnClickListener(clickListener)
                 }
 
-                dialogBuilder.setOnDismissListener {
-                    sendUpdateIntent()
-                }
             }
 
             dialogBuilder.setView(dialogView)
@@ -176,14 +173,6 @@ class PotentialAdapter(
         activity.applicationContext.sendBroadcast(intent)
     }
 
-    private fun sendUpdateIntent() {
-        val intent = Intent(DetailPurchaseFragment.SEND_ANSWER_ACTION).apply {
-            putExtra(DetailPurchaseFragment.UPDATE_EXTRA, true)
-        }
-
-        activity.applicationContext.sendBroadcast(intent)
-    }
-
     override fun getItemCount(): Int {
         return potentialItemList.size
     }
@@ -193,18 +182,36 @@ class PotentialAdapter(
         potentialItemList.addAll(newPotentialItemList)
     }
 
-    fun startListeningSubmitAnswerResultBR() {
+    private fun startListeningSubmitAnswerResultBR() {
         mSubmitAnswerResponseBR?.let {
             activity.applicationContext.registerReceiver(it, IntentFilter(SUBMIT_ANSWER_ACTION))
         }
     }
 
-    fun stopListeningSubmitAnswerResultBR() {
+    private fun stopListeningSubmitAnswerResultBR() {
         try {
             activity.applicationContext.unregisterReceiver(mSubmitAnswerResponseBR!!)
         } catch (e: Exception) {
             logException(e)
         }
+    }
+
+    fun removeItemAt(position: Int){
+        if(potentialItemList.size > 0){
+            potentialItemList.removeAt(position)
+            notifyItemRemoved(position)
+
+            if(position != 0){
+                notifyItemChanged(position - 1, false)
+            }
+        }
+    }
+
+    fun addItem(newPotentialItem: PotentialItem){
+
+        potentialItemList.add(newPotentialItem)
+        notifyItemInserted(potentialItemList.size - 1)
+
     }
 
     inner class PotentialViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

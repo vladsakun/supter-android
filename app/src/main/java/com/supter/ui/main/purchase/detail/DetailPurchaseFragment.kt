@@ -7,6 +7,7 @@ import android.content.IntentFilter
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Animation
@@ -54,6 +55,9 @@ class DetailPurchaseFragment : ScopedFragment() {
     private var areBigRingsVisible = true
     private val duration = 300L
     private val interpolator = AccelerateDecelerateInterpolator()
+
+    private lateinit var answeredQuestions: MutableList<QuestionsItem>
+    private lateinit var toDoQuestions: MutableList<QuestionsItem>
 
     companion object {
         val SEND_ANSWER_ACTION = "SEND_ANSWER_ACTION"
@@ -127,7 +131,10 @@ class DetailPurchaseFragment : ScopedFragment() {
 
     private fun refreshView(newPurchaseEntity: PurchaseEntity) {
         purchaseEntity = newPurchaseEntity
-        mBinding.purchase = newPurchaseEntity
+
+        viewModel.purchaseEntity = purchaseEntity
+
+        mBinding.purchase = purchaseEntity
         mBinding.description.editText?.setText(purchaseEntity.description ?: "")
 
         mBinding.potentialRing.progress = purchaseEntity.potential
@@ -251,10 +258,11 @@ class DetailPurchaseFragment : ScopedFragment() {
 
     private fun initQuestionsList(detailPurchaseEntity: DetailPurchaseResponse) {
 
-        val answeredQuestions =
-            detailPurchaseEntity.data.questions.filter { it.purchaseQuestion != null }
-        val toDoQuestions =
-            detailPurchaseEntity.data.questions.filter { it.purchaseQuestion == null }
+        answeredQuestions =
+            detailPurchaseEntity.data.questions.filter { it.purchaseQuestion != null } as MutableList<QuestionsItem>
+
+        toDoQuestions =
+            detailPurchaseEntity.data.questions.filter { it.purchaseQuestion == null } as MutableList<QuestionsItem>
 
         val itemDecoration = SimpleDividerItemDecorationLastExcluded(10)
 
@@ -279,22 +287,28 @@ class DetailPurchaseFragment : ScopedFragment() {
         if (answeredQuestions.isEmpty()) {
             mBinding.doneBlock.isVisible = false
         } else {
-            val answeredPotentialItemList = convertQuestionListToPotentialItems(answeredQuestions)
-
-            donePotentialAdapter =
-                PotentialAdapter(
-                    answeredPotentialItemList,
-                    true,
-                    requireActivity()
-                )
-
-            mBinding.doneRecyclerview.adapter = donePotentialAdapter
-            mBinding.doneRecyclerview.layoutManager =
-                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            mBinding.doneRecyclerview.addItemDecoration(itemDecoration)
+            initAnsweredQuestionsRecyclerView(convertQuestionListToPotentialItems(answeredQuestions))
         }
 
         hideQuestionsProgress()
+    }
+
+    private fun initAnsweredQuestionsRecyclerView(answeredPotentialItemList: MutableList<PotentialItem>) {
+
+        donePotentialAdapter =
+            PotentialAdapter(
+                answeredPotentialItemList,
+                true,
+                requireActivity()
+            )
+
+        mBinding.doneRecyclerview.adapter = donePotentialAdapter
+        mBinding.doneRecyclerview.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+
+        val itemDecoration = SimpleDividerItemDecorationLastExcluded(10)
+
+        mBinding.doneRecyclerview.addItemDecoration(itemDecoration)
     }
 
     private fun hideQuestionsProgress() {
@@ -343,18 +357,43 @@ class DetailPurchaseFragment : ScopedFragment() {
 
             val isUpdate = intent.getBooleanExtra(UPDATE_EXTRA, false)
 
-            if (isUpdate) {
-                updateQuestionAdapters()
-                return
-            }
-
             viewModel.sendAnswer(purchaseEntity.id, questionId, stringAnswer, booleanAnswer)
-                .observe(viewLifecycleOwner, Observer {
+                .observe(viewLifecycleOwner, Observer { isUpdatedSuccessfully ->
                     requireContext()
                         .applicationContext
                         .sendBroadcast(Intent(PotentialAdapter.SUBMIT_ANSWER_ACTION).apply {
-                            putExtra(PotentialAdapter.IS_SUBMIT_SUCCESS, it)
+                            putExtra(PotentialAdapter.IS_SUBMIT_SUCCESS, isUpdatedSuccessfully)
                         })
+
+                    if (isUpdatedSuccessfully) {
+
+                        val answeredQuestion: QuestionsItem =
+                            toDoQuestions.first { it.id == questionId }
+
+                        val answeredQuestionId = toDoQuestions.indexOf(answeredQuestion)
+
+                        toIncreasePotentialAdapter?.removeItemAt(answeredQuestionId)
+
+                        val potentialItem = PotentialItem(
+                            false,
+                            answeredQuestion.title,
+                            stringAnswer,
+                            answeredQuestion.id,
+                            0
+                        )
+
+                        if (donePotentialAdapter == null) {
+                            mBinding.doneBlock.isVisible = true
+                            initAnsweredQuestionsRecyclerView(mutableListOf(potentialItem))
+                        } else {
+                            donePotentialAdapter?.addItem(potentialItem)
+                        }
+                    }
+
+                    if (isUpdate) {
+                        updateQuestionAdapters()
+                    }
+
                 })
 
         }
@@ -411,7 +450,7 @@ class DetailPurchaseFragment : ScopedFragment() {
         for ((index, view) in views.withIndex()) {
             if (index == views.size - 1) {
                 val animation = reduceScaleAnimation()
-                animation.setAnimationListener(object:Animation.AnimationListener{
+                animation.setAnimationListener(object : Animation.AnimationListener {
                     override fun onAnimationRepeat(animation: Animation?) {
                     }
 
@@ -428,7 +467,7 @@ class DetailPurchaseFragment : ScopedFragment() {
                             mBinding.availabilityHint
                         )
 
-                        for(smallRingView in smallRingsViews){
+                        for (smallRingView in smallRingsViews) {
                             smallRingView.startAnimation(increaseScaleAnimation())
                         }
                     }
@@ -438,7 +477,7 @@ class DetailPurchaseFragment : ScopedFragment() {
 
                 })
                 view.startAnimation(animation)
-            }else{
+            } else {
                 view.startAnimation(reduceScaleAnimation())
             }
         }
@@ -494,7 +533,7 @@ class DetailPurchaseFragment : ScopedFragment() {
         for ((index, smallView) in smallRingsViews.withIndex()) {
             if (index == smallRingsViews.size - 1) {
                 val animation = reduceScaleAnimation()
-                animation.setAnimationListener(object:Animation.AnimationListener{
+                animation.setAnimationListener(object : Animation.AnimationListener {
                     override fun onAnimationRepeat(animation: Animation?) {
                     }
 
@@ -509,7 +548,7 @@ class DetailPurchaseFragment : ScopedFragment() {
                             mBinding.dollar
                         )
 
-                        for(view in views){
+                        for (view in views) {
                             view.startAnimation(increaseScaleAnimation())
                         }
                     }
@@ -519,7 +558,7 @@ class DetailPurchaseFragment : ScopedFragment() {
 
                 })
                 smallView.startAnimation(animation)
-            }else{
+            } else {
                 smallView.startAnimation(reduceScaleAnimation())
             }
         }

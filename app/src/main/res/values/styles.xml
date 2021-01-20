@@ -44,6 +44,7 @@
 
     <style name="PurchaseInfoMaterialCardView" parent="Widget.MaterialComponents.CardView">
         <item name="contentPadding">@dimen/cardPaddingHorizontal</item>
+        <item name="cardUseCompatPadding">true</item>
     </style>
 
     <style name="Progress" parent="">

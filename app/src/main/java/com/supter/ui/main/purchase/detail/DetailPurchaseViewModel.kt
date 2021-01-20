@@ -25,6 +25,8 @@ class DetailPurchaseViewModel @ViewModelInject constructor(
 
     private val TAG = "DetailPurchaseViewModel"
 
+    lateinit var purchaseEntity: PurchaseEntity
+
     private val _updateResponseResultLiveData =
         MutableLiveData<ResultWrapper<UpdatePurchaseResponse>>()
 
@@ -39,10 +41,9 @@ class DetailPurchaseViewModel @ViewModelInject constructor(
         }
     }
 
-    fun updatePurchase(purchaseEntity: PurchaseEntity){
-        viewModelScope.launch(Dispatchers.IO){
+    fun updatePurchase(purchaseEntity: PurchaseEntity) {
+        viewModelScope.launch(Dispatchers.IO) {
             val resp = purchaseRepository.updateRemotePurchase(purchaseEntity)
-            Log.d(TAG, "updatePurchase: $resp")
             _updateResponseResultLiveData.postValue(resp)
         }
     }
@@ -86,40 +87,65 @@ class DetailPurchaseViewModel @ViewModelInject constructor(
         return _purchase
     }
 
-    suspend fun fetchPurchase(purchaseEntity: PurchaseEntity):DetailPurchaseResponse?{
-        return withContext(Dispatchers.IO){
+    suspend fun fetchPurchase(purchaseEntity: PurchaseEntity): DetailPurchaseResponse? {
+        return withContext(Dispatchers.IO) {
             val resp = purchaseRepository.getPurchaseFromApiById(purchaseEntity)
-            if(resp is ResultWrapper.Success){
+            if (resp is ResultWrapper.Success) {
                 return@withContext resp.value
-            }else{
+            } else {
                 return@withContext null
             }
         }
     }
 
-    val _isAnswerSuccessfullySubmitted = MutableLiveData<Boolean>()
+    private val _isAnswerSuccessfullySubmitted = MutableLiveData<Boolean>()
 
-    fun sendAnswer(purchaseId: Int, questionId: Int, stringAnswer:String?, booleanAnswer:Boolean):LiveData<Boolean>{
+    fun sendAnswer(
+        purchaseId: Int,
+        questionId: Int,
+        stringAnswer: String?,
+        booleanAnswer: Boolean
+    ): LiveData<Boolean> {
 
-        if(stringAnswer == null){
+        if (stringAnswer == null) {
             return sendBooleanAnswer(purchaseId, questionId, booleanAnswer)
-        }else{
+        } else {
             return sendStringAnswer(purchaseId, questionId, stringAnswer)
         }
 
     }
 
-    private fun sendStringAnswer(purchaseId: Int, questionId: Int, answer: String): LiveData<Boolean> {
+    private fun sendStringAnswer(
+        purchaseId: Int,
+        questionId: Int,
+        answer: String
+    ): LiveData<Boolean> {
         viewModelScope.launch(Dispatchers.IO) {
             val response = purchaseRepository.sendStringAnswer(purchaseId, questionId, answer)
+
+            if (response is ResultWrapper.Success) {
+                purchaseEntity.potential = response.value.potential.toFloat()
+                updatePurchase(purchaseEntity)
+            }
+
             _isAnswerSuccessfullySubmitted.postValue(response is ResultWrapper.Success)
         }
         return _isAnswerSuccessfullySubmitted
     }
 
-    private fun sendBooleanAnswer(purchaseId: Int, questionId: Int, answer: Boolean): LiveData<Boolean> {
+    private fun sendBooleanAnswer(
+        purchaseId: Int,
+        questionId: Int,
+        answer: Boolean
+    ): LiveData<Boolean> {
         viewModelScope.launch(Dispatchers.IO) {
             val response = purchaseRepository.sendBooleanAnswer(purchaseId, questionId, answer)
+
+            if (response is ResultWrapper.Success) {
+                purchaseEntity.potential = response.value.potential.toFloat()
+                updatePurchase(purchaseEntity)
+            }
+
             _isAnswerSuccessfullySubmitted.postValue(response is ResultWrapper.Success)
         }
         return _isAnswerSuccessfullySubmitted

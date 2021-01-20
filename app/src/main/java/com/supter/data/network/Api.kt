@@ -5,10 +5,7 @@ import com.supter.data.response.*
 import com.supter.data.response.account.AccountResponse
 import com.supter.data.response.account.LoginResponse
 import com.supter.data.response.account.RegistrationResponse
-import com.supter.data.response.purchase.CreatePurchaseResponse
-import com.supter.data.response.purchase.GetPurchasesResponse
-import com.supter.data.response.purchase.DetailPurchaseResponse
-import com.supter.data.response.purchase.UpdatePurchaseResponse
+import com.supter.data.response.purchase.*
 import com.supter.utils.Authorization
 import retrofit2.http.*
 
@@ -98,7 +95,7 @@ interface Api {
         @Path("purchaseId") purchaseId: Int,
         @Path("questionId") questionId: Int,
         @Field("text") text: String
-    ):MessageResponse
+    ): AnswerQuestionResponse
 
     @FormUrlEncoded
     @POST("/purchases/{purchaseId}/questions/{questionId}")
@@ -107,5 +104,5 @@ interface Api {
         @Path("purchaseId") purchaseId: Int,
         @Path("questionId") questionId: Int,
         @Field("isTrue") isTrue: Boolean
-    ):MessageResponse
+    ):AnswerQuestionResponse
 }
