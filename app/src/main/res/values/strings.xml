@@ -66,5 +66,7 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="available_in">Available in</string>
+    <string name="thinking_time">Thinking time</string>
+    <string name="availability_time">Availability time</string>
 
 </resources>

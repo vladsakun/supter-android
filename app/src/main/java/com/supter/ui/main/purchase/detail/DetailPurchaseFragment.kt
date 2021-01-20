@@ -144,6 +144,7 @@ class DetailPurchaseFragment : ScopedFragment() {
 
         initThinkingProgress()
 
+        initAvailabilityProgress()
     }
 
     private fun setClickListeners() {
@@ -256,32 +257,46 @@ class DetailPurchaseFragment : ScopedFragment() {
         viewModel.timer(currentProgressInPercentage.toFloat(), oneSecPercent)
     }
 
-//    private fun initAvailabilityProgress() {
-//
-//        val createdAtInSeconds =
-//            stringToDate(purchaseEntity.createdAt)?.time?.div(1000)!!
-//
-//        viewModel.getUser().observe(viewLifecycleOwner, Observer { account ->
-//            if (account.period != null && account.incomeRemainder != null) {
-//                val availabilityTimeInDays =
-//                    daysRealPeriod(account.period, purchaseEntity.realPeriod, account.salaryDay)
-//
-//                val maxAvailabilityTimeInDays =
-//                    purchaseEntity.price / account.incomeRemainder * account.period
-//
-//                val currentAvailabilityProgress =
-//                    (100 * availabilityTimeInDays) / maxAvailabilityTimeInDays
-//
-//                Log.d(TAG, "availabilityTimeInDays $availabilityTimeInDays maxAvailabilityTimeIdDays $maxAvailabilityTimeInDays currentAvailabilityProgress: $currentAvailabilityProgress")
-//
-//                mBinding.availabilityRing.progress = currentAvailabilityProgress.toFloat()
-//
-//
-//            }
-//
-//        })
-//
-//    }
+    private fun initAvailabilityProgress() {
+
+        val createdAtInSeconds =
+            stringToDate(purchaseEntity.createdAt)?.time?.div(1000)!!
+
+        viewModel.getUser().observe(viewLifecycleOwner, Observer { account ->
+            if (account.period != null && account.incomeRemainder != null) {
+                val maxAvailabilityTimeInDays =
+                    daysRealPeriod(
+                        account.period,
+                        purchaseEntity.realPeriod,
+                        account.salaryDay
+                    ) // days
+
+                val timeBetweenCreatedAtTillToday =
+                    System.currentTimeMillis() / 1000 - createdAtInSeconds // seconds
+
+                val maxAvailabilityTimeInSeconds = maxAvailabilityTimeInDays * 24 * 60 * 60
+
+                val availabilityProgress =
+                    100 * timeBetweenCreatedAtTillToday / maxAvailabilityTimeInSeconds
+
+                Log.d(
+                    TAG,
+                    "availabilityProgress: $availabilityProgress maxAvailabilityTimeInSeconds $maxAvailabilityTimeInSeconds timeBetweenCreatedAtTillToday $timeBetweenCreatedAtTillToday"
+                )
+
+                mBinding.availabilityRing.progress = availabilityProgress
+                mBinding.secondaryAvailabilityRing.progress = availabilityProgress
+
+                mBinding.availability.text =
+                    getPrettyDate(timeBetweenCreatedAtTillToday / 60 / 60 / 24) + " / " + getPrettyDate(
+                        maxAvailabilityTimeInDays
+                    )
+
+            }
+
+        })
+
+    }
 
     private fun initQuestionsList(detailPurchaseEntity: DetailPurchaseResponse) {
 

@@ -214,8 +214,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:gravity="center"
-                    android:text="Thinking time"
-
+                    android:text="@string/thinking_time"
                     android:textAppearance="@style/TextAppearance.MyTheme.Subtitle2"
                     app:layout_constraintBottom_toTopOf="@+id/thinking"
                     app:layout_constraintStart_toStartOf="@+id/vertical_guideline"
@@ -255,7 +254,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:gravity="center"
-                    android:text="Availability time"
+                    android:text="@string/availability_time"
                     android:textAppearance="@style/TextAppearance.MyTheme.Subtitle2"
                     app:layout_constraintBottom_toTopOf="@+id/availability"
                     app:layout_constraintStart_toStartOf="@+id/vertical_guideline"
