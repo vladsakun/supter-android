@@ -223,3 +223,21 @@ fun rounder(x: Double): Int {
 
     return ceil(x).toInt()
 }
+
+/**
+ * @period account period
+ * @realPeriod real period of purchase
+ * @salaryDay account salary day
+ *
+ * @return period between today and salaryDay (in days)
+ */
+fun daysRealPeriod(period:Float, realPeriod:Int, salaryDay:Int): Float{
+
+    val cal: Calendar = Calendar.getInstance()
+    val dayOfMonth = cal.get(Calendar.DAY_OF_MONTH)
+
+    val realPeriod = period * realPeriod - dayOfMonth + salaryDay // in days
+
+    return realPeriod
+
+}

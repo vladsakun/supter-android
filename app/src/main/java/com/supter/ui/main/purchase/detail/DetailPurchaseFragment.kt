@@ -256,6 +256,33 @@ class DetailPurchaseFragment : ScopedFragment() {
         viewModel.timer(currentProgressInPercentage.toFloat(), oneSecPercent)
     }
 
+//    private fun initAvailabilityProgress() {
+//
+//        val createdAtInSeconds =
+//            stringToDate(purchaseEntity.createdAt)?.time?.div(1000)!!
+//
+//        viewModel.getUser().observe(viewLifecycleOwner, Observer { account ->
+//            if (account.period != null && account.incomeRemainder != null) {
+//                val availabilityTimeInDays =
+//                    daysRealPeriod(account.period, purchaseEntity.realPeriod, account.salaryDay)
+//
+//                val maxAvailabilityTimeInDays =
+//                    purchaseEntity.price / account.incomeRemainder * account.period
+//
+//                val currentAvailabilityProgress =
+//                    (100 * availabilityTimeInDays) / maxAvailabilityTimeInDays
+//
+//                Log.d(TAG, "availabilityTimeInDays $availabilityTimeInDays maxAvailabilityTimeIdDays $maxAvailabilityTimeInDays currentAvailabilityProgress: $currentAvailabilityProgress")
+//
+//                mBinding.availabilityRing.progress = currentAvailabilityProgress.toFloat()
+//
+//
+//            }
+//
+//        })
+//
+//    }
+
     private fun initQuestionsList(detailPurchaseEntity: DetailPurchaseResponse) {
 
         answeredQuestions =

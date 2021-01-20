@@ -7,6 +7,7 @@ import com.supter.R
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.databinding.ColumnItemWithPotentialBinding
 import com.supter.utils.STATUS_DONE
+import com.supter.utils.daysRealPeriod
 import com.supter.utils.getPrettyDate
 import com.woxthebox.draglistview.DragItemAdapter
 import java.util.*
@@ -55,8 +56,7 @@ internal class ItemAdapter constructor(
         private val listener: OnItemClick,
     ) : DragItemAdapter.ViewHolder(binding.root, mGrabHandleId, mDragOnLongPress) {
 
-        private val cal: Calendar = Calendar.getInstance()
-        private val dayOfMonth = cal.get(Calendar.DAY_OF_MONTH)
+
         private var activeItem: PurchaseEntity? = null
 
         override fun onItemClicked(view: View) {
@@ -76,7 +76,7 @@ internal class ItemAdapter constructor(
 
             if(mColumnStage != STATUS_DONE) {
 
-                val realPeriod = period.toFloat() * purchaseEntity.realPeriod - dayOfMonth + salaryDay // in days
+                val realPeriod = daysRealPeriod(period.toFloat(), purchaseEntity.realPeriod, salaryDay) // in days
 
                 binding.realPeriod.text = getPrettyDate(realPeriod)
             }
