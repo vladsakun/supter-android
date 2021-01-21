@@ -68,5 +68,12 @@
     <string name="available_in">Available in</string>
     <string name="thinking_time">Thinking time</string>
     <string name="availability_time">Availability time</string>
+    <string name="base_url">https://supter-api.demyan.net/</string>
+
+    <string-array name="photo_options">
+        <item>Take photo</item>
+        <item>Choose from Gallery</item>
+        <item>Cancel</item>
+    </string-array>
 
 </resources>

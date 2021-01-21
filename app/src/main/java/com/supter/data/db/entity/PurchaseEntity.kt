@@ -20,7 +20,6 @@ data class PurchaseEntity(
     var stage: String,
     var potential: Float,
     var description: String?,
-    var questionsJSON: String?,
     var remind: Double,
     var realPeriod: Int,
     val thinkingTime:String,

@@ -22,6 +22,9 @@ interface PurchaseDao {
     @Query("SELECT * FROM purchase")
     fun getPurchaseFlowList(): Flow<List<PurchaseEntity>>
 
+    @Query("SELECT * FROM purchase WHERE id=:purchaseId")
+    suspend fun getPurchaseEntityById(purchaseId: Int): PurchaseEntity
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertUser(userEntity: UserEntity)
 
@@ -29,7 +32,7 @@ interface PurchaseDao {
     fun getUserFlow(): Flow<UserEntity>
 
     @Query("SELECT * FROM users")
-    suspend fun getUser():UserEntity?
+    suspend fun getUser(): UserEntity?
 
     @Query("DELETE FROM users")
     suspend fun clearUserTable()

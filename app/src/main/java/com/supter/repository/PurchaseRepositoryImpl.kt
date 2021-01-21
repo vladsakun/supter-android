@@ -1,6 +1,8 @@
 package com.supter.repository
 
 import android.content.Context
+import com.bumptech.glide.Glide
+import com.supter.R
 import com.supter.data.body.ChangeStageBody
 import com.supter.data.body.PurchaseBody
 import com.supter.data.body.UpdatePurchaseBody
@@ -10,14 +12,8 @@ import com.supter.data.db.entity.UserEntity
 import com.supter.data.network.PurchaseNetworkDataSource
 import com.supter.data.response.*
 import com.supter.data.response.account.AccountResponse
-import com.supter.data.response.purchase.AnswerQuestionResponse
-import com.supter.data.response.purchase.CreatePurchaseResponse
-import com.supter.data.response.purchase.DetailPurchaseResponse
-import com.supter.data.response.purchase.UpdatePurchaseResponse
-import com.supter.utils.SystemUtils
-import com.supter.utils.convertAccountResponseToUserEntity
-import com.supter.utils.convertDataItemListToPurchaseEntityList
-import com.supter.utils.updatePurchasesData
+import com.supter.data.response.purchase.*
+import com.supter.utils.*
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -25,6 +21,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.MultipartBody
 import javax.inject.Inject
 
 
@@ -69,6 +66,12 @@ class PurchaseRepositoryImpl @Inject constructor(
         return networkDataSource.fetchPurchaseById(SystemUtils.getToken(context), purchaseEntity.id)
     }
 
+    override suspend fun getPurchaseById(purchaseId: Int): PurchaseEntity {
+        return withContext(Dispatchers.IO) {
+            dao.getPurchaseEntityById(purchaseId)
+        }
+    }
+
     //Fetch movies from api
     private fun fetchPurchaseList() {
         GlobalScope.launch(Dispatchers.IO) {
@@ -109,7 +112,11 @@ class PurchaseRepositoryImpl @Inject constructor(
         purchaseId: Int,
         changeStageBody: ChangeStageBody
     ): ResultWrapper<CreatePurchaseResponse> {
-        return networkDataSource.postPurchaseStage(SystemUtils.getToken(context), purchaseId, changeStageBody)
+        return networkDataSource.postPurchaseStage(
+            SystemUtils.getToken(context),
+            purchaseId,
+            changeStageBody
+        )
     }
 
     override suspend fun updateRemotePurchase(purchaseEntity: PurchaseEntity): ResultWrapper<UpdatePurchaseResponse> {
@@ -117,7 +124,12 @@ class PurchaseRepositoryImpl @Inject constructor(
         val updateResponse = networkDataSource.updatePurchase(
             SystemUtils.getToken(context),
             purchaseEntity.id,
-            UpdatePurchaseBody(purchaseEntity.title, purchaseEntity.price, purchaseEntity.description, purchaseEntity.link)
+            UpdatePurchaseBody(
+                purchaseEntity.title,
+                purchaseEntity.price,
+                purchaseEntity.description,
+                purchaseEntity.link
+            )
         )
 
         if (updateResponse is ResultWrapper.Success) {
@@ -171,6 +183,24 @@ class PurchaseRepositoryImpl @Inject constructor(
         )
     }
 
+    override suspend fun postPurchaseImage(purchaseId: Int, body: MultipartBody.Part): ResultWrapper<PurchaseData> {
+
+        val resp = networkDataSource.postPurchaseImage(SystemUtils.getToken(context), purchaseId, body)
+
+        if (resp is ResultWrapper.Success) {
+            GlobalScope.launch(Dispatchers.IO) {
+                with(resp.value){
+                    val byteArrayImage = getByteArrayImage(context.getString(R.string.base_url) + image)
+                    val purchaseEntity = getPurchaseById(id)
+                    purchaseEntity.image = byteArrayImage
+                    upsertPurchase(purchaseEntity)
+                }
+            }
+        }
+
+        return resp
+    }
+
     override suspend fun createPurchase(createPurchaseBody: PurchaseBody): ResultWrapper<CreatePurchaseResponse> {
         val createPurchaseResponse =
             networkDataSource.createPurchase(SystemUtils.getToken(context), createPurchaseBody)
@@ -181,7 +211,7 @@ class PurchaseRepositoryImpl @Inject constructor(
                     PurchaseEntity(
                         id, title, price,
                         order, stage, potential,
-                        description, null, remind = 0.0,
+                        description, remind = 0.0,
                         realPeriod = 0, thinkingTime = thinkingTime,
                         createdAt = createdAt, link = link, image = null,
                     )

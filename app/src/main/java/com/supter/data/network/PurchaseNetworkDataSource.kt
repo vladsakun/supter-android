@@ -9,6 +9,7 @@ import com.supter.data.response.account.AccountResponse
 import com.supter.data.response.account.LoginResponse
 import com.supter.data.response.account.RegistrationResponse
 import com.supter.data.response.purchase.*
+import okhttp3.MultipartBody
 
 interface PurchaseNetworkDataSource {
     suspend fun fetchPurchaseList(token: String): ResultWrapper<GetPurchasesResponse>
@@ -78,4 +79,6 @@ interface PurchaseNetworkDataSource {
         questionId: Int,
         isTrue: Boolean,
     ): ResultWrapper<AnswerQuestionResponse>
+
+    suspend fun postPurchaseImage(token:String, purchaseId: Int, body: MultipartBody.Part): ResultWrapper<PurchaseData>
 }

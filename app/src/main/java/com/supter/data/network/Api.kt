@@ -7,6 +7,7 @@ import com.supter.data.response.account.LoginResponse
 import com.supter.data.response.account.RegistrationResponse
 import com.supter.data.response.purchase.*
 import com.supter.utils.Authorization
+import okhttp3.MultipartBody
 import retrofit2.http.*
 
 interface Api {
@@ -37,20 +38,20 @@ interface Api {
     // *************************************************Purchase*********************************************
 
     // Create purchase
-    @POST("/purchases")
+    @POST("purchases")
     suspend fun createPurchase(
         @Header(Authorization) token: String,
         @Body purchaseBody: PurchaseBody
     ): CreatePurchaseResponse
 
     // Get purchases
-    @GET("/purchases")
+    @GET("purchases")
     suspend fun getPurchasesList(
         @Header(Authorization) token: String
     ): GetPurchasesResponse
 
     // Get purchase by id
-    @GET("/purchases/{id}")
+    @GET("purchases/{id}")
     suspend fun getPurchase(
         @Header(Authorization) token: String,
         @Path("id") purchaseId: Int
@@ -65,7 +66,7 @@ interface Api {
     ): UpdatePurchaseResponse
 
     // Delete purchase
-    @DELETE("/purchases/{id}")
+    @DELETE("purchases/{id}")
     suspend fun deletePurchase(
         @Header(Authorization) token: String,
         @Path("id") purchaseId: Int
@@ -73,23 +74,31 @@ interface Api {
 
     // Purchase order
     @Headers("Content-Type: application/json")
-    @PUT("/purchases/order")
+    @PUT("purchases/order")
     suspend fun putPurchasesOrder(
         @Header(Authorization) token: String,
         @Body ids: HashMap<String, List<Int>>
     ): MessageResponse
 
     // Change purchase stage
-    @POST("/purchases/{id}/stage")
+    @POST("purchases/{id}/stage")
     suspend fun updatePurchaseStage(
         @Header(Authorization) token: String,
         @Path("id") purchaseId: Int,
         @Body changeStageBody: ChangeStageBody
     ):CreatePurchaseResponse
 
+    @Multipart
+    @POST("purchases/{purchase_id}/image")
+    suspend fun postPurchaseImage(
+        @Header(Authorization) token: String,
+        @Path("purchase_id") purchaseId: Int,
+        @Part image:MultipartBody.Part
+    ):PurchaseData
+
     // ********************************************************Questions******************************************
     @FormUrlEncoded
-    @POST("/purchases/{purchaseId}/questions/{questionId}")
+    @POST("purchases/{purchaseId}/questions/{questionId}")
     suspend fun postStringAnswer(
         @Header(Authorization) token: String,
         @Path("purchaseId") purchaseId: Int,
@@ -98,7 +107,7 @@ interface Api {
     ): AnswerQuestionResponse
 
     @FormUrlEncoded
-    @POST("/purchases/{purchaseId}/questions/{questionId}")
+    @POST("purchases/{purchaseId}/questions/{questionId}")
     suspend fun postBooleanAnswer(
         @Header(Authorization) token: String,
         @Path("purchaseId") purchaseId: Int,

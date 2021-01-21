@@ -35,7 +35,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    app:layout_constraintGuide_percent="0.4" />
+                    app:layout_constraintGuide_percent="0.35" />
 
                 <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/guideline_top"
@@ -63,6 +63,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <!--For view size during animation-->
                 <com.mtdhllf.widget.progress.RingProgressView
                     style="@style/ParentRingProgressView"
                     android:layout_width="275dp"
@@ -93,14 +94,14 @@
                     style="@style/ParentRingProgressView"
                     android:layout_width="228dp"
                     android:layout_height="228dp"
-                    app:f_progress="50"
                     app:f_ringBgColor="@color/green_background"
                     app:f_ringColor="@color/green_foreground"
                     app:layout_constraintBottom_toBottomOf="@+id/potential_ring"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/potential_ring" />
+                    app:layout_constraintTop_toTopOf="@id/potential_ring"
+                    tools:f_progress="50" />
 
                 <ImageView
                     android:id="@+id/potential_image"
@@ -120,14 +121,14 @@
                     style="@style/ParentRingProgressView"
                     android:layout_width="182dp"
                     android:layout_height="182dp"
-                    app:f_progress="30"
                     app:f_ringBgColor="@color/blue_background"
                     app:f_ringColor="@color/blue_foreground"
                     app:layout_constraintBottom_toBottomOf="@+id/thinking_ring"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/thinking_ring" />
+                    app:layout_constraintTop_toTopOf="@id/thinking_ring"
+                    tools:f_progress="30" />
 
                 <TextView
                     android:id="@+id/dollar"
@@ -198,7 +199,6 @@
                     android:id="@+id/secondary_thinking_ring"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    app:f_progress="45"
                     app:f_ringBgColor="@color/green_background"
                     app:f_ringColor="@color/green_foreground"
                     app:f_strokeCap="round"
@@ -206,7 +206,8 @@
                     app:layout_constraintDimensionRatio="1:1"
                     app:layout_constraintEnd_toStartOf="@+id/vertical_guideline"
                     app:layout_constraintTop_toTopOf="@+id/thinking_hint"
-                    app:layout_constraintVertical_bias="0.0" />
+                    app:layout_constraintVertical_bias="0.0"
+                    tools:f_progress="45" />
 
                 <TextView
                     android:id="@+id/thinking_hint"
@@ -227,26 +228,26 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:gravity="center"
-                    android:text="2/5 days"
                     android:textAppearance="@style/TextAppearance.MyTheme.Subtitle1"
                     android:textColor="@color/green_foreground"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toTopOf="@+id/guideline_bottom"
                     app:layout_constraintStart_toStartOf="@+id/vertical_guideline"
-                    app:layout_constraintTop_toBottomOf="@+id/thinking_hint" />
+                    app:layout_constraintTop_toBottomOf="@+id/thinking_hint"
+                    tools:text="2/5 days" />
 
                 <com.mtdhllf.widget.progress.RingProgressView
                     android:id="@+id/secondary_availability_ring"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    app:f_progress="20"
                     app:f_ringBgColor="@color/blue_background"
                     app:f_ringColor="@color/blue_foreground"
                     app:f_strokeCap="round"
                     app:layout_constraintBottom_toBottomOf="@+id/availability"
                     app:layout_constraintDimensionRatio="1:1"
                     app:layout_constraintEnd_toStartOf="@+id/vertical_guideline"
-                    app:layout_constraintTop_toTopOf="@+id/availability_hint" />
+                    app:layout_constraintTop_toTopOf="@+id/availability_hint"
+                    tools:f_progress="20" />
 
                 <TextView
                     android:id="@+id/availability_hint"
@@ -267,13 +268,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:gravity="center"
-                    android:text="3/14 days"
                     android:textAppearance="@style/TextAppearance.MyTheme.Subtitle1"
                     android:textColor="@color/blue_foreground"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/vertical_guideline"
-                    app:layout_constraintTop_toBottomOf="@+id/availability_hint" />
+                    app:layout_constraintTop_toBottomOf="@+id/availability_hint"
+                    tools:text="3/14 days" />
 
                 <androidx.constraintlayout.widget.Group
                     android:id="@+id/big_rings_group"

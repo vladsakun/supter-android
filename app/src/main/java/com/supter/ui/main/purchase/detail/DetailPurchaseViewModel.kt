@@ -18,6 +18,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.MultipartBody
 
 class DetailPurchaseViewModel @ViewModelInject constructor(
     private val purchaseRepository: PurchaseRepository
@@ -149,5 +150,11 @@ class DetailPurchaseViewModel @ViewModelInject constructor(
             _isAnswerSuccessfullySubmitted.postValue(response is ResultWrapper.Success)
         }
         return _isAnswerSuccessfullySubmitted
+    }
+
+    fun postPurchaseImage(body: MultipartBody.Part) {
+        viewModelScope.launch(Dispatchers.IO){
+            purchaseRepository.postPurchaseImage(purchaseEntity.id, body)
+        }
     }
 }

@@ -9,8 +9,13 @@ import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.db.entity.UserEntity
 import com.supter.data.response.account.AccountResponse
 import com.supter.data.response.purchase.PurchaseData
+import java.io.BufferedInputStream
+import java.io.ByteArrayOutputStream
+import java.io.InputStream
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.net.URL
+import java.net.URLConnection
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -18,6 +23,32 @@ import kotlin.math.ceil
 import kotlin.math.round
 
 private val TAG = "Supter"
+
+//Download image from url and convert it to byte array
+fun getByteArrayImage(url: String?): ByteArray? {
+    if (url != null) {
+        try {
+            val imageUrl = URL(url)
+            val ucon: URLConnection = imageUrl.openConnection()
+            val `is`: InputStream = ucon.getInputStream()
+            val bis = BufferedInputStream(`is`)
+            val buffer = ByteArrayOutputStream()
+            //We create an array of bytes
+            val data = ByteArray(50)
+            var current = 0
+
+            while (bis.read(data, 0, data.size).also { current = it } != -1) {
+                buffer.write(data, 0, current)
+            }
+            return buffer.toByteArray()
+        } catch (e: Exception) {
+            Log.d("ImageManager", "Error: $e")
+        }
+
+    }
+    // If could not download image from url return default poster
+    return null
+}
 
 fun stringToDate(dateString: String): Date? {
     // example date "2010-10-15T09:27:37Z"
@@ -82,7 +113,6 @@ fun convertDataItemListToPurchaseEntityList(dataItemList: List<PurchaseData>): L
     val resultList = ArrayList<PurchaseEntity>()
 
     for (dataItem in dataItemList) {
-        Log.d(TAG, "$dataItem")
         resultList.add(convertDataItemToPurchaseEntity(dataItem))
     }
 
@@ -91,7 +121,8 @@ fun convertDataItemListToPurchaseEntityList(dataItemList: List<PurchaseData>): L
 
 fun convertDataItemToPurchaseEntity(dataItem: PurchaseData): PurchaseEntity {
     with(dataItem) {
-        return PurchaseEntity(
+
+        val purchaseEntity = PurchaseEntity(
             id,
             title,
             price,
@@ -99,7 +130,6 @@ fun convertDataItemToPurchaseEntity(dataItem: PurchaseData): PurchaseEntity {
             stage,
             potential,
             description,
-            null,
             remind = 0.0,
             realPeriod = 0,
             thinkingTime = thinkingTime,
@@ -107,6 +137,13 @@ fun convertDataItemToPurchaseEntity(dataItem: PurchaseData): PurchaseEntity {
             link = link,
             image = null,
         )
+
+        dataItem.image?.let {
+            purchaseEntity.image =
+                getByteArrayImage("https://supter-api.demyan.net/" + dataItem.image)
+        }
+
+        return purchaseEntity
     }
 }
 
@@ -131,21 +168,48 @@ fun convertAccountResponseToUserEntity(accountResponse: AccountResponse): UserEn
 fun getPrettyDate(days: Number): String {
     val time = days.toDouble() * 24 // convert days to hours
 
-    return if (time >= 24.0 && time < (31.0 * 24)) {
-        (BigDecimal(time / 24).setScale(1, RoundingMode.HALF_EVEN)).toString() + " days"
-    } else if (time >= (31.0 * 24) && time < (365 * 24)) {
-        (BigDecimal(time / (31 * 24)).setScale(
-            1,
-            RoundingMode.HALF_EVEN
-        )).toString() + " months"
-    } else if (time >= (365 * 24)) {
-        (BigDecimal(time / (365 * 24)).setScale(
-            1,
-            RoundingMode.HALF_EVEN
-        )).toString() + " years"
-    } else {
-        (BigDecimal(time / 24).setScale(1, RoundingMode.HALF_EVEN)).toString() + " days"
+    Log.d(TAG, "getPrettyDate: $time")
+
+    if (time == 0.0) {
+        return "0 minutes"
     }
+
+    var prettyDate = when {
+
+        time < 1.0 -> {
+            (BigDecimal(time / 60).setScale(1, RoundingMode.HALF_EVEN)).toString() + " minutes"
+        }
+
+        time >= 1.0 && time < 24.0 -> {
+            (BigDecimal(time).setScale(1, RoundingMode.HALF_EVEN)).toString() + " hours"
+        }
+
+        time >= 24.0 && time < (31.0 * 24) -> {
+            (BigDecimal(time / 24).setScale(1, RoundingMode.HALF_EVEN)).toString() + " days"
+        }
+
+        time >= (31.0 * 24) && time < (365 * 24) -> {
+            (BigDecimal(time / (31 * 24)).setScale(
+                1,
+                RoundingMode.HALF_EVEN
+            )).toString() + " months"
+        }
+
+        time >= (365 * 24) -> {
+            (BigDecimal(time / (365 * 24)).setScale(
+                1,
+                RoundingMode.HALF_EVEN
+            )).toString() + " years"
+        }
+
+        else -> {
+            (BigDecimal(time / 24).setScale(1, RoundingMode.HALF_EVEN)).toString() + " days"
+        }
+    }
+
+    prettyDate = prettyDate.replace(".0", "")
+
+    return prettyDate
 }
 
 fun updatePurchasesData(
@@ -231,7 +295,7 @@ fun rounder(x: Double): Int {
  *
  * @return period between today and salaryDay (in days)
  */
-fun daysRealPeriod(period:Float, realPeriod:Int, salaryDay:Int): Float{
+fun daysRealPeriod(period: Float, realPeriod: Int, salaryDay: Int): Float {
 
     val cal: Calendar = Calendar.getInstance()
     val dayOfMonth = cal.get(Calendar.DAY_OF_MONTH)

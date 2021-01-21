@@ -1,17 +1,22 @@
 package com.supter.ui.main.purchase.detail
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.app.Activity.RESULT_CANCELED
+import android.app.Activity.RESULT_OK
+import android.content.*
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.graphics.ImageDecoder
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.*
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Animation
 import android.view.animation.ScaleAnimation
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -20,6 +25,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.transition.MaterialContainerTransform
 import com.supter.R
 import com.supter.data.db.entity.PurchaseEntity
@@ -35,6 +41,11 @@ import com.supter.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.launch
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
 
 
 @AndroidEntryPoint
@@ -140,11 +151,20 @@ class DetailPurchaseFragment : ScopedFragment() {
         mBinding.potentialRing.progress = purchaseEntity.potential
         mBinding.secondaryPotentialRing.progress = purchaseEntity.potential
 
+        initPurchaseImage()
+
         mBinding.notifyChange()
 
         initThinkingProgress()
 
         initAvailabilityProgress()
+    }
+
+    private fun initPurchaseImage() {
+        purchaseEntity.image?.let {
+            val bitmap = BitmapFactory.decodeByteArray(it, 0, it.size)
+            mBinding.purchaseImage.setImageBitmap(bitmap)
+        }
     }
 
     private fun setClickListeners() {
@@ -163,6 +183,43 @@ class DetailPurchaseFragment : ScopedFragment() {
         mBinding.ringsParent.setOnClickListener {
             onRingsClick()
         }
+
+        mBinding.purchaseImage.setOnClickListener {
+            selectImage()
+        }
+    }
+
+    private fun selectImage() {
+        val builder = MaterialAlertDialogBuilder(requireActivity())
+        builder.setTitle("Choose purchase image")
+
+        builder.setItems(R.array.photo_options, object : DialogInterface.OnClickListener {
+            override fun onClick(dialog: DialogInterface, which: Int) {
+
+                // 0 - Camera
+                // 1- Gallery
+                // 2 - Cancel
+
+                when (which) {
+                    0 -> {
+                        val takePicture = Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE)
+                        startActivityForResult(takePicture, 0)
+                    }
+
+                    1 -> {
+                        val pickPictureIntent = Intent(
+                            Intent.ACTION_PICK,
+                            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                        )
+                        startActivityForResult(pickPictureIntent, 1)
+                    }
+
+                    else -> dialog.dismiss()
+                }
+            }
+        })
+
+        builder.show()
     }
 
     private fun bindObservers() {
@@ -238,19 +295,20 @@ class DetailPurchaseFragment : ScopedFragment() {
 
         val currentProgressInHours = (thinkingTimeInSeconds - currentTimeInSeconds) / 60 / 60
 
-        if (currentProgressInHours < 24) {
+        var thinkingText: String
 
-            if (currentProgressInHours <= 0) {
-                mBinding.thinking.text = getString(R.string.zero_hours)
-            } else {
-                mBinding.thinking.text =
-                    getString(R.string.hours, currentProgressInHours.toString())
-            }
-
+        if (currentProgressInHours <= 0) {
+            thinkingText = getPrettyDate(0)
         } else {
-            mBinding.thinking.text =
-                getPrettyDate((currentProgressInHours / 24).toDouble())
+            thinkingText = getPrettyDate(currentProgressInHours / 24)
         }
+
+        thinkingText += " left"
+
+//        thinkingText += "/" + getPrettyDate((thinkingTimeInSeconds - createdAtInSeconds) / 60 / 60 / 24)
+
+        mBinding.thinking.text = thinkingText
+
 
         val oneSecPercent: Float = 1 * 100 / (thinkingTimeInSeconds - createdAtInSeconds).toFloat()
 
@@ -288,7 +346,7 @@ class DetailPurchaseFragment : ScopedFragment() {
                 mBinding.secondaryAvailabilityRing.progress = availabilityProgress
 
                 mBinding.availability.text =
-                    getPrettyDate(timeBetweenCreatedAtTillToday / 60 / 60 / 24) + " / " + getPrettyDate(
+                    getPrettyDate(timeBetweenCreatedAtTillToday / 60 / 60 / 24) + "/" + getPrettyDate(
                         maxAvailabilityTimeInDays
                     )
 
@@ -602,6 +660,53 @@ class DetailPurchaseFragment : ScopedFragment() {
                 smallView.startAnimation(animation)
             } else {
                 smallView.startAnimation(reduceScaleAnimation())
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode != RESULT_CANCELED) {
+            when (requestCode) {
+                0 -> {
+                    if (resultCode == RESULT_OK && data != null) {
+                        val selectedImage = data.extras?.get("data") as Bitmap
+                        mBinding.purchaseImage.setImageBitmap(selectedImage)
+                    }
+                }
+
+                1 -> {
+                    if (resultCode == RESULT_OK && data != null) {
+                        val selectedImage: Uri? = data.data
+
+                        if (selectedImage != null) {
+
+                            val bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                                ImageDecoder.decodeBitmap(
+                                    ImageDecoder.createSource(
+                                        requireActivity().contentResolver,
+                                        selectedImage
+                                    )
+                                )
+                            } else {
+                                // deprecated is Ok for android < 28
+                                MediaStore.Images.Media.getBitmap(
+                                    requireContext().contentResolver,
+                                    selectedImage
+                                )
+                            }
+
+                            mBinding.purchaseImage.setImageBitmap(bitmap)
+
+                            val f = PhotoManager.createFileFromBitmap(bitmap, requireContext())
+
+                            val requestBody = f.asRequestBody("image/jpeg".toMediaTypeOrNull())
+                            val body =
+                                MultipartBody.Part.createFormData("image", f.name, requestBody)
+
+                            viewModel.postPurchaseImage(body)
+                        }
+                    }
+                }
             }
         }
     }

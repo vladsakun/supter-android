@@ -7,6 +7,7 @@ import com.supter.data.response.account.LoginResponse
 import com.supter.data.response.account.RegistrationResponse
 import com.supter.data.response.purchase.*
 import kotlinx.coroutines.Dispatchers
+import okhttp3.MultipartBody
 import javax.inject.Inject
 
 class PurchaseNetworkDataSourceImpl @Inject constructor(
@@ -26,7 +27,7 @@ class PurchaseNetworkDataSourceImpl @Inject constructor(
         token: String,
         purchaseId: Int
     ): ResultWrapper<DetailPurchaseResponse> {
-        return safeApiCall(Dispatchers.IO) {api.getPurchase(token, purchaseId)}
+        return safeApiCall(Dispatchers.IO) { api.getPurchase(token, purchaseId) }
     }
 
     override suspend fun createPurchase(
@@ -41,19 +42,28 @@ class PurchaseNetworkDataSourceImpl @Inject constructor(
         purchaseId: Int,
         updatePurchaseBody: UpdatePurchaseBody
     ): ResultWrapper<UpdatePurchaseResponse> {
-        return safeApiCall(Dispatchers.IO) {api.updatePurchase(token, purchaseId, updatePurchaseBody)}
+        return safeApiCall(Dispatchers.IO) {
+            api.updatePurchase(
+                token,
+                purchaseId,
+                updatePurchaseBody
+            )
+        }
     }
 
     override suspend fun deletePurchase(
         token: String,
         purchaseId: Int
     ): ResultWrapper<MessageResponse> {
-        return safeApiCall(Dispatchers.IO) {api.deletePurchase(token, purchaseId)}
+        return safeApiCall(Dispatchers.IO) { api.deletePurchase(token, purchaseId) }
     }
 
-    override suspend fun postPurchaseIdsList(token: String, purchaseIdsList: List<Int>): ResultWrapper<MessageResponse> {
+    override suspend fun postPurchaseIdsList(
+        token: String,
+        purchaseIdsList: List<Int>
+    ): ResultWrapper<MessageResponse> {
         val ids = hashMapOf("ids" to purchaseIdsList)
-        return safeApiCall(Dispatchers.IO) {api.putPurchasesOrder(token, ids)}
+        return safeApiCall(Dispatchers.IO) { api.putPurchasesOrder(token, ids) }
     }
 
     override suspend fun postPurchaseStage(
@@ -61,7 +71,13 @@ class PurchaseNetworkDataSourceImpl @Inject constructor(
         purchaseId: Int,
         changeStageBody: ChangeStageBody
     ): ResultWrapper<CreatePurchaseResponse> {
-        return safeApiCall(Dispatchers.IO) {api.updatePurchaseStage(token, purchaseId, changeStageBody)}
+        return safeApiCall(Dispatchers.IO) {
+            api.updatePurchaseStage(
+                token,
+                purchaseId,
+                changeStageBody
+            )
+        }
     }
 
     override suspend fun registerWithCoroutines(
@@ -92,7 +108,7 @@ class PurchaseNetworkDataSourceImpl @Inject constructor(
     }
 
     override suspend fun fetchUser(token: String): ResultWrapper<AccountResponse> {
-        return safeApiCall(Dispatchers.IO) {api.fetchUser(token)}
+        return safeApiCall(Dispatchers.IO) { api.fetchUser(token) }
     }
 
     override suspend fun postStringAnswer(
@@ -101,7 +117,14 @@ class PurchaseNetworkDataSourceImpl @Inject constructor(
         questionId: Int,
         text: String
     ): ResultWrapper<AnswerQuestionResponse> {
-        return safeApiCall(Dispatchers.IO) {api.postStringAnswer(token, purchaseId, questionId, text)}
+        return safeApiCall(Dispatchers.IO) {
+            api.postStringAnswer(
+                token,
+                purchaseId,
+                questionId,
+                text
+            )
+        }
     }
 
     override suspend fun postBooleanAnswer(
@@ -110,7 +133,22 @@ class PurchaseNetworkDataSourceImpl @Inject constructor(
         questionId: Int,
         isTrue: Boolean
     ): ResultWrapper<AnswerQuestionResponse> {
-        return safeApiCall(Dispatchers.IO) {api.postBooleanAnswer(token, purchaseId, questionId, isTrue)}
+        return safeApiCall(Dispatchers.IO) {
+            api.postBooleanAnswer(
+                token,
+                purchaseId,
+                questionId,
+                isTrue
+            )
+        }
+    }
+
+    override suspend fun postPurchaseImage(
+        token: String,
+        purchaseId: Int,
+        body: MultipartBody.Part
+    ): ResultWrapper<PurchaseData> {
+        return safeApiCall(Dispatchers.IO) { api.postPurchaseImage(token, purchaseId, body) }
     }
 
 
