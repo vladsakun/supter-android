@@ -55,6 +55,9 @@ class BoardFragment : ScopedFragment(), OnItemClick {
     ): View? {
         _binding = FragmentDashboardBinding.inflate(inflater, container, false)
         isBoardInitted = false
+
+        initBoard()
+
         return mBinding.root
     }
 
@@ -69,6 +72,52 @@ class BoardFragment : ScopedFragment(), OnItemClick {
         view.doOnPreDraw { startPostponedEnterTransition() }
 
         bindViews()
+    }
+
+    private fun bindViews() {
+
+        launch {
+            val user = viewModel.fetchUser()
+
+            if (user?.period != null &&
+                user.incomeRemainder != null
+            ) {
+                viewModel.getPurchaseLiveData().observe(viewLifecycleOwner,
+                    Observer<List<PurchaseEntity>> { purchaseList ->
+                        if (purchaseList != null) {
+
+                            val wantList = purchaseList.filter { it.stage == STATUS_WANT }
+                            val processList = purchaseList.filter { it.stage == STATUS_DECIDED }
+                            val doneList = purchaseList.filter { it.stage == STATUS_DONE }
+
+                            itemAdapters.forEach {
+                                it.period = user.period
+                                it.salaryDay = user.salaryDay
+                            }
+
+                            itemAdapters[0].updateList(wantList)
+                            itemAdapters[1].updateList(processList)
+                            itemAdapters[2].updateList(doneList)
+//                            if (isBoardInitted) {
+//
+//
+//                            } else {
+//                                resetBoard(purchaseList, user.period, 1)
+//                                isBoardInitted = true
+//                                hideProgress()
+//                            }
+
+                        }
+                    })
+            } else {
+                showFillUserDialog()
+            }
+        }
+
+        viewModel.errorMessageLiveData.observe(viewLifecycleOwner, Observer {
+            showErrorMessage(it)
+        })
+
     }
 
     private fun resetBoard(purchaseList: List<PurchaseEntity>, period: Number, salaryDate: Int) {
@@ -169,11 +218,15 @@ class BoardFragment : ScopedFragment(), OnItemClick {
                     viewModel.upsertPurchaseList(copyList)
                 }
 
-                if(fromColumn != toColumn){ // Move to another column
-                    dragItem?.let{
+                if (fromColumn != toColumn) { // Move to another column
+                    dragItem?.let {
                         val currentRecyclerView = mBoardView.getAdapter(toColumn) as ItemAdapter
                         Log.d(TAG, "onItemDragEnded: ${currentRecyclerView.mColumnStage}")
-                        viewModel.moveToAnotherStage(currentRecyclerView.mColumnStage, currentRecyclerView.purchaseList, it)
+                        viewModel.moveToAnotherStage(
+                            currentRecyclerView.mColumnStage,
+                            currentRecyclerView.purchaseList,
+                            it
+                        )
                     }
                 }
             }
@@ -187,7 +240,7 @@ class BoardFragment : ScopedFragment(), OnItemClick {
             }
 
             override fun onItemChangedColumn(oldColumn: Int, newColumn: Int) {
-                
+
                 val itemCount1 =
                     mBoardView.getHeaderView(oldColumn).findViewById<TextView>(R.id.item_count)
                 itemCount1.text = mBoardView.getAdapter(oldColumn).itemCount.toString()
@@ -229,47 +282,8 @@ class BoardFragment : ScopedFragment(), OnItemClick {
                 return true
             }
         })
-    }
 
-    private fun bindViews() {
-
-        initBoard()
-
-        launch {
-            val user = viewModel.fetchUser()
-
-            if (user?.period != null &&
-                user.incomeRemainder != null) {
-                viewModel.getPurchaseLiveData().observe(viewLifecycleOwner,
-                    Observer<List<PurchaseEntity>> { purchaseList ->
-                        if (purchaseList != null) {
-
-                            if (isBoardInitted) {
-
-                                val wantList = purchaseList.filter { it.stage == STATUS_WANT }
-                                val processList = purchaseList.filter { it.stage == STATUS_DECIDED }
-                                val doneList = purchaseList.filter { it.stage == STATUS_DONE }
-
-                                itemAdapters[0].updateList(wantList)
-                                itemAdapters[1].updateList(processList)
-                                itemAdapters[2].updateList(doneList)
-
-                            } else {
-                                resetBoard(purchaseList, user.period, 1)
-                                isBoardInitted = true
-                                hideProgress()
-                            }
-
-                        }
-                    })
-            } else {
-                showFillUserDialog()
-            }
-        }
-
-        viewModel.errorMessageLiveData.observe(viewLifecycleOwner, Observer {
-            showErrorMessage(it)
-        })
+        resetBoard(listOf(), 0, 0)
 
     }
 

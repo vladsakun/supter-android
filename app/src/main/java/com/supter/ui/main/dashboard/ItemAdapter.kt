@@ -18,8 +18,8 @@ internal class ItemAdapter constructor(
     private val mGrabHandleId: Int,
     private val mDragOnLongPress: Boolean,
     private val onItemClick: OnItemClick,
-    private val period: Number,
-    private val salaryDay: Int,
+    var period: Number,
+    var salaryDay: Int,
 ) : DragItemAdapter<PurchaseEntity, ItemAdapter.ViewHolder>() {
 
     init {
