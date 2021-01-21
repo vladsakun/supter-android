@@ -87,12 +87,12 @@ class DetailPurchaseFragment : ScopedFragment() {
 
         setHasOptionsMenu(true)
 
-        sharedElementEnterTransition = MaterialContainerTransform().apply {
-            drawingViewId = R.id.nav_host_fragment
-            duration = resources.getInteger(R.integer.reply_motion_duration_medium).toLong()
-            scrimColor = Color.TRANSPARENT
-            setAllContainerColors(requireContext().themeColor(R.attr.colorSurface))
-        }
+//        sharedElementEnterTransition = MaterialContainerTransform().apply {
+//            drawingViewId = R.id.nav_host_fragment
+//            duration = resources.getInteger(R.integer.reply_motion_duration_medium).toLong()
+//            scrimColor = Color.TRANSPARENT
+//            setAllContainerColors(requireContext().themeColor(R.attr.colorSurface))
+//        }
     }
 
     override fun onCreateView(

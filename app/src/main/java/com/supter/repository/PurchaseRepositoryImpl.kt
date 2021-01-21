@@ -191,7 +191,7 @@ class PurchaseRepositoryImpl @Inject constructor(
             GlobalScope.launch(Dispatchers.IO) {
                 with(resp.value){
                     val byteArrayImage = getByteArrayImage(context.getString(R.string.base_url) + image)
-                    val purchaseEntity = getPurchaseById(id)
+                    val purchaseEntity = dao.getPurchaseEntityById(purchaseId)
                     purchaseEntity.image = byteArrayImage
                     upsertPurchase(purchaseEntity)
                 }

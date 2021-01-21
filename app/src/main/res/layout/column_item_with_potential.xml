@@ -30,7 +30,6 @@
             android:layout_gravity="center"
             android:duplicateParentState="true"
             card_view:cardElevation="0dp"
-            android:transitionName="@{@string/purchase_card_transition_name(purchase.id)}"
             card_view:cardPreventCornerOverlap="true"
             card_view:cardUseCompatPadding="false"
             card_view:contentPadding="0dp">
