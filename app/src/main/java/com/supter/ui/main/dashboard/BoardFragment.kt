@@ -51,7 +51,7 @@ class BoardFragment : ScopedFragment(), OnItemClick {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentDashboardBinding.inflate(inflater, container, false)
         isBoardInitted = false
@@ -98,6 +98,8 @@ class BoardFragment : ScopedFragment(), OnItemClick {
                             itemAdapters[0].updateList(wantList)
                             itemAdapters[1].updateList(processList)
                             itemAdapters[2].updateList(doneList)
+
+
 //                            if (isBoardInitted) {
 //
 //
@@ -235,7 +237,7 @@ class BoardFragment : ScopedFragment(), OnItemClick {
                 oldColumn: Int,
                 oldRow: Int,
                 newColumn: Int,
-                newRow: Int,
+                newRow: Int
             ) {
             }
 
@@ -276,7 +278,7 @@ class BoardFragment : ScopedFragment(), OnItemClick {
                 oldColumn: Int,
                 oldRow: Int,
                 newColumn: Int,
-                newRow: Int,
+                newRow: Int
             ): Boolean {
                 // Add logic here to prevent an item to be dropped
                 return true

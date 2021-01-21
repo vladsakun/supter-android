@@ -31,6 +31,7 @@ data class PurchaseQuestion(
 	val purchaseId: Int,
 	val id: Int,
 	val text: String?,
-	val updatedAt: String
+	val updatedAt: String,
+	val type: String
 )
 

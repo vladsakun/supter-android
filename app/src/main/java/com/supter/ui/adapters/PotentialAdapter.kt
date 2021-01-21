@@ -21,6 +21,7 @@ import com.google.android.material.textfield.TextInputLayout
 import com.supter.R
 import com.supter.data.model.PotentialItem
 import com.supter.ui.main.purchase.detail.DetailPurchaseFragment
+import com.supter.utils.TEXT_QUESTION_TYPE
 import com.supter.utils.logException
 import com.supter.views.LoadingButton
 import es.dmoral.toasty.Toasty
@@ -71,7 +72,7 @@ class PotentialAdapter(
 
             } else {
 
-                if (potentialItem.questionType == 1) {
+                if (potentialItem.questionType == TEXT_QUESTION_TYPE) {
                     dialogView = layoutInflater.inflate(R.layout.string_question_alert_dialog, null)
 
                     val questionTitle = dialogView.findViewById<TextView>(R.id.question_title)
