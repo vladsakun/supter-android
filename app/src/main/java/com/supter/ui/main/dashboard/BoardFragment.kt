@@ -305,14 +305,14 @@ class BoardFragment : ScopedFragment(), OnItemClick {
     override fun onItemClick(cardView: View, purchaseEntity: PurchaseEntity) {
 
         val detailPurchaseTransitionName = getString(R.string.purchase_card_detail_transition_name)
-        val extras = FragmentNavigatorExtras(cardView to detailPurchaseTransitionName)
+//        val extras = FragmentNavigatorExtras(cardView to detailPurchaseTransitionName)
 
         val direction = BoardFragmentDirections.actionNavDashboardToDetailPurchaseFragment(
             purchaseEntity.title,
             purchaseEntity
         )
 
-        findNavController().navigate(direction, extras)
+        findNavController().navigate(direction)
 //        exitTransition = MaterialElevationScale(false).apply {
 //            duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
 //        }
