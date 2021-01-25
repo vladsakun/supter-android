@@ -82,6 +82,7 @@ class BoardFragment : ScopedFragment(), OnItemClick {
             if (user?.period != null &&
                 user.incomeRemainder != null
             ) {
+
                 viewModel.getPurchaseLiveData().observe(viewLifecycleOwner,
                     Observer<List<PurchaseEntity>> { purchaseList ->
                         if (purchaseList != null) {
@@ -95,19 +96,15 @@ class BoardFragment : ScopedFragment(), OnItemClick {
                                 it.salaryDay = user.salaryDay
                             }
 
+                            purchaseList.forEach{
+                                Log.d(TAG, "purchase $it")
+                            }
+
+
                             itemAdapters[0].updateList(wantList)
                             itemAdapters[1].updateList(processList)
                             itemAdapters[2].updateList(doneList)
 
-
-//                            if (isBoardInitted) {
-//
-//
-//                            } else {
-//                                resetBoard(purchaseList, user.period, 1)
-//                                isBoardInitted = true
-//                                hideProgress()
-//                            }
 
                         }
                     })
@@ -182,7 +179,6 @@ class BoardFragment : ScopedFragment(), OnItemClick {
         mBoardView.setBoardListener(object : BoardListener {
             override fun onItemDragStarted(column: Int, row: Int) {
                 dragItem = mBoardView.getAdapter(column).itemList[row] as PurchaseEntity
-                Log.d(TAG, "onItemDragStarted: $dragItem")
                 if (column == 0) {
                     dragItem?.let {
                         if (it.potential < 70f) {
@@ -208,13 +204,17 @@ class BoardFragment : ScopedFragment(), OnItemClick {
                         copyList.add(newItem)
                     }
 
-                    val toColumnAdapter = mBoardView.getAdapter(toColumn) as ItemAdapter
-                    val toColumnStage = toColumnAdapter.mColumnStage
-                    toColumnAdapter.itemList.forEachIndexed { index, item ->
-                        val newItem = item as PurchaseEntity
-                        newItem.order = index
-                        newItem.stage = toColumnStage
-                        copyList.add(newItem)
+                    if (fromColumn != toColumn) {
+
+                        val toColumnAdapter = mBoardView.getAdapter(toColumn) as ItemAdapter
+                        val toColumnStage = toColumnAdapter.mColumnStage
+                        toColumnAdapter.itemList.forEachIndexed { index, item ->
+                            val newItem = item as PurchaseEntity
+                            newItem.order = index
+                            newItem.stage = toColumnStage
+                            copyList.add(newItem)
+                        }
+
                     }
 
                     viewModel.upsertPurchaseList(copyList)
@@ -223,7 +223,6 @@ class BoardFragment : ScopedFragment(), OnItemClick {
                 if (fromColumn != toColumn) { // Move to another column
                     dragItem?.let {
                         val currentRecyclerView = mBoardView.getAdapter(toColumn) as ItemAdapter
-                        Log.d(TAG, "onItemDragEnded: ${currentRecyclerView.mColumnStage}")
                         viewModel.moveToAnotherStage(
                             currentRecyclerView.mColumnStage,
                             currentRecyclerView.purchaseList,

@@ -423,12 +423,10 @@ class DetailPurchaseFragment : ScopedFragment() {
         if (questionsItemList != null) {
             for (questionItem in questionsItemList) {
                 potentialItemsListResult.add(
-                    PotentialItem(
+                    convertQuestionItemToPotentialItem(
                         true,
-                        questionItem.title,
-                        questionItem.purchaseQuestion?.text,
-                        questionItem.id,
-                        1
+                        questionItem,
+                        questionItem.purchaseQuestion?.text
                     )
                 )
             }
@@ -474,12 +472,10 @@ class DetailPurchaseFragment : ScopedFragment() {
 
                         toIncreasePotentialAdapter?.removeItemAt(answeredQuestionId)
 
-                        val potentialItem = PotentialItem(
+                        val potentialItem = convertQuestionItemToPotentialItem(
                             false,
-                            answeredQuestion.title,
-                            stringAnswer,
-                            answeredQuestion.id,
-                            0
+                            answeredQuestion,
+                            stringAnswer
                         )
 
                         if (donePotentialAdapter == null) {

@@ -7,8 +7,10 @@ import android.util.Log
 import com.supter.BuildConfig
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.db.entity.UserEntity
+import com.supter.data.model.PotentialItem
 import com.supter.data.response.account.AccountResponse
 import com.supter.data.response.purchase.PurchaseData
+import com.supter.data.response.purchase.QuestionsItem
 import java.io.BufferedInputStream
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
@@ -42,7 +44,6 @@ fun getByteArrayImage(url: String?): ByteArray? {
             }
             return buffer.toByteArray()
         } catch (e: Exception) {
-            Log.d("ImageManager", "Error: $e")
         }
 
     }
@@ -161,14 +162,26 @@ fun convertAccountResponseToUserEntity(accountResponse: AccountResponse): UserEn
     }
 }
 
+fun convertQuestionItemToPotentialItem(
+    isDone: Boolean,
+    questionsItem: QuestionsItem,
+    answer: String?
+): PotentialItem {
+    return PotentialItem(
+        isDone,
+        questionsItem.title,
+        answer,
+        questionsItem.id,
+        questionsItem.purchaseQuestion?.type
+    )
+}
+
 /**
  * @param days
  */
 
 fun getPrettyDate(days: Number): String {
     val time = days.toDouble() * 24 // convert days to hours
-
-    Log.d(TAG, "getPrettyDate: $time")
 
     if (time == 0.0) {
         return "0 minutes"
@@ -214,70 +227,88 @@ fun getPrettyDate(days: Number): String {
 
 fun updatePurchasesData(
     purchaseList: List<PurchaseEntity>,
-    user: UserEntity
+    userEntity: UserEntity?
 ): List<PurchaseEntity> {
 
-    if (user.incomeRemainder != null && user.period != null) {
+    userEntity?.let { user ->
 
-        val newPurchaseList = mutableListOf<PurchaseEntity>()
-        val purchaseListWithoutDoneAndSortedByStage = mutableListOf<PurchaseEntity>()
+        if (user.incomeRemainder != null && user.period != null && user.balance != null) {
 
-        val processList =
-            purchaseList.filter { it.stage == STATUS_DECIDED }.sortedBy { it.order }
+            var userBalance: Float = user.balance
 
-        for (purchase in processList) {
-            purchaseListWithoutDoneAndSortedByStage.add(purchase)
-        }
+            val newPurchaseList = mutableListOf<PurchaseEntity>()
+            val purchaseListWithoutDoneAndSortedByStage = mutableListOf<PurchaseEntity>()
 
-        val statusWant =
-            purchaseList.filter { it.stage == STATUS_WANT }.sortedBy { it.order }
+            purchaseListWithoutDoneAndSortedByStage.addAll(purchaseList.filter { it.stage == STATUS_DECIDED }
+                .sortedBy { it.order }
+            )
 
-        for (purchase in statusWant) {
-            purchaseListWithoutDoneAndSortedByStage.add(purchase)
-        }
+            purchaseListWithoutDoneAndSortedByStage.addAll(purchaseList.filter { it.stage == STATUS_WANT }
+                .sortedBy { it.order }
+            )
 
-        for ((index, element) in purchaseListWithoutDoneAndSortedByStage.withIndex()) {
-            if (index == 0) {
-                val currentPeriod: Double = element.price / user.incomeRemainder
+            for ((index, element) in purchaseListWithoutDoneAndSortedByStage.withIndex()) {
 
-                val productPeriod = rounder(currentPeriod)
+                var priceWithBalance: Double = element.price - userBalance
 
-                val productRemind = BigDecimal(productPeriod - currentPeriod).setScale(
-                    10,
-                    RoundingMode.HALF_EVEN
-                ).toDouble()
+                if (priceWithBalance <= 0) {
+                    priceWithBalance = 0.0
+                }
 
-                element.remind = productRemind
-                element.realPeriod = productPeriod
+                userBalance = (userBalance - element.price).toFloat()
 
-            } else {
+                if (userBalance <= 0) {
+                    userBalance = 0f
+                }
 
-                val previousProduct = purchaseListWithoutDoneAndSortedByStage[index - 1]
+                Log.d(TAG, "priceWithBalance $priceWithBalance balance: $userBalance")
 
-                val currentPeriod: Double =
-                    element.price / user.incomeRemainder - previousProduct.remind
+                if (index == 0) {
 
-                val productPeriod = rounder(currentPeriod)
+                    val currentPeriod: Double =
+                        priceWithBalance / user.incomeRemainder
 
-                val productRemind = BigDecimal(productPeriod - currentPeriod).setScale(
-                    10,
-                    RoundingMode.HALF_EVEN
-                ).toDouble()
+                    val realPeriod = rounder(currentPeriod)
 
-                element.remind = productRemind
-                element.realPeriod = productPeriod + previousProduct.realPeriod
+                    val productRemind = BigDecimal(realPeriod - currentPeriod).setScale(
+                        10,
+                        RoundingMode.HALF_EVEN
+                    ).toDouble()
 
+                    element.remind = productRemind
+                    element.realPeriod = realPeriod
+
+                } else {
+
+                    val previousProduct = purchaseListWithoutDoneAndSortedByStage[index - 1]
+
+                    val currentPeriod: Double =
+                        priceWithBalance / user.incomeRemainder - previousProduct.remind
+
+                    val productPeriod = rounder(currentPeriod)
+
+                    val productRemind = BigDecimal(productPeriod - currentPeriod).setScale(
+                        10,
+                        RoundingMode.HALF_EVEN
+                    ).toDouble()
+
+                    element.remind = productRemind
+                    element.realPeriod = productPeriod + previousProduct.realPeriod
+
+                }
+
+                Log.d(TAG, "realPeriod: ${element.realPeriod}")
+
+                newPurchaseList.add(element)
             }
 
-            newPurchaseList.add(element)
+            return newPurchaseList
+
         }
-
-        return newPurchaseList
-
+        return purchaseList
     }
 
     return purchaseList
-
 }
 
 fun rounder(x: Double): Int {
@@ -296,6 +327,10 @@ fun rounder(x: Double): Int {
  * @return period between today and salaryDay (in days)
  */
 fun daysRealPeriod(period: Float, realPeriod: Int, salaryDay: Int): Float {
+
+    if(realPeriod == 0){
+        return 0f
+    }
 
     val cal: Calendar = Calendar.getInstance()
     val dayOfMonth = cal.get(Calendar.DAY_OF_MONTH)

@@ -5,5 +5,5 @@ data class PotentialItem (
     val title:String,
     val answer:String?,
     val questionId:Int,
-    val questionType:String, // text boolean
+    val questionType:String?, // text boolean
 )

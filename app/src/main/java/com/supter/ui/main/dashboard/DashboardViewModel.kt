@@ -1,5 +1,6 @@
 package com.supter.ui.main.dashboard
 
+import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.supter.data.body.ChangeStageBody
@@ -10,6 +11,7 @@ import com.supter.repository.PurchaseRepository
 import com.supter.utils.STATUS_DECIDED
 import com.supter.utils.STATUS_WANT
 import com.supter.utils.convertAccountResponseToUserEntity
+import com.supter.utils.updatePurchasesData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -43,7 +45,7 @@ class DashboardViewModel @ViewModelInject constructor(
             val resp = repository.putPurchasesOrder(idsList)
             when (resp) {
                 is ResultWrapper.Success -> {
-                    repository.upsertPurchaseList(updatePurchasesData(purchaseList))
+                    repository.upsertPurchaseList(updatePurchasesData(purchaseList, userEntity))
                 }
 
                 is ResultWrapper.GenericError -> {
@@ -84,85 +86,6 @@ class DashboardViewModel @ViewModelInject constructor(
 
         return _purchaseList
 
-    }
-
-    private fun updatePurchasesData(purchaseList: List<PurchaseEntity>): List<PurchaseEntity> {
-
-        userEntity?.let { user ->
-
-            if (user.incomeRemainder != null && user.period != null) {
-
-                val newPurchaseList = mutableListOf<PurchaseEntity>()
-                val purchaseListWithoutDoneAndSortedByStage = mutableListOf<PurchaseEntity>()
-
-                val processList =
-                    purchaseList.filter { it.stage == STATUS_DECIDED }.sortedBy { it.order }
-
-                for (purchase in processList) {
-                    purchaseListWithoutDoneAndSortedByStage.add(purchase)
-                }
-
-                val statusWant =
-                    purchaseList.filter { it.stage == STATUS_WANT }.sortedBy { it.order }
-
-                for (purchase in statusWant) {
-                    purchaseListWithoutDoneAndSortedByStage.add(purchase)
-                }
-
-                for ((index, element) in purchaseListWithoutDoneAndSortedByStage.withIndex()) {
-                    if (index == 0) {
-                        val currentPeriod: Double = element.price / user.incomeRemainder
-
-                        val productPeriod = rounder(currentPeriod)
-
-                        val productRemind = BigDecimal(productPeriod - currentPeriod).setScale(
-                            10,
-                            RoundingMode.HALF_EVEN
-                        ).toDouble()
-
-                        element.remind = productRemind
-                        element.realPeriod = productPeriod
-
-                    } else {
-
-                        val previousProduct = purchaseListWithoutDoneAndSortedByStage[index - 1]
-
-                        val currentPeriod: Double =
-                            element.price / user.incomeRemainder - previousProduct.remind
-
-                        val productPeriod = rounder(currentPeriod)
-
-                        val productRemind = BigDecimal(productPeriod - currentPeriod).setScale(
-                            10,
-                            RoundingMode.HALF_EVEN
-                        ).toDouble()
-
-                        element.remind = productRemind
-                        element.realPeriod = productPeriod + previousProduct.realPeriod
-
-                    }
-
-                    newPurchaseList.add(element)
-                }
-
-                return newPurchaseList
-
-            }
-
-            return purchaseList
-
-        }
-
-        return purchaseList
-
-    }
-
-    private fun rounder(x: Double): Int {
-        if (x == round(x)) {
-            return x.toInt()
-        }
-
-        return ceil(x).toInt()
     }
 
     private val _user = MutableLiveData<UserEntity?>()

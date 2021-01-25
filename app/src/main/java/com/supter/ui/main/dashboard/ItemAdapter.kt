@@ -1,5 +1,6 @@
 package com.supter.ui.main.dashboard
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -56,7 +57,6 @@ internal class ItemAdapter constructor(
         private val listener: OnItemClick,
     ) : DragItemAdapter.ViewHolder(binding.root, mGrabHandleId, mDragOnLongPress) {
 
-
         private var activeItem: PurchaseEntity? = null
 
         override fun onItemClicked(view: View) {
@@ -87,8 +87,6 @@ internal class ItemAdapter constructor(
     override fun getUniqueItemId(position: Int): Long {
         return mItemList[position]!!.id.toLong()
     }
-
-
 }
 
 interface OnItemClick {
