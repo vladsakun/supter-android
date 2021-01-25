@@ -160,10 +160,10 @@
                     android:id="@+id/secondary_potential_ring"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
+                    app:f_progress="0"
                     app:f_ringBgColor="@color/red_background"
                     app:f_ringColor="@color/red_foreground"
                     app:f_strokeCap="round"
-                    app:f_progress="0"
                     app:layout_constraintBottom_toBottomOf="@+id/potential"
                     app:layout_constraintDimensionRatio="1:1"
                     app:layout_constraintEnd_toStartOf="@+id/vertical_guideline"
@@ -472,7 +472,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/marginBetweenBigViews"
-                        android:hint="@string/link">
+                        android:hint="@string/link"
+                        app:endIconDrawable="@drawable/ic_paste"
+                        app:endIconMode="custom">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:layout_width="match_parent"

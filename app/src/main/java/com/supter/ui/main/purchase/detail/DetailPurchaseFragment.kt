@@ -3,6 +3,7 @@ package com.supter.ui.main.purchase.detail
 import android.app.Activity.RESULT_CANCELED
 import android.app.Activity.RESULT_OK
 import android.content.*
+import android.content.ClipDescription.MIMETYPE_TEXT_PLAIN
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
@@ -164,8 +165,9 @@ class DetailPurchaseFragment : ScopedFragment() {
 
     private fun setClickListeners() {
 
-        mBinding.save.setOnClickListener {
-            with(mBinding) {
+        with(mBinding) {
+
+            save.setOnClickListener {
                 purchaseEntity.title = title.editText?.text.toString()
                 purchaseEntity.price = price.editText?.text.toString().toDouble()
                 purchaseEntity.description = description.editText?.text.toString()
@@ -173,16 +175,21 @@ class DetailPurchaseFragment : ScopedFragment() {
 
                 viewModel.updatePurchase(purchaseEntity)
             }
-        }
 
-        mBinding.ringsParent.setOnClickListener {
-            onRingsClick()
-        }
+            ringsParent.setOnClickListener {
+                onRingsClick()
+            }
 
-        mBinding.purchaseImage.setOnClickListener {
-            selectImage()
+            purchaseImage.setOnClickListener {
+                selectImage()
+            }
+
+            link.setEndIconOnClickListener {
+                link.editText?.setText(getTextFromClipboard())
+            }
         }
     }
+
 
     private fun selectImage() {
         val builder = MaterialAlertDialogBuilder(requireActivity())
@@ -701,6 +708,23 @@ class DetailPurchaseFragment : ScopedFragment() {
             mBinding.root.findNavController()
         ) || super.onOptionsItemSelected(item)
 
+    }
+
+    private fun getTextFromClipboard(): String {
+        val clipboard =
+            requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+
+        // If it does contain data, decide if you can handle the data.
+        return if (!clipboard.hasPrimaryClip()) {
+            ""
+        } else if (!clipboard.primaryClipDescription!!.hasMimeType(MIMETYPE_TEXT_PLAIN)) {
+            // since the clipboard has data but it is not plain text
+            ""
+        } else {
+            val item = clipboard.primaryClip?.getItemAt(0)
+
+            item?.text.toString()
+        }
     }
 
 }
