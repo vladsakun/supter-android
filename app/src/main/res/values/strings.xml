@@ -74,6 +74,7 @@
     <string-array name="photo_options">
         <item>Take photo</item>
         <item>Choose from Gallery</item>
+        <item>Paste</item>
         <item>Cancel</item>
     </string-array>
 

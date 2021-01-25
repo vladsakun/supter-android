@@ -66,6 +66,9 @@ class DetailPurchaseFragment : ScopedFragment() {
     private lateinit var answeredQuestions: MutableList<QuestionsItem>
     private lateinit var toDoQuestions: MutableList<QuestionsItem>
 
+    private lateinit var bigRingViews: List<View>
+    private lateinit var smallRingsViews: List<View>
+
     companion object {
         val SEND_ANSWER_ACTION = "SEND_ANSWER_ACTION"
 
@@ -111,6 +114,7 @@ class DetailPurchaseFragment : ScopedFragment() {
 
         bindViews()
         setClickListeners()
+        bindRingViews()
     }
 
     override fun onStart() {
@@ -200,20 +204,25 @@ class DetailPurchaseFragment : ScopedFragment() {
 
                 // 0 - Camera
                 // 1- Gallery
-                // 2 - Cancel
+                // 2 - Paste
+                // 3 - Cancel
 
                 when (which) {
                     0 -> {
-                        val takePicture = Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE)
+                        val takePicture = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                         startActivityForResult(takePicture, 0)
                     }
 
                     1 -> {
                         val pickPictureIntent = Intent(
                             Intent.ACTION_PICK,
-                            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
                         )
                         startActivityForResult(pickPictureIntent, 1)
+                    }
+
+                    2 -> {
+                        pasteImageFromClipboard()
                     }
 
                     else -> dialog.dismiss()
@@ -505,7 +514,6 @@ class DetailPurchaseFragment : ScopedFragment() {
         Toasty.error(requireContext(), message).show()
     }
 
-
     private fun onRingsClick() {
         if (areBigRingsVisible) {
             showSmallRings()
@@ -605,28 +613,6 @@ class DetailPurchaseFragment : ScopedFragment() {
         return reduceScaleAnimation
     }
 
-    private val bigRingViews = listOf(
-        mBinding.potentialRing,
-        mBinding.thinkingRing,
-        mBinding.availabilityRing,
-        mBinding.purchaseImage,
-        mBinding.percentImage,
-        mBinding.potentialImage,
-        mBinding.dollar
-    )
-
-    private val smallRingsViews = listOf(
-        mBinding.secondaryPotentialRing,
-        mBinding.secondaryThinkingRing,
-        mBinding.secondaryAvailabilityRing,
-        mBinding.potential,
-        mBinding.potentialHint,
-        mBinding.thinking,
-        mBinding.thinkingHint,
-        mBinding.availability,
-        mBinding.availabilityHint
-    )
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode != RESULT_CANCELED) {
             when (requestCode) {
@@ -634,6 +620,8 @@ class DetailPurchaseFragment : ScopedFragment() {
                     if (resultCode == RESULT_OK && data != null) {
                         val selectedImage = data.extras?.get("data") as Bitmap
                         mBinding.purchaseImage.setImageBitmap(selectedImage)
+
+                        sendPurchaseImageOnServer(selectedImage)
                     }
                 }
 
@@ -643,35 +631,43 @@ class DetailPurchaseFragment : ScopedFragment() {
 
                         if (selectedImage != null) {
 
-                            val bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                                ImageDecoder.decodeBitmap(
-                                    ImageDecoder.createSource(
-                                        requireActivity().contentResolver,
-                                        selectedImage
-                                    )
-                                )
-                            } else {
-                                // deprecated is Ok for android < 28
-                                MediaStore.Images.Media.getBitmap(
-                                    requireContext().contentResolver,
-                                    selectedImage
-                                )
-                            }
+                            val bitmap = getBitmapFromUri(selectedImage)
 
                             mBinding.purchaseImage.setImageBitmap(bitmap)
 
-                            val f = PhotoManager.createFileFromBitmap(bitmap, requireContext())
-
-                            val requestBody = f.asRequestBody("image/jpeg".toMediaTypeOrNull())
-                            val body =
-                                MultipartBody.Part.createFormData("image", f.name, requestBody)
-
-                            viewModel.postPurchaseImage(body)
+                            sendPurchaseImageOnServer(bitmap)
                         }
                     }
                 }
             }
         }
+    }
+
+    private fun getBitmapFromUri(uri: Uri): Bitmap {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            ImageDecoder.decodeBitmap(
+                ImageDecoder.createSource(
+                    requireActivity().contentResolver,
+                    uri
+                )
+            )
+        } else {
+            // deprecated is Ok for android < 28
+            MediaStore.Images.Media.getBitmap(
+                requireContext().contentResolver,
+                uri
+            )
+        }
+    }
+
+    private fun sendPurchaseImageOnServer(bitmap: Bitmap) {
+        val f = PhotoManager.createFileFromBitmap(bitmap, requireContext())
+
+        val requestBody = f.asRequestBody("image/jpeg".toMediaTypeOrNull())
+        val body =
+            MultipartBody.Part.createFormData("image", f.name, requestBody)
+
+        viewModel.postPurchaseImage(body)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -725,6 +721,54 @@ class DetailPurchaseFragment : ScopedFragment() {
 
             item?.text.toString()
         }
+    }
+
+    val MIME_TYPE_CONTACT = "vnd.android.cursor.item/vnd.example.contact"
+
+    private fun pasteImageFromClipboard() {
+        val clipboard =
+            requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+
+        val clip: ClipData? = clipboard.primaryClip
+
+        clip?.run {
+
+            val item: ClipData.Item = getItemAt(0)
+
+            val pasteUri: Uri? = item.uri
+
+            pasteUri?.let {
+                val bitmap = getBitmapFromUri(it)
+
+                mBinding.purchaseImage.setImageBitmap(bitmap)
+
+                sendPurchaseImageOnServer(bitmap)
+            }
+        }
+    }
+
+    private fun bindRingViews() {
+        bigRingViews = listOf(
+            mBinding.potentialRing,
+            mBinding.thinkingRing,
+            mBinding.availabilityRing,
+            mBinding.purchaseImage,
+            mBinding.percentImage,
+            mBinding.potentialImage,
+            mBinding.dollar
+        )
+
+        smallRingsViews = listOf(
+            mBinding.secondaryPotentialRing,
+            mBinding.secondaryThinkingRing,
+            mBinding.secondaryAvailabilityRing,
+            mBinding.potential,
+            mBinding.potentialHint,
+            mBinding.thinking,
+            mBinding.thinkingHint,
+            mBinding.availability,
+            mBinding.availabilityHint
+        )
     }
 
 }
