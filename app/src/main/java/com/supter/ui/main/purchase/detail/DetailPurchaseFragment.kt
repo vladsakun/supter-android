@@ -5,7 +5,6 @@ import android.app.Activity.RESULT_OK
 import android.content.*
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Color
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
@@ -16,7 +15,6 @@ import android.view.*
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Animation
 import android.view.animation.ScaleAnimation
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -26,7 +24,6 @@ import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.transition.MaterialContainerTransform
 import com.supter.R
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.model.PotentialItem
@@ -41,10 +38,8 @@ import com.supter.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.launch
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 
 
@@ -503,25 +498,6 @@ class DetailPurchaseFragment : ScopedFragment() {
         Toasty.error(requireContext(), message).show()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.detail_purchase_menu, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
-        if (item.itemId == R.id.delete) {
-            viewModel.deletePurchase(purchaseEntity)
-            findNavController().navigateUp()
-            return true
-        }
-
-        return NavigationUI.onNavDestinationSelected(
-            item,
-            mBinding.root.findNavController()
-        ) || super.onOptionsItemSelected(item)
-
-    }
 
     private fun onRingsClick() {
         if (areBigRingsVisible) {
@@ -533,48 +509,57 @@ class DetailPurchaseFragment : ScopedFragment() {
     }
 
     private fun showSmallRings() {
-        val views = listOf(
-            mBinding.potentialRing,
-            mBinding.thinkingRing,
-            mBinding.availabilityRing,
-            mBinding.purchaseImage,
-            mBinding.percentImage,
-            mBinding.potentialImage,
-            mBinding.dollar
-        )
-
-        for ((index, view) in views.withIndex()) {
-            if (index == views.size - 1) {
+        for ((index, bigRingView) in bigRingViews.withIndex()) {
+            if (index == bigRingViews.size - 1) {
                 val animation = reduceScaleAnimation()
                 animation.setAnimationListener(object : Animation.AnimationListener {
                     override fun onAnimationRepeat(animation: Animation?) {
                     }
 
                     override fun onAnimationEnd(animation: Animation?) {
-                        val smallRingsViews = listOf(
-                            mBinding.secondaryPotentialRing,
-                            mBinding.secondaryThinkingRing,
-                            mBinding.secondaryAvailabilityRing,
-                            mBinding.potential,
-                            mBinding.potentialHint,
-                            mBinding.thinking,
-                            mBinding.thinkingHint,
-                            mBinding.availability,
-                            mBinding.availabilityHint
-                        )
 
                         for (smallRingView in smallRingsViews) {
                             smallRingView.startAnimation(increaseScaleAnimation())
                         }
+
+                        mBinding.purchaseImage.isClickable = false
                     }
 
                     override fun onAnimationStart(animation: Animation?) {
                     }
 
                 })
-                view.startAnimation(animation)
+                bigRingView.startAnimation(animation)
             } else {
-                view.startAnimation(reduceScaleAnimation())
+                bigRingView.startAnimation(reduceScaleAnimation())
+            }
+        }
+    }
+
+    private fun showBigRings() {
+
+        for ((index, smallRingView) in smallRingsViews.withIndex()) {
+            if (index == smallRingsViews.size - 1) {
+                val animation = reduceScaleAnimation()
+                animation.setAnimationListener(object : Animation.AnimationListener {
+                    override fun onAnimationRepeat(animation: Animation?) {
+                    }
+
+                    override fun onAnimationEnd(animation: Animation?) {
+                        for (bigRingView in bigRingViews) {
+                            bigRingView.startAnimation(increaseScaleAnimation())
+                        }
+
+                        mBinding.purchaseImage.isClickable = true
+                    }
+
+                    override fun onAnimationStart(animation: Animation?) {
+                    }
+
+                })
+                smallRingView.startAnimation(animation)
+            } else {
+                smallRingView.startAnimation(reduceScaleAnimation())
             }
         }
     }
@@ -613,52 +598,27 @@ class DetailPurchaseFragment : ScopedFragment() {
         return reduceScaleAnimation
     }
 
-    private fun showBigRings() {
-        val smallRingsViews = listOf(
-            mBinding.secondaryPotentialRing,
-            mBinding.secondaryThinkingRing,
-            mBinding.secondaryAvailabilityRing,
-            mBinding.potential,
-            mBinding.potentialHint,
-            mBinding.thinking,
-            mBinding.thinkingHint,
-            mBinding.availability,
-            mBinding.availabilityHint
-        )
+    private val bigRingViews = listOf(
+        mBinding.potentialRing,
+        mBinding.thinkingRing,
+        mBinding.availabilityRing,
+        mBinding.purchaseImage,
+        mBinding.percentImage,
+        mBinding.potentialImage,
+        mBinding.dollar
+    )
 
-        for ((index, smallView) in smallRingsViews.withIndex()) {
-            if (index == smallRingsViews.size - 1) {
-                val animation = reduceScaleAnimation()
-                animation.setAnimationListener(object : Animation.AnimationListener {
-                    override fun onAnimationRepeat(animation: Animation?) {
-                    }
-
-                    override fun onAnimationEnd(animation: Animation?) {
-                        val views = listOf(
-                            mBinding.potentialRing,
-                            mBinding.thinkingRing,
-                            mBinding.availabilityRing,
-                            mBinding.purchaseImage,
-                            mBinding.percentImage,
-                            mBinding.potentialImage,
-                            mBinding.dollar
-                        )
-
-                        for (view in views) {
-                            view.startAnimation(increaseScaleAnimation())
-                        }
-                    }
-
-                    override fun onAnimationStart(animation: Animation?) {
-                    }
-
-                })
-                smallView.startAnimation(animation)
-            } else {
-                smallView.startAnimation(reduceScaleAnimation())
-            }
-        }
-    }
+    private val smallRingsViews = listOf(
+        mBinding.secondaryPotentialRing,
+        mBinding.secondaryThinkingRing,
+        mBinding.secondaryAvailabilityRing,
+        mBinding.potential,
+        mBinding.potentialHint,
+        mBinding.thinking,
+        mBinding.thinkingHint,
+        mBinding.availability,
+        mBinding.availabilityHint
+    )
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode != RESULT_CANCELED) {
@@ -705,6 +665,42 @@ class DetailPurchaseFragment : ScopedFragment() {
                 }
             }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.detail_purchase_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        if (item.itemId == R.id.delete) {
+            MaterialAlertDialogBuilder(requireActivity())
+                .setMessage(
+                    requireActivity().getString(
+                        R.string.are_you_sure_to_delete,
+                        purchaseEntity.title
+                    )
+                )
+                .setPositiveButton(R.string.delete) { dialog, which ->
+                    dialog.dismiss()
+                    viewModel.deletePurchase(purchaseEntity)
+                    findNavController().navigateUp()
+                }
+                .setNegativeButton(R.string.no) { dialog, which ->
+                    dialog.dismiss()
+                }
+                .setCancelable(true)
+                .show()
+
+            return true
+        }
+
+        return NavigationUI.onNavDestinationSelected(
+            item,
+            mBinding.root.findNavController()
+        ) || super.onOptionsItemSelected(item)
+
     }
 
 }

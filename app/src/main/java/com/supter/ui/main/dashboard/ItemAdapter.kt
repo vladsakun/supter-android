@@ -1,17 +1,15 @@
 package com.supter.ui.main.dashboard
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.supter.R
 import com.supter.data.db.entity.PurchaseEntity
-import com.supter.databinding.ColumnItemWithPotentialBinding
+import com.supter.databinding.ColumnItemBinding
 import com.supter.utils.STATUS_DONE
 import com.supter.utils.daysRealPeriod
 import com.supter.utils.getPrettyDate
 import com.woxthebox.draglistview.DragItemAdapter
-import java.util.*
 
 internal class ItemAdapter constructor(
     val purchaseList: MutableList<PurchaseEntity>,
@@ -31,7 +29,7 @@ internal class ItemAdapter constructor(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            ColumnItemWithPotentialBinding.inflate(
+            ColumnItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -53,7 +51,7 @@ internal class ItemAdapter constructor(
     }
 
     internal inner class ViewHolder(
-        val binding: ColumnItemWithPotentialBinding,
+        val binding: ColumnItemBinding,
         private val listener: OnItemClick,
     ) : DragItemAdapter.ViewHolder(binding.root, mGrabHandleId, mDragOnLongPress) {
 

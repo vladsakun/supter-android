@@ -69,6 +69,7 @@
     <string name="thinking_time">Thinking time</string>
     <string name="availability_time">Availability time</string>
     <string name="base_url">https://supter-api.demyan.net/</string>
+    <string name="are_you_sure_to_delete">Are you sure to delete %s ?</string>
 
     <string-array name="photo_options">
         <item>Take photo</item>

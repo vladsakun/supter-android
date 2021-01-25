@@ -2,7 +2,6 @@ package com.supter.ui.main.dashboard
 
 import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,11 +10,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.transition.MaterialElevationScale
 import com.supter.R
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.databinding.FragmentDashboardBinding
@@ -31,7 +28,6 @@ import com.woxthebox.draglistview.ColumnProperties
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.launch
-import java.util.*
 import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
@@ -96,16 +92,11 @@ class BoardFragment : ScopedFragment(), OnItemClick {
                                 it.salaryDay = user.salaryDay
                             }
 
-                            purchaseList.forEach{
-                                Log.d(TAG, "purchase $it")
-                            }
-
-
                             itemAdapters[0].updateList(wantList)
                             itemAdapters[1].updateList(processList)
                             itemAdapters[2].updateList(doneList)
 
-
+                            updateColumnItemsCount()
                         }
                     })
             } else {
@@ -126,7 +117,7 @@ class BoardFragment : ScopedFragment(), OnItemClick {
         mBoardView.setCustomDragItem(
             MyDragItem(
                 requireContext(),
-                R.layout.column_item_with_potential
+                R.layout.column_item
             )
         )
 
@@ -158,8 +149,10 @@ class BoardFragment : ScopedFragment(), OnItemClick {
         }
 
         for (i in 0..2) {
-            mBoardView.getRecyclerView(i).overScrollMode = View.OVER_SCROLL_NEVER
-            mBoardView.getRecyclerView(i).isTransitionGroup = true
+            with(mBoardView.getRecyclerView(i)) {
+                overScrollMode = View.OVER_SCROLL_NEVER
+                isTransitionGroup = true
+            }
         }
 
     }
@@ -317,6 +310,14 @@ class BoardFragment : ScopedFragment(), OnItemClick {
         }
     }
 
+    fun updateColumnItemsCount() {
+        itemAdapters.forEachIndexed { index, itemAdapter ->
+            val itemCount1 =
+                mBoardView.getHeaderView(index).findViewById<TextView>(R.id.item_count)
+            itemCount1.text = mBoardView.getAdapter(index).itemCount.toString()
+        }
+    }
+
     override fun onItemClick(cardView: View, purchaseEntity: PurchaseEntity) {
 
         val detailPurchaseTransitionName = getString(R.string.purchase_card_detail_transition_name)
@@ -356,9 +357,4 @@ class BoardFragment : ScopedFragment(), OnItemClick {
                 ?: requireContext().getString(R.string.no_internet_connection)
         ).show()
     }
-
-    private fun hideProgress() {
-        mBinding.progress.visibility = View.GONE
-    }
-
 }
