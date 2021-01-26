@@ -74,6 +74,7 @@
     <string name="take_photo">Take photo</string>
     <string name="choose_from_gallery">Choose from Gallery</string>
     <string name="paste">Paste</string>
+    <string name="potential">Potential</string>
 
     <string-array name="photo_options">
         <item>Take photo</item>

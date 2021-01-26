@@ -32,11 +32,13 @@
     <dimen name="columnSpacing">10dp</dimen>
 
     <!--  RingProgressView  -->
-    <dimen name="roundWidth">20dp</dimen>
+    <dimen name="roundWidth">15dp</dimen>
+    <dimen name="circleIconSize">11dp</dimen>
 
     <!--  Button  -->
     <dimen name="buttonMinWidth">150dp</dimen>
 
     <!-- EditText-->
     <dimen name="editTextMarginTop">15dp</dimen>
+    <dimen name="dialog_header_height">50dp</dimen>
 </resources>

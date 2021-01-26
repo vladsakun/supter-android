@@ -6,7 +6,9 @@ import android.content.*
 import android.content.ClipDescription.MIMETYPE_TEXT_PLAIN
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.graphics.ImageDecoder
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -16,8 +18,6 @@ import android.view.*
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Animation
 import android.view.animation.ScaleAnimation
-import android.widget.Button
-import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -45,6 +45,7 @@ import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import java.lang.Exception
 
 
 @AndroidEntryPoint
@@ -115,6 +116,10 @@ class DetailPurchaseFragment : ScopedFragment() {
 
         refreshView(args.purchaseEntity)
 
+        initThinkingProgress()
+
+        initAvailabilityProgress()
+
         bindViews()
         setClickListeners()
         bindRingViews()
@@ -152,15 +157,10 @@ class DetailPurchaseFragment : ScopedFragment() {
         mBinding.description.editText?.setText(purchaseEntity.description ?: "")
 
         mBinding.potentialRing.progress = purchaseEntity.potential
-        mBinding.secondaryPotentialRing.progress = purchaseEntity.potential
 
         initPurchaseImage()
 
         mBinding.notifyChange()
-
-        initThinkingProgress()
-
-        initAvailabilityProgress()
     }
 
     private fun initPurchaseImage() {
@@ -197,55 +197,33 @@ class DetailPurchaseFragment : ScopedFragment() {
         }
     }
 
-
     private fun selectImage() {
-        
-        val dialogView = requireActivity().layoutInflater.inflate(
-            R.layout.select_image_alert_dialog,
-            null
-        )
+
+        val dialogBuilder = MaterialAlertDialogBuilder(requireActivity()).create()
 
         val dialogBinding = SelectImageAlertDialogBinding.inflate(requireActivity().layoutInflater)
 
-        val cancel:Button = dialogView.findViewById(R.id.cancel_btn)
-        val takePhoto:TextView = dialogView.findViewById(R.id.take_photo)
-        val chooseFromGaller:TextView = dialogView.findViewById(R.id.choose_from_gallery)
+        dialogBinding.onTakePhotoClick = View.OnClickListener {
+            takePhoto()
+            dialogBuilder.cancel()
+        }
 
-        val builder = MaterialAlertDialogBuilder(requireActivity()).create()
-//        builder.setTitle("Choose purchase image")
-//
-//        builder.setItems(R.array.photo_options, object : DialogInterface.OnClickListener {
-//            override fun onClick(dialog: DialogInterface, which: Int) {
-//
-//                // 0 - Camera
-//                // 1- Gallery
-//                // 2 - Paste
-//                // 3 - Cancel
-//
-//                when (which) {
-//                    0 -> {
-//                        val takePicture = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-//                        startActivityForResult(takePicture, 0)
-//                    }
-//
-//                    1 -> {
-//                        val pickPictureIntent = Intent(
-//                            Intent.ACTION_PICK,
-//                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-//                        )
-//                        startActivityForResult(pickPictureIntent, 1)
-//                    }
-//
-//                    2 -> {
-//                        pasteImageFromClipboard()
-//                    }
-//
-//                    else -> dialog.dismiss()
-//                }
-//            }
-//        })
+        dialogBinding.onChooseFromGalleryClick = View.OnClickListener {
+            chooseFromGallery()
+            dialogBuilder.cancel()
+        }
 
-        builder.show()
+        dialogBinding.onPasteClick = View.OnClickListener {
+            pasteImage()
+            dialogBuilder.cancel()
+        }
+
+        dialogBinding.onCancelClick = View.OnClickListener { dialogBuilder.dismiss() }
+        dialogBuilder.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialogBuilder.setView(dialogBinding.root)
+        dialogBuilder.setCancelable(true)
+
+        dialogBuilder.show()
     }
 
     private fun bindObservers() {
@@ -278,7 +256,6 @@ class DetailPurchaseFragment : ScopedFragment() {
 
         viewModel.timer.observe(viewLifecycleOwner, Observer { time ->
             mBinding.thinkingRing.progress = time.toFloat()
-            mBinding.secondaryThinkingRing.progress = time.toFloat()
         })
     }
 
@@ -319,22 +296,19 @@ class DetailPurchaseFragment : ScopedFragment() {
         val currentProgressInPercentage: Long =
             ((currentTimeInSeconds - createdAtInSeconds) * 100) / (thinkingTimeInSeconds - createdAtInSeconds)
 
-        val currentProgressInHours = (thinkingTimeInSeconds - currentTimeInSeconds) / 60 / 60
+        val currentProgressInHours:Float = (thinkingTimeInSeconds - currentTimeInSeconds).toFloat() / 60 / 60
 
         var thinkingText: String
 
         if (currentProgressInHours <= 0) {
             thinkingText = getPrettyDate(0)
         } else {
-            thinkingText = getPrettyDate(currentProgressInHours / 24)
+            thinkingText = getPrettyDate((currentProgressInHours / 24))
         }
 
         thinkingText += " left"
 
-//        thinkingText += "/" + getPrettyDate((thinkingTimeInSeconds - createdAtInSeconds) / 60 / 60 / 24)
-
         mBinding.thinking.text = thinkingText
-
 
         val oneSecPercent: Float = 1 * 100 / (thinkingTimeInSeconds - createdAtInSeconds).toFloat()
 
@@ -355,27 +329,26 @@ class DetailPurchaseFragment : ScopedFragment() {
                         account.salaryDay
                     ) // days
 
+                val maxAvailabilityTimeInSeconds = maxAvailabilityTimeInDays * 24 * 60 * 60
+
                 val timeBetweenCreatedAtTillToday =
                     System.currentTimeMillis() / 1000 - createdAtInSeconds // seconds
 
-                val maxAvailabilityTimeInSeconds = maxAvailabilityTimeInDays * 24 * 60 * 60
+                var availabilityLeftTime =
+                    maxAvailabilityTimeInSeconds - timeBetweenCreatedAtTillToday // seconds
+
+                if (availabilityLeftTime < 0) {
+                    availabilityLeftTime = 0f
+                }
+
+                val availabilityTimeText =
+                    getPrettyDate(availabilityLeftTime / 60 / 60 / 24) + " left"
+                mBinding.availability.text = availabilityTimeText
 
                 val availabilityProgress =
                     100 * timeBetweenCreatedAtTillToday / maxAvailabilityTimeInSeconds
 
-                Log.d(
-                    TAG,
-                    "availabilityProgress: $availabilityProgress maxAvailabilityTimeInSeconds $maxAvailabilityTimeInSeconds timeBetweenCreatedAtTillToday $timeBetweenCreatedAtTillToday"
-                )
-
                 mBinding.availabilityRing.progress = availabilityProgress
-                mBinding.secondaryAvailabilityRing.progress = availabilityProgress
-
-                mBinding.availability.text =
-                    getPrettyDate(timeBetweenCreatedAtTillToday / 60 / 60 / 24) + "/" + getPrettyDate(
-                        maxAvailabilityTimeInDays
-                    )
-
             }
 
         })
@@ -530,12 +503,12 @@ class DetailPurchaseFragment : ScopedFragment() {
     }
 
     private fun onRingsClick() {
-        if (areBigRingsVisible) {
-            showSmallRings()
-        } else {
-            showBigRings()
-        }
-        areBigRingsVisible = !areBigRingsVisible
+//        if (areBigRingsVisible) {
+//            showSmallRings()
+//        } else {
+//            showBigRings()
+//        }
+//        areBigRingsVisible = !areBigRingsVisible
     }
 
     private fun showSmallRings() {
@@ -648,9 +621,11 @@ class DetailPurchaseFragment : ScopedFragment() {
 
                             val bitmap = getBitmapFromUri(selectedImage)
 
-                            mBinding.purchaseImage.setImageBitmap(bitmap)
+                            bitmap?.let {
+                                mBinding.purchaseImage.setImageBitmap(bitmap)
 
-                            sendPurchaseImageOnServer(bitmap)
+                                sendPurchaseImageOnServer(bitmap)
+                            }
                         }
                     }
                 }
@@ -658,20 +633,24 @@ class DetailPurchaseFragment : ScopedFragment() {
         }
     }
 
-    private fun getBitmapFromUri(uri: Uri): Bitmap {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            ImageDecoder.decodeBitmap(
-                ImageDecoder.createSource(
-                    requireActivity().contentResolver,
+    private fun getBitmapFromUri(uri: Uri): Bitmap? {
+        try {
+            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                ImageDecoder.decodeBitmap(
+                    ImageDecoder.createSource(
+                        requireActivity().contentResolver,
+                        uri
+                    )
+                )
+            } else {
+                // deprecated is Ok for android < 28
+                MediaStore.Images.Media.getBitmap(
+                    requireContext().contentResolver,
                     uri
                 )
-            )
-        } else {
-            // deprecated is Ok for android < 28
-            MediaStore.Images.Media.getBitmap(
-                requireContext().contentResolver,
-                uri
-            )
+            }
+        } catch (e: Exception) {
+            return null // it is not an image in clipboard
         }
     }
 
@@ -738,7 +717,20 @@ class DetailPurchaseFragment : ScopedFragment() {
         }
     }
 
-    private fun pasteImageFromClipboard() {
+    private fun takePhoto() {
+        val takePicture = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        startActivityForResult(takePicture, 0)
+    }
+
+    private fun chooseFromGallery() {
+        val pickPictureIntent = Intent(
+            Intent.ACTION_PICK,
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        )
+        startActivityForResult(pickPictureIntent, 1)
+    }
+
+    private fun pasteImage() {
         val clipboard =
             requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
@@ -753,9 +745,11 @@ class DetailPurchaseFragment : ScopedFragment() {
             pasteUri?.let {
                 val bitmap = getBitmapFromUri(it)
 
-                mBinding.purchaseImage.setImageBitmap(bitmap)
+                bitmap?.let {
+                    mBinding.purchaseImage.setImageBitmap(bitmap)
 
-                sendPurchaseImageOnServer(bitmap)
+                    sendPurchaseImageOnServer(bitmap)
+                }
             }
         }
     }
@@ -772,9 +766,6 @@ class DetailPurchaseFragment : ScopedFragment() {
         )
 
         smallRingsViews = listOf(
-            mBinding.secondaryPotentialRing,
-            mBinding.secondaryThinkingRing,
-            mBinding.secondaryAvailabilityRing,
             mBinding.potential,
             mBinding.potentialHint,
             mBinding.thinking,

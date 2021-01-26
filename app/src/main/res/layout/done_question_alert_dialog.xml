@@ -2,36 +2,34 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     style="@style/DefaultCardView"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:background="?attr/colorSurface"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="?attr/colorSurface"
         android:orientation="vertical"
         android:paddingBottom="16dp">
-
-        <TextView
-            android:id="@+id/question_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/marginBetweenBigViews"
-            android:layout_marginTop="@dimen/marginBetweenBigViews"
-            android:layout_marginEnd="@dimen/marginBetweenBigViews"
-            android:textAppearance="@style/TextAppearance.MyTheme.Body1"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/line"
-            tools:text="@string/how_would_the_purchase_be_useful" />
 
         <FrameLayout
             android:id="@+id/dialog_header"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="wrap_content"
             android:background="@drawable/dialog_header_bg"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:minHeight="@dimen/dialog_header_height"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/question_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="16dp"
+                android:textAppearance="@style/TextAppearance.MyTheme.Headline6"
+                tools:text="@string/how_would_the_purchase_be_useful" />
+        </FrameLayout>
 
         <View
             android:id="@+id/line"
@@ -50,7 +48,7 @@
             android:textAppearance="@style/TextAppearance.MyTheme.Body1"
             android:textColor="?android:textColorPrimary"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/question_title"
+            app:layout_constraintTop_toBottomOf="@+id/line"
             tools:text="Simple answer" />
 
         <Button

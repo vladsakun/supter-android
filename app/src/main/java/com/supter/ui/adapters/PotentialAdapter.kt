@@ -53,10 +53,10 @@ class PotentialAdapter(
         holder.title.text = potentialItem.title
 
         holder.itemView.setOnClickListener {
-            val dialogBuilder = MaterialAlertDialogBuilder(activity).create()
             val layoutInflater = activity.layoutInflater
 
             var dialogView: View
+            val dialogBuilder = MaterialAlertDialogBuilder(activity).create()
 
             if (potentialItem.answer != null) {
 
@@ -68,13 +68,10 @@ class PotentialAdapter(
                 val answerTextView: TextView = dialogView.findViewById(R.id.answer)
                 answerTextView.text = potentialItem.answer
 
-                val okBtn:Button = dialogView.findViewById(R.id.ok_btn)
+                val okBtn: Button = dialogView.findViewById(R.id.ok_btn)
                 okBtn.setOnClickListener { dialogBuilder.dismiss() }
 
-                dialogBuilder.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
             } else {
-
                 if (potentialItem.questionType == TEXT_QUESTION_TYPE) {
                     dialogView = layoutInflater.inflate(R.layout.string_question_alert_dialog, null)
 
@@ -144,25 +141,27 @@ class PotentialAdapter(
                 } else {
                     dialogView =
                         layoutInflater.inflate(R.layout.boolean_question_alert_dialog, null)
+                    val questionTitle: TextView = dialogView.findViewById(R.id.question_title)
+                    val yesBtn: Button = dialogView.findViewById(R.id.yes_btn)
+                    val noBtn: Button = dialogView.findViewById(R.id.no_btn)
 
-                    val questionTitle = dialogView.findViewById<TextView>(R.id.question_title)
                     questionTitle.text = potentialItem.title
 
-                    val yesBtn: RadioButton = dialogView.findViewById(R.id.yes)
-                    val clickListener = View.OnClickListener {
-                        sendBooleanAnswer(
-                            yesBtn.isChecked,
-                            potentialItem.questionId
-                        )
+                    yesBtn.setOnClickListener {
+                        sendBooleanAnswer(true, potentialItem.questionId)
+                        dialogBuilder.dismiss()
                     }
-                    yesBtn.setOnClickListener(clickListener)
 
-                    val noBtn: RadioButton = dialogView.findViewById(R.id.no)
-                    noBtn.setOnClickListener(clickListener)
+                    noBtn.setOnClickListener {
+                        sendBooleanAnswer(false, potentialItem.questionId)
+                        dialogBuilder.dismiss()
+                    }
                 }
-
             }
 
+            dialogBuilder.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+            dialogBuilder.setCancelable(true)
             dialogBuilder.setView(dialogView)
             dialogBuilder.show()
         }
@@ -200,18 +199,18 @@ class PotentialAdapter(
         }
     }
 
-    fun removeItemAt(position: Int){
-        if(potentialItemList.size > 0){
+    fun removeItemAt(position: Int) {
+        if (potentialItemList.size > 0) {
             potentialItemList.removeAt(position)
             notifyItemRemoved(position)
 
-            if(position != 0){
+            if (position != 0) {
                 notifyItemChanged(position - 1, false)
             }
         }
     }
 
-    fun addItem(newPotentialItem: PotentialItem){
+    fun addItem(newPotentialItem: PotentialItem) {
 
         potentialItemList.add(newPotentialItem)
         notifyItemInserted(potentialItemList.size - 1)

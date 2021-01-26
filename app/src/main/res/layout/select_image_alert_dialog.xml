@@ -1,73 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    style="@style/DefaultCardView"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:cardUseCompatPadding="false">
+<layout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <data>
+
+        <variable
+            name="onTakePhotoClick"
+            type="android.view.View.OnClickListener" />
+
+        <variable
+            name="onChooseFromGalleryClick"
+            type="android.view.View.OnClickListener" />
+
+        <variable
+            name="onPasteClick"
+            type="android.view.View.OnClickListener" />
+
+        <variable
+            name="onCancelClick"
+            type="android.view.View.OnClickListener" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        style="@style/DefaultCardView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorSurface"
-        android:orientation="vertical"
-        android:paddingBottom="16dp">
+        android:layout_height="wrap_content">
 
-
-        <FrameLayout
-            android:id="@+id/dialog_header"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:background="@drawable/dialog_header_bg"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <View
-            android:id="@+id/line"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="?attr/colorPrimary"
-            app:layout_constraintTop_toBottomOf="@+id/dialog_header" />
-
-        <TextView
-            android:id="@+id/take_photo"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/marginBetweenBigViews"
-            android:text="@string/take_photo"
-            android:textAppearance="@style/TextAppearance.MyTheme.Subtitle1"
-            app:layout_constraintTop_toBottomOf="@+id/line" />
+            android:background="?attr/colorSurface"
+            android:orientation="vertical"
+            android:paddingBottom="16dp">
 
-        <TextView
-            android:id="@+id/choose_from_gallery"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/marginBetweenBigViews"
-            android:text="@string/choose_from_gallery"
-            android:textAppearance="@style/TextAppearance.MyTheme.Subtitle1"
-            app:layout_constraintTop_toBottomOf="@+id/take_photo" />
+            <FrameLayout
+                android:id="@+id/dialog_header"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dialog_header_height"
+                android:background="@drawable/dialog_header_bg"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/paste"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/marginBetweenBigViews"
-            android:text="@string/paste"
-            android:textAppearance="@style/TextAppearance.MyTheme.Subtitle1"
-            app:layout_constraintTop_toBottomOf="@+id/choose_from_gallery" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Choose purchase image"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:gravity="center"
+                android:textAppearance="@style/TextAppearance.MyTheme.Headline6"
+                app:layout_constraintBottom_toBottomOf="@+id/dialog_header"
+                app:layout_constraintTop_toTopOf="@+id/dialog_header" />
 
+            <View
+                android:id="@+id/line"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="?attr/colorPrimary"
+                app:layout_constraintTop_toBottomOf="@+id/dialog_header" />
 
-        <Button
-            android:id="@+id/cancel_btn"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/marginBetweenBigViews"
-            android:layout_marginEnd="@dimen/marginBetweenBigViews"
-            android:text="@string/cancel"
-            android:textColor="?android:textColorPrimary"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/paste" />
+            <TextView
+                android:id="@+id/take_photo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="@{onTakePhotoClick}"
+                android:padding="@dimen/marginBetweenBigViews"
+                android:text="@string/take_photo"
+                android:textAppearance="@style/TextAppearance.MyTheme.Subtitle1"
+                app:layout_constraintTop_toBottomOf="@+id/line" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</com.google.android.material.card.MaterialCardView>
+            <TextView
+                android:id="@+id/choose_from_gallery"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="@{onChooseFromGalleryClick}"
+                android:padding="@dimen/marginBetweenBigViews"
+                android:text="@string/choose_from_gallery"
+                android:textAppearance="@style/TextAppearance.MyTheme.Subtitle1"
+                app:layout_constraintTop_toBottomOf="@+id/take_photo" />
+
+            <TextView
+                android:id="@+id/paste"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="@{onPasteClick}"
+                android:padding="@dimen/marginBetweenBigViews"
+                android:text="@string/paste"
+                android:textAppearance="@style/TextAppearance.MyTheme.Subtitle1"
+                app:layout_constraintTop_toBottomOf="@+id/choose_from_gallery" />
+
+            <Button
+                android:id="@+id/cancel_btn"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/marginBetweenBigViews"
+                android:layout_marginEnd="@dimen/marginBetweenBigViews"
+                android:onClick="@{onCancelClick}"
+                android:text="@string/cancel"
+                android:textColor="?android:textColorPrimary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/paste" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+</layout>
