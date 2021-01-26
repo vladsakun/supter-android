@@ -16,6 +16,8 @@ import android.view.*
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Animation
 import android.view.animation.ScaleAnimation
+import android.widget.Button
+import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -33,6 +35,7 @@ import com.supter.data.response.purchase.DetailPurchaseResponse
 import com.supter.data.response.purchase.QuestionsItem
 import com.supter.data.response.purchase.UpdatePurchaseResponse
 import com.supter.databinding.DetailPurchaseFragmentBinding
+import com.supter.databinding.SelectImageAlertDialogBinding
 import com.supter.ui.adapters.PotentialAdapter
 import com.supter.ui.adapters.SimpleDividerItemDecorationLastExcluded
 import com.supter.utils.*
@@ -196,39 +199,51 @@ class DetailPurchaseFragment : ScopedFragment() {
 
 
     private fun selectImage() {
-        val builder = MaterialAlertDialogBuilder(requireActivity())
-        builder.setTitle("Choose purchase image")
+        
+        val dialogView = requireActivity().layoutInflater.inflate(
+            R.layout.select_image_alert_dialog,
+            null
+        )
 
-        builder.setItems(R.array.photo_options, object : DialogInterface.OnClickListener {
-            override fun onClick(dialog: DialogInterface, which: Int) {
+        val dialogBinding = SelectImageAlertDialogBinding.inflate(requireActivity().layoutInflater)
 
-                // 0 - Camera
-                // 1- Gallery
-                // 2 - Paste
-                // 3 - Cancel
+        val cancel:Button = dialogView.findViewById(R.id.cancel_btn)
+        val takePhoto:TextView = dialogView.findViewById(R.id.take_photo)
+        val chooseFromGaller:TextView = dialogView.findViewById(R.id.choose_from_gallery)
 
-                when (which) {
-                    0 -> {
-                        val takePicture = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                        startActivityForResult(takePicture, 0)
-                    }
-
-                    1 -> {
-                        val pickPictureIntent = Intent(
-                            Intent.ACTION_PICK,
-                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-                        )
-                        startActivityForResult(pickPictureIntent, 1)
-                    }
-
-                    2 -> {
-                        pasteImageFromClipboard()
-                    }
-
-                    else -> dialog.dismiss()
-                }
-            }
-        })
+        val builder = MaterialAlertDialogBuilder(requireActivity()).create()
+//        builder.setTitle("Choose purchase image")
+//
+//        builder.setItems(R.array.photo_options, object : DialogInterface.OnClickListener {
+//            override fun onClick(dialog: DialogInterface, which: Int) {
+//
+//                // 0 - Camera
+//                // 1- Gallery
+//                // 2 - Paste
+//                // 3 - Cancel
+//
+//                when (which) {
+//                    0 -> {
+//                        val takePicture = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+//                        startActivityForResult(takePicture, 0)
+//                    }
+//
+//                    1 -> {
+//                        val pickPictureIntent = Intent(
+//                            Intent.ACTION_PICK,
+//                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+//                        )
+//                        startActivityForResult(pickPictureIntent, 1)
+//                    }
+//
+//                    2 -> {
+//                        pasteImageFromClipboard()
+//                    }
+//
+//                    else -> dialog.dismiss()
+//                }
+//            }
+//        })
 
         builder.show()
     }
@@ -722,8 +737,6 @@ class DetailPurchaseFragment : ScopedFragment() {
             item?.text.toString()
         }
     }
-
-    val MIME_TYPE_CONTACT = "vnd.android.cursor.item/vnd.example.contact"
 
     private fun pasteImageFromClipboard() {
         val clipboard =

@@ -71,6 +71,10 @@
     <string name="base_url">https://supter-api.demyan.net/</string>
     <string name="are_you_sure_to_delete">Are you sure to delete %s ?</string>
 
+    <string name="take_photo">Take photo</string>
+    <string name="choose_from_gallery">Choose from Gallery</string>
+    <string name="paste">Paste</string>
+
     <string-array name="photo_options">
         <item>Take photo</item>
         <item>Choose from Gallery</item>

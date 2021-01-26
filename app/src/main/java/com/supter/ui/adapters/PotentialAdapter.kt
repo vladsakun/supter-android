@@ -68,6 +68,9 @@ class PotentialAdapter(
                 val answerTextView: TextView = dialogView.findViewById(R.id.answer)
                 answerTextView.text = potentialItem.answer
 
+                val okBtn:Button = dialogView.findViewById(R.id.ok_btn)
+                okBtn.setOnClickListener { dialogBuilder.dismiss() }
+
                 dialogBuilder.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
             } else {

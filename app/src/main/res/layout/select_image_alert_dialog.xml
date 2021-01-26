@@ -2,29 +2,18 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     style="@style/DefaultCardView"
-    android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardUseCompatPadding="false">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:background="?attr/colorSurface"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="?attr/colorSurface"
         android:orientation="vertical"
         android:paddingBottom="16dp">
 
-        <TextView
-            android:id="@+id/question_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/marginBetweenBigViews"
-            android:layout_marginTop="@dimen/marginBetweenBigViews"
-            android:layout_marginEnd="@dimen/marginBetweenBigViews"
-            android:textAppearance="@style/TextAppearance.MyTheme.Body1"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/line"
-            tools:text="@string/how_would_the_purchase_be_useful" />
 
         <FrameLayout
             android:id="@+id/dialog_header"
@@ -41,29 +30,44 @@
             app:layout_constraintTop_toBottomOf="@+id/dialog_header" />
 
         <TextView
-            android:id="@+id/answer"
+            android:id="@+id/take_photo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/marginBetweenBigViews"
-            android:layout_marginTop="@dimen/marginBetweenBigViews"
-            android:layout_marginEnd="@dimen/marginBetweenBigViews"
-            android:textAppearance="@style/TextAppearance.MyTheme.Body1"
-            android:textColor="?android:textColorPrimary"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/question_title"
-            tools:text="Simple answer" />
+            android:padding="@dimen/marginBetweenBigViews"
+            android:text="@string/take_photo"
+            android:textAppearance="@style/TextAppearance.MyTheme.Subtitle1"
+            app:layout_constraintTop_toBottomOf="@+id/line" />
+
+        <TextView
+            android:id="@+id/choose_from_gallery"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/marginBetweenBigViews"
+            android:text="@string/choose_from_gallery"
+            android:textAppearance="@style/TextAppearance.MyTheme.Subtitle1"
+            app:layout_constraintTop_toBottomOf="@+id/take_photo" />
+
+        <TextView
+            android:id="@+id/paste"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/marginBetweenBigViews"
+            android:text="@string/paste"
+            android:textAppearance="@style/TextAppearance.MyTheme.Subtitle1"
+            app:layout_constraintTop_toBottomOf="@+id/choose_from_gallery" />
+
 
         <Button
-            android:id="@+id/ok_btn"
+            android:id="@+id/cancel_btn"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/marginBetweenBigViews"
             android:layout_marginEnd="@dimen/marginBetweenBigViews"
-            android:text="@string/ok"
+            android:text="@string/cancel"
             android:textColor="?android:textColorPrimary"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/answer" />
+            app:layout_constraintTop_toBottomOf="@+id/paste" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>
