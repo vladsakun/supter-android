@@ -12,6 +12,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ethanhua.skeleton.Skeleton
+import com.faltenreich.skeletonlayout.applySkeleton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.supter.R
 import com.supter.data.db.entity.PurchaseEntity
@@ -152,8 +154,18 @@ class BoardFragment : ScopedFragment(), OnItemClick {
             with(mBoardView.getRecyclerView(i)) {
                 overScrollMode = View.OVER_SCROLL_NEVER
                 isTransitionGroup = true
+
             }
         }
+
+//       Skeleton.bind(mBoardView.rootView)
+//            .shimmer(true)
+//            .angle(20)
+//            .duration(1200)
+//            .load(R.layout.skeleton_column)
+//            .show() //default count is 10
+//
+//        mBoardView.rootView
 
     }
 

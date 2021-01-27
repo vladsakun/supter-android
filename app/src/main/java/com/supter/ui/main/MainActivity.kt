@@ -61,13 +61,11 @@ class MainActivity : AppCompatActivity() {
         setupActionBar(navController)
         setupNavigationMenu(navController)
 
-        binding.appBarMain.fab.apply {
-                setOnClickListener {
-                    navigateToAddPurchase()
-                }
+        binding.myAppBarMain.fab.apply {
+            setOnClickListener {
+                navigateToAddPurchase()
+            }
         }
-
-        Log.d(TAG, "onCreate: ${SystemUtils.getToken(this)}")
     }
 
     private fun navigateToAddPurchase() {
@@ -119,11 +117,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun showAddBtn() {
-        binding.appBarMain.fab.visibility = View.VISIBLE
+        binding.myAppBarMain.fab.visibility = View.VISIBLE
     }
 
     fun hideAddBtn() {
-        binding.appBarMain.fab.visibility = View.INVISIBLE
+        binding.myAppBarMain.fab.visibility = View.INVISIBLE
     }
 
 }

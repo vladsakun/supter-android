@@ -1,13 +1,17 @@
 package com.supter.ui.main.profile
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
+import androidx.work.Data
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
 import by.kirich1409.viewbindingdelegate.CreateMethod
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.supter.R
@@ -16,9 +20,14 @@ import com.supter.data.response.ResultWrapper
 import com.supter.databinding.FragmentProfileBinding
 import com.supter.ui.auth.LoginActivity
 import com.supter.utils.MONTH_IN_DAYS
+import com.supter.utils.NotificationWorker
+import com.supter.utils.NotificationWorker.Companion.NOTIFICATION_ID
+import com.supter.utils.NotificationWorker.Companion.NOTIFICATION_WORK
 import com.supter.utils.SystemUtils
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
 class ProfileFragment : Fragment(R.layout.fragment_profile) {
@@ -86,7 +95,42 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 name.editText?.setText(it.name)
                 numberPicker.value = it.salaryDay
             }
+            setNotificationDelay(it)
         }
+    }
+
+    private fun setNotificationDelay(userEntity: UserEntity) {
+
+        val calendar = Calendar.getInstance()
+
+        Log.d(TAG, "dayOfMonth ${calendar.get(Calendar.DAY_OF_MONTH)} salaryDay: ${userEntity.salaryDay}")
+
+        if (calendar.get(Calendar.DAY_OF_MONTH) > userEntity.salaryDay) {
+            calendar.add(Calendar.MONTH, 1)
+        }
+
+        calendar.set(Calendar.DAY_OF_MONTH, userEntity.salaryDay)
+
+
+        val customTime = calendar.timeInMillis
+        val currentTime = System.currentTimeMillis()
+        val delay = customTime - currentTime
+
+        Log.d(TAG, "customTime: $customTime currentTime $currentTime ")
+
+        val data = Data.Builder().putInt(NOTIFICATION_ID, 0).build()
+
+        scheduleNotification(delay, data)
+
+    }
+
+    private fun scheduleNotification(delay: Long, data: Data) {
+        Log.d(TAG, "scheduleNotification: delay: $delay")
+        val notificationWork = OneTimeWorkRequest.Builder(NotificationWorker::class.java)
+            .setInitialDelay(delay, TimeUnit.MILLISECONDS).setInputData(data).build()
+
+        val instanceWorkManager = WorkManager.getInstance(requireContext())
+        instanceWorkManager.beginUniqueWork(NOTIFICATION_WORK, ExistingWorkPolicy.REPLACE, notificationWork).enqueue()
     }
 
     private fun bindClickListeners() {

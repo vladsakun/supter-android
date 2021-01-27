@@ -1,10 +1,13 @@
 package com.supter.utils
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Bitmap.createBitmap
+import android.graphics.Canvas
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.util.Log
-import com.supter.BuildConfig
+import androidx.core.content.ContextCompat
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.db.entity.UserEntity
 import com.supter.data.model.PotentialItem
@@ -339,4 +342,15 @@ fun daysRealPeriod(period: Float, realPeriod: Int, salaryDay: Int): Float {
 
     return realPeriod
 
+}
+
+fun Context.vectorToBitmap(drawableId: Int): Bitmap? {
+    val drawable = ContextCompat.getDrawable(this, drawableId) ?: return null
+    val bitmap = createBitmap(
+        drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888
+    ) ?: return null
+    val canvas = Canvas(bitmap)
+    drawable.setBounds(0, 0, canvas.width, canvas.height)
+    drawable.draw(canvas)
+    return bitmap
 }
