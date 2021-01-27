@@ -127,7 +127,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     private fun scheduleNotification(delay: Long, data: Data) {
         Log.d(TAG, "scheduleNotification: delay: $delay")
         val notificationWork = OneTimeWorkRequest.Builder(NotificationWorker::class.java)
-            .setInitialDelay(delay, TimeUnit.MILLISECONDS).setInputData(data).build()
+            .setInitialDelay(10000, TimeUnit.MILLISECONDS).setInputData(data).build()
 
         val instanceWorkManager = WorkManager.getInstance(requireContext())
         instanceWorkManager.beginUniqueWork(NOTIFICATION_WORK, ExistingWorkPolicy.REPLACE, notificationWork).enqueue()

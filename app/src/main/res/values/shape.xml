@@ -33,4 +33,9 @@
         <!--Your custom shape here-->
     </style>
 
+    <style name="ShapeAppearance.MyTheme.AddPurchaseCardView" parent="ShapeAppearance.MaterialComponents.LargeComponent">
+        <item name="cornerSizeTopLeft">15dp</item>
+        <item name="cornerSizeTopRight">15dp</item>
+    </style>
+
 </resources>

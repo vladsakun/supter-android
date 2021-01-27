@@ -7,6 +7,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
+import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
@@ -16,6 +17,7 @@ import androidx.navigation.ui.NavigationUI.navigateUp
 import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.transition.MaterialElevationScale
 import com.supter.R
@@ -70,17 +72,32 @@ class MainActivity : AppCompatActivity() {
 
     private fun navigateToAddPurchase() {
 
-        currentNavigationFragment?.apply {
-            exitTransition = MaterialElevationScale(false).apply {
-                duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
-            }
-            reenterTransition = MaterialElevationScale(true).apply {
-                duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
-            }
-        }
+//        currentNavigationFragment?.apply {
+//            exitTransition = MaterialElevationScale(false).apply {
+//                duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+//            }
+//            reenterTransition = MaterialElevationScale(true).apply {
+//                duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+//            }
+//        }
+//
+//        val direction = AddPurchaseFragmentDirections.actionGlobalAddPurchase()
+//        findNavController(R.id.nav_host_fragment).navigate(direction)
 
-        val direction = AddPurchaseFragmentDirections.actionGlobalAddPurchase()
-        findNavController(R.id.nav_host_fragment).navigate(direction)
+        val bottomSheetBehavior = BottomSheetBehavior.from(binding.myAppBarMain.addPurchase.root)
+
+        bottomSheetBehavior.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+
+            }
+
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                binding.myAppBarMain.fab.isVisible = newState != BottomSheetBehavior.STATE_EXPANDED
+            }
+
+        })
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
     private fun setupNavigationMenu(navController: NavController) {
