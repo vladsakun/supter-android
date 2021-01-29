@@ -19,8 +19,12 @@ class AddPurchaseViewModel @ViewModelInject constructor(
     private val _createPurchase = MutableLiveData<ResultWrapper<CreatePurchaseResponse>>()
     val createPurchaseResponse: LiveData<ResultWrapper<CreatePurchaseResponse>> get() = _createPurchase
 
+    init {
+        repository.deleteAllPurchases()
+    }
 
-    fun upsertPurchase(title: String, cost: Double, questionJson: String?) {
+
+    fun upsertPurchase(title: String, cost: Double) {
         viewModelScope.launch(Dispatchers.IO) {
             val response = repository.createPurchase(PurchaseBody(title, cost))
             _createPurchase.postValue(response)

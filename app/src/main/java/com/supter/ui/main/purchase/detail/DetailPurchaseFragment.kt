@@ -63,15 +63,9 @@ class DetailPurchaseFragment : ScopedFragment() {
     private lateinit var purchaseEntity: PurchaseEntity
     private var toIncreasePotentialAdapter: PotentialAdapter? = null
     private var donePotentialAdapter: PotentialAdapter? = null
-    private var areBigRingsVisible = true
-    private val duration = 300L
-    private val interpolator = AccelerateDecelerateInterpolator()
 
     private lateinit var answeredQuestions: MutableList<QuestionsItem>
     private lateinit var toDoQuestions: MutableList<QuestionsItem>
-
-    private lateinit var bigRingViews: List<View>
-    private lateinit var smallRingsViews: List<View>
 
     companion object {
         val SEND_ANSWER_ACTION = "SEND_ANSWER_ACTION"
@@ -90,12 +84,6 @@ class DetailPurchaseFragment : ScopedFragment() {
 
         setHasOptionsMenu(true)
 
-//        sharedElementEnterTransition = MaterialContainerTransform().apply {
-//            drawingViewId = R.id.nav_host_fragment
-//            duration = resources.getInteger(R.integer.reply_motion_duration_medium).toLong()
-//            scrimColor = Color.TRANSPARENT
-//            setAllContainerColors(requireContext().themeColor(R.attr.colorSurface))
-//        }
     }
 
     override fun onCreateView(
@@ -122,7 +110,6 @@ class DetailPurchaseFragment : ScopedFragment() {
 
         bindViews()
         setClickListeners()
-        bindRingViews()
     }
 
     override fun onStart() {
@@ -181,10 +168,6 @@ class DetailPurchaseFragment : ScopedFragment() {
                 purchaseEntity.link = link.editText?.text.toString()
 
                 viewModel.updatePurchase(purchaseEntity)
-            }
-
-            ringsParent.setOnClickListener {
-                onRingsClick()
             }
 
             purchaseImage.setOnClickListener {
@@ -502,105 +485,6 @@ class DetailPurchaseFragment : ScopedFragment() {
         Toasty.error(requireContext(), message).show()
     }
 
-    private fun onRingsClick() {
-//        if (areBigRingsVisible) {
-//            showSmallRings()
-//        } else {
-//            showBigRings()
-//        }
-//        areBigRingsVisible = !areBigRingsVisible
-    }
-
-    private fun showSmallRings() {
-        for ((index, bigRingView) in bigRingViews.withIndex()) {
-            if (index == bigRingViews.size - 1) {
-                val animation = reduceScaleAnimation()
-                animation.setAnimationListener(object : Animation.AnimationListener {
-                    override fun onAnimationRepeat(animation: Animation?) {
-                    }
-
-                    override fun onAnimationEnd(animation: Animation?) {
-
-                        for (smallRingView in smallRingsViews) {
-                            smallRingView.startAnimation(increaseScaleAnimation())
-                        }
-
-                        mBinding.purchaseImage.isClickable = false
-                    }
-
-                    override fun onAnimationStart(animation: Animation?) {
-                    }
-
-                })
-                bigRingView.startAnimation(animation)
-            } else {
-                bigRingView.startAnimation(reduceScaleAnimation())
-            }
-        }
-    }
-
-    private fun showBigRings() {
-
-        for ((index, smallRingView) in smallRingsViews.withIndex()) {
-            if (index == smallRingsViews.size - 1) {
-                val animation = reduceScaleAnimation()
-                animation.setAnimationListener(object : Animation.AnimationListener {
-                    override fun onAnimationRepeat(animation: Animation?) {
-                    }
-
-                    override fun onAnimationEnd(animation: Animation?) {
-                        for (bigRingView in bigRingViews) {
-                            bigRingView.startAnimation(increaseScaleAnimation())
-                        }
-
-                        mBinding.purchaseImage.isClickable = true
-                    }
-
-                    override fun onAnimationStart(animation: Animation?) {
-                    }
-
-                })
-                smallRingView.startAnimation(animation)
-            } else {
-                smallRingView.startAnimation(reduceScaleAnimation())
-            }
-        }
-    }
-
-    private fun reduceScaleAnimation(): ScaleAnimation {
-        val scaleAnimation = ScaleAnimation(
-            1f,
-            0f,
-            1f,
-            0f,
-            ScaleAnimation.RELATIVE_TO_SELF,
-            0.5f,
-            ScaleAnimation.RELATIVE_TO_SELF,
-            0.5f
-        )
-        scaleAnimation.interpolator = interpolator
-        scaleAnimation.duration = duration
-        scaleAnimation.fillAfter = true
-        return scaleAnimation
-    }
-
-    private fun increaseScaleAnimation(): ScaleAnimation {
-        val reduceScaleAnimation = ScaleAnimation(
-            0f,
-            1f,
-            0f,
-            1f,
-            ScaleAnimation.RELATIVE_TO_SELF,
-            0.5f,
-            ScaleAnimation.RELATIVE_TO_SELF,
-            0.5f
-        )
-        reduceScaleAnimation.interpolator = interpolator
-        reduceScaleAnimation.duration = duration
-        reduceScaleAnimation.fillAfter = true
-        return reduceScaleAnimation
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode != RESULT_CANCELED) {
             when (requestCode) {
@@ -752,27 +636,6 @@ class DetailPurchaseFragment : ScopedFragment() {
                 }
             }
         }
-    }
-
-    private fun bindRingViews() {
-        bigRingViews = listOf(
-            mBinding.potentialRing,
-            mBinding.thinkingRing,
-            mBinding.availabilityRing,
-            mBinding.purchaseImage,
-            mBinding.percentImage,
-            mBinding.potentialImage,
-            mBinding.dollar
-        )
-
-        smallRingsViews = listOf(
-            mBinding.potential,
-            mBinding.potentialHint,
-            mBinding.thinking,
-            mBinding.thinkingHint,
-            mBinding.availability,
-            mBinding.availabilityHint
-        )
     }
 
 }

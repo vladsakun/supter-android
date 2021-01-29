@@ -18,6 +18,12 @@
         <item name="cardUseCompatPadding">true</item>
     </style>
 
+    <style name="DialogCardView" parent="Widget.MaterialComponents.CardView">
+        <item name="cardElevation">@dimen/cardElevation</item>
+        <item name="cardUseCompatPadding">true</item>
+        <item name="cardCornerRadius">7dp</item>
+    </style>
+
     <style name="AuthButton" parent="Widget.MaterialComponents.Button">
         <item name="android:minWidth">@dimen/buttonMinWidth</item>
         <item name="android:padding">10dp</item>

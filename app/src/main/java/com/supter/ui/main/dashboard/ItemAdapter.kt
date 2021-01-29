@@ -1,5 +1,6 @@
 package com.supter.ui.main.dashboard
 
+import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import com.supter.utils.STATUS_DONE
 import com.supter.utils.daysRealPeriod
 import com.supter.utils.getPrettyDate
 import com.woxthebox.draglistview.DragItemAdapter
+import kotlin.math.ceil
 
 internal class ItemAdapter constructor(
     val purchaseList: MutableList<PurchaseEntity>,
@@ -70,7 +72,11 @@ internal class ItemAdapter constructor(
         fun bind(purchaseEntity: PurchaseEntity) {
             activeItem = purchaseEntity
             binding.purchase = purchaseEntity
-            binding.potential.progress = purchaseEntity.potential
+            binding.potential.progress = ceil(purchaseEntity.potential.toDouble()).toInt()
+            purchaseEntity.image?.let{
+                val bitmap = BitmapFactory.decodeByteArray(it, 0, it.size)
+                binding.purchaseImage.setImageBitmap(bitmap)
+            }
 
             if(mColumnStage != STATUS_DONE) {
 

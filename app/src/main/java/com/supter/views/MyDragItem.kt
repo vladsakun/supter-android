@@ -2,17 +2,16 @@ package com.supter.views
 
 import android.animation.ObjectAnimator
 import android.content.Context
-import android.util.Log
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
 import com.google.android.material.card.MaterialCardView
 import com.supter.R
 import com.woxthebox.draglistview.DragItem
-import kotlinx.android.synthetic.main.fragment_dashboard.view.*
 
 class MyDragItem(val context: Context, layoutId: Int) :
     DragItem(context, layoutId) {
@@ -21,15 +20,18 @@ class MyDragItem(val context: Context, layoutId: Int) :
 
     override fun onBindDragView(clickedView: View, dragView: View) {
 
-        val name = (clickedView.findViewById<View>(R.id.purchase_title) as TextView).text
-        val cost = (clickedView.findViewById<View>(R.id.purchase_cost) as TextView).text
-        val realPeriod = (clickedView.findViewById<View>(R.id.real_period) as TextView).text
-        val potential = (clickedView.findViewById<View>(R.id.potential) as RoundCornerProgressBar).progress
+        val name = (clickedView.findViewById(R.id.purchase_title) as TextView).text
+        val cost = (clickedView.findViewById(R.id.purchase_cost) as TextView).text
+        val realPeriod = (clickedView.findViewById(R.id.real_period) as TextView).text
+        val potential = (clickedView.findViewById(R.id.potential) as ProgressBar).progress
+        val purchaseDrawable = (clickedView.findViewById(R.id.purchase_image) as ImageView).drawable
 
         (dragView.findViewById<View>(R.id.purchase_title) as TextView).text = name
         (dragView.findViewById<View>(R.id.purchase_cost) as TextView).text = cost
         (dragView.findViewById<View>(R.id.real_period) as TextView).text = realPeriod
-        (dragView.findViewById<View>(R.id.potential) as RoundCornerProgressBar).progress = potential
+        (dragView.findViewById<View>(R.id.potential) as ProgressBar).progress = potential
+        (dragView.findViewById<ImageView>(R.id.purchase_image)).setImageDrawable(purchaseDrawable)
+
 
         val dragCard: MaterialCardView = dragView.findViewById(R.id.card)
         val clickedCard: MaterialCardView = clickedView.findViewById(R.id.card)

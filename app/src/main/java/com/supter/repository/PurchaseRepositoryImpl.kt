@@ -88,6 +88,12 @@ class PurchaseRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun deleteAllPurchases() {
+        GlobalScope.launch(Dispatchers.IO) {
+            dao.deleteAllPurchses()
+        }
+    }
+
     override suspend fun upsertPurchase(purchaseEntity: PurchaseEntity) {
         dao.upsertOneItem(purchaseEntity)
     }
@@ -182,14 +188,19 @@ class PurchaseRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun postPurchaseImage(purchaseId: Int, body: MultipartBody.Part): ResultWrapper<PurchaseData> {
+    override suspend fun postPurchaseImage(
+        purchaseId: Int,
+        body: MultipartBody.Part
+    ): ResultWrapper<PurchaseData> {
 
-        val resp = networkDataSource.postPurchaseImage(SystemUtils.getToken(context), purchaseId, body)
+        val resp =
+            networkDataSource.postPurchaseImage(SystemUtils.getToken(context), purchaseId, body)
 
         if (resp is ResultWrapper.Success) {
             GlobalScope.launch(Dispatchers.IO) {
-                with(resp.value){
-                    val byteArrayImage = getByteArrayImage(context.getString(R.string.base_url) + image)
+                with(resp.value) {
+                    val byteArrayImage =
+                        getByteArrayImage(context.getString(R.string.base_url) + image)
                     val purchaseEntity = dao.getPurchaseEntityById(purchaseId)
                     purchaseEntity.image = byteArrayImage
                     upsertPurchase(purchaseEntity)

@@ -19,6 +19,9 @@ interface PurchaseDao {
     @Delete
     suspend fun deletePurchaseEntity(purchaseEntity: PurchaseEntity)
 
+    @Query("DELETE FROM purchase")
+    fun deleteAllPurchses()
+
     @Query("SELECT * FROM purchase")
     fun getPurchaseFlowList(): Flow<List<PurchaseEntity>>
 

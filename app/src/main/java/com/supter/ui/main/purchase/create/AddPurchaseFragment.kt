@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.transition.Slide
 import com.google.android.material.transition.MaterialContainerTransform
@@ -19,7 +20,6 @@ import com.supter.ui.main.MainActivity
 import com.supter.utils.themeColor
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
-import org.json.JSONObject
 
 @AndroidEntryPoint
 class AddPurchaseFragment : Fragment() {
@@ -110,7 +110,6 @@ class AddPurchaseFragment : Fragment() {
                     viewModel.upsertPurchase(
                         title,
                         price,
-                        JSONObject(questionsMap).toString(),
                     )
                 }else{
                     showErrorToast(requireContext().getString(R.string.some_fields_are_empty))

@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-<!--    <style name="MyCircularProgressView" parent="ParentCircularProgressView">-->
-<!--        <item name="backgroundColor">@color/dark_gray</item>-->
-<!--    </style>-->
-
     <!--Dashboard-->
     <style name="PotentialProgress" parent="PotentialProgressParent">
         <item name="rcProgressColor">@color/potential_foreground</item>

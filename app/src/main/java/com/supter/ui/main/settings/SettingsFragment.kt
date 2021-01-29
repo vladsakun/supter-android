@@ -16,8 +16,6 @@ class SettingsFragment : Fragment() {
     private var _binding: FragmentSettingsBinding? = null
     val mBinding get() = _binding!!
 
-    private lateinit var galleryViewModel: SettingsViewModel
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -36,24 +34,5 @@ class SettingsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
-
-        val currentColorMode = SystemUtils.getColorMode(requireContext().applicationContext)
-        if(currentColorMode == AppCompatDelegate.MODE_NIGHT_YES){
-            mBinding.changeThemeSwitch.isChecked = true
-        }
-
-        mBinding.changeThemeSwitch.setOnCheckedChangeListener { compoundButton, b ->
-            if (b) {
-                SystemUtils.setColorMode(
-                    requireContext().applicationContext,
-                    AppCompatDelegate.MODE_NIGHT_YES
-                )
-            } else {
-                SystemUtils.setColorMode(
-                    requireContext().applicationContext,
-                    AppCompatDelegate.MODE_NIGHT_NO
-                )
-            }
-        }
     }
 }

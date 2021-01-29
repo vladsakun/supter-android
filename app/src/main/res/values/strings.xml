@@ -77,6 +77,9 @@
     <string name="potential">Potential</string>
     <string name="notification_title">"Add income reminder to your balance "</string>
     <string name="notification_subtitle">Do you want to add income reminder to your balance?</string>
+    <string name="are_notifications_enabled">Are notifications enabled?</string>
+    <string name="choose_purchase_image">Choose purchase image</string>
+    <string name="purchase_creating">Purchase creating</string>
 
     <string-array name="photo_options">
         <item>Take photo</item>

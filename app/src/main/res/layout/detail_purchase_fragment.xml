@@ -146,7 +146,7 @@
                     android:id="@+id/purchase_image"
                     android:layout_width="75dp"
                     android:layout_height="75dp"
-                    android:src="@mipmap/ic_launcher"
+                    android:src="@drawable/ic_add_photo"
                     app:layout_constraintBottom_toBottomOf="@id/availability_ring"
                     app:layout_constraintEnd_toEndOf="@+id/potential_ring"
                     app:layout_constraintHorizontal_bias="0.5"
