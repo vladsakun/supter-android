@@ -22,7 +22,8 @@ data class Data(
 data class QuestionsItem(
 	val purchaseQuestion: PurchaseQuestion?,
 	val id: Int,
-	val title: String
+	val title: String,
+	val type: String
 )
 
 data class PurchaseQuestion(
@@ -32,6 +33,5 @@ data class PurchaseQuestion(
 	val id: Int,
 	val text: String?,
 	val updatedAt: String,
-	val type: String
 )
 

@@ -55,7 +55,7 @@ class PotentialAdapter(
         holder.itemView.setOnClickListener {
             val layoutInflater = activity.layoutInflater
 
-            var dialogView: View
+            val dialogView: View
             val dialogBuilder = MaterialAlertDialogBuilder(activity).create()
 
             if (potentialItem.answer != null) {

@@ -175,7 +175,7 @@ fun convertQuestionItemToPotentialItem(
         questionsItem.title,
         answer,
         questionsItem.id,
-        questionsItem.purchaseQuestion?.type
+        questionsItem.type
     )
 }
 
