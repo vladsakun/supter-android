@@ -1,16 +1,26 @@
 package com.supter.ui.main.dashboard
 
+import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import com.supter.R
 import com.supter.data.db.entity.PurchaseEntity
-import com.supter.databinding.ColumnItemBinding
 import com.supter.utils.STATUS_DONE
 import com.supter.utils.daysRealPeriod
 import com.supter.utils.getPrettyDate
 import com.woxthebox.draglistview.DragItemAdapter
+import de.hdodenhof.circleimageview.CircleImageView
+import java.io.ByteArrayOutputStream
 import kotlin.math.ceil
 
 internal class ItemAdapter constructor(
@@ -21,18 +31,19 @@ internal class ItemAdapter constructor(
     private val onItemClick: OnItemClick,
     var period: Number,
     var salaryDay: Int,
+    val context: Context
 ) : DragItemAdapter<PurchaseEntity, ItemAdapter.ViewHolder>() {
+
+    private val TAG = "ItemAdapter"
 
     init {
         mItemList = purchaseList
     }
 
-    private val TAG = "ItemAdapter"
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            ColumnItemBinding.inflate(
-                LayoutInflater.from(parent.context),
+            LayoutInflater.from(parent.context).inflate(
+                R.layout.column_item,
                 parent,
                 false
             ), onItemClick
@@ -53,11 +64,17 @@ internal class ItemAdapter constructor(
     }
 
     internal inner class ViewHolder(
-        val binding: ColumnItemBinding,
+        val view: View,
         private val listener: OnItemClick,
-    ) : DragItemAdapter.ViewHolder(binding.root, mGrabHandleId, mDragOnLongPress) {
+    ) : DragItemAdapter.ViewHolder(view, mGrabHandleId, mDragOnLongPress) {
 
         private var activeItem: PurchaseEntity? = null
+        val potential: ProgressBar = view.findViewById(R.id.potential)
+        val purchaseImage: CircleImageView = view.findViewById(R.id.purchase_image)
+        val purchaseTitle: TextView = view.findViewById(R.id.purchase_title)
+        val purchaseCost: TextView = view.findViewById(R.id.purchase_cost)
+        val realPeriodTextView: TextView = view.findViewById(R.id.real_period)
+        val completeAvailabilityTime: ImageView = view.findViewById(R.id.availability_time_finished_emoji)
 
         override fun onItemClicked(view: View) {
             activeItem?.let {
@@ -71,18 +88,52 @@ internal class ItemAdapter constructor(
 
         fun bind(purchaseEntity: PurchaseEntity) {
             activeItem = purchaseEntity
-            binding.purchase = purchaseEntity
-            binding.potential.progress = ceil(purchaseEntity.potential.toDouble()).toInt()
-            purchaseEntity.image?.let{
-                val bitmap = BitmapFactory.decodeByteArray(it, 0, it.size)
-                binding.purchaseImage.setImageBitmap(bitmap)
+            purchaseTitle.text = purchaseEntity.title
+            purchaseCost.text = purchaseEntity.price.toString()
+            potential.progress = ceil(purchaseEntity.potential.toDouble()).toInt()
+
+            if (purchaseEntity.image == null) {
+
+                val drawable: Drawable? = ContextCompat.getDrawable(context, R.drawable.ic_box)
+                val bmp = Bitmap.createBitmap(
+                    drawable!!.getIntrinsicWidth(),
+                    drawable.getIntrinsicHeight(),
+                    Bitmap.Config.ARGB_8888
+                )
+
+                val canvas = Canvas(bmp)
+
+                drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight())
+                drawable.draw(canvas)
+
+                val stream = ByteArrayOutputStream()
+                bmp.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                val bitMapData = stream.toByteArray()
+
+                purchaseEntity.image = bitMapData
             }
 
-            if(mColumnStage != STATUS_DONE) {
+            purchaseEntity.image?.let {
+                val bitmap = BitmapFactory.decodeByteArray(it, 0, it.size)
+                purchaseImage.setImageBitmap(bitmap)
+            }
 
-                val realPeriod = daysRealPeriod(period.toFloat(), purchaseEntity.realPeriod, salaryDay) // in days
+            if (mColumnStage != STATUS_DONE) {
 
-                binding.realPeriod.text = getPrettyDate(realPeriod)
+                val realPeriod = daysRealPeriod(
+                    period.toFloat(),
+                    purchaseEntity.realPeriod,
+                    salaryDay
+                ) // in days
+
+                if (realPeriod == 0f) {
+                    completeAvailabilityTime.isVisible = true
+                    realPeriodTextView.isVisible = false
+                } else {
+                    completeAvailabilityTime.isVisible = false
+                    realPeriodTextView.isVisible = true
+                    realPeriodTextView.text = getPrettyDate(realPeriod)
+                }
             }
         }
 

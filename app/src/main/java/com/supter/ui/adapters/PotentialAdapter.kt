@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,6 +36,7 @@ class PotentialAdapter(
     companion object {
         val SUBMIT_ANSWER_ACTION = "SUBMIT_ANSWER_ACTION"
         val IS_SUBMIT_SUCCESS = "IS_SUBMIT_SUCCESS"
+        private const val TAG = "PotentialAdapter"
     }
 
     private var mSubmitAnswerResponseBR: BroadcastReceiver? = null
@@ -135,6 +137,7 @@ class PotentialAdapter(
                                     potentialItem.questionId
                                 )
                                 putExtra(DetailPurchaseFragment.UPDATE_EXTRA, true)
+                                putExtra(DetailPurchaseFragment.QUESTION_INDEX_IN_ARRAY_EXTRA, potentialItemList.indexOf(potentialItem))
                             }
 
                             activity.applicationContext.sendBroadcast(intent)
@@ -158,12 +161,12 @@ class PotentialAdapter(
                     questionTitle.text = potentialItem.title
 
                     yesBtn.setOnClickListener {
-                        sendBooleanAnswer(true, potentialItem.questionId)
+                        sendBooleanAnswer(true, potentialItem.questionId, potentialItemList.indexOf(potentialItem))
                         dialogBuilder.dismiss()
                     }
 
                     noBtn.setOnClickListener {
-                        sendBooleanAnswer(false, potentialItem.questionId)
+                        sendBooleanAnswer(false, potentialItem.questionId, potentialItemList.indexOf(potentialItem))
                         dialogBuilder.dismiss()
                     }
                 }
@@ -177,10 +180,11 @@ class PotentialAdapter(
         }
     }
 
-    private fun sendBooleanAnswer(checked: Boolean, questionId: Int) {
+    private fun sendBooleanAnswer(checked: Boolean, questionId: Int, questionIndexInArray:Int) {
         val intent = Intent(DetailPurchaseFragment.SEND_ANSWER_ACTION).apply {
             putExtra(DetailPurchaseFragment.BOOLEAN_ANSWER_EXTRA, checked)
             putExtra(DetailPurchaseFragment.QUESTION_ID_EXTRA, questionId)
+            putExtra(DetailPurchaseFragment.QUESTION_INDEX_IN_ARRAY_EXTRA, questionIndexInArray)
         }
 
         activity.applicationContext.sendBroadcast(intent)

@@ -72,6 +72,7 @@ class DetailPurchaseFragment : ScopedFragment() {
 
         val STRING_ANSWER_EXTRA = "STRING_ANSWER_EXTRA"
         val BOOLEAN_ANSWER_EXTRA = "BOOLEAN_ANSWER_EXTRA"
+        val QUESTION_INDEX_IN_ARRAY_EXTRA = "QUESTION_INDEX_IN_ARRAY_EXTRA"
         val UPDATE_EXTRA = "UPDATE_EXTRA"
 
         val QUESTION_ID_EXTRA = "QUESTION_ID_EXTRA"
@@ -279,7 +280,8 @@ class DetailPurchaseFragment : ScopedFragment() {
         val currentProgressInPercentage: Long =
             ((currentTimeInSeconds - createdAtInSeconds) * 100) / (thinkingTimeInSeconds - createdAtInSeconds)
 
-        val currentProgressInHours:Float = (thinkingTimeInSeconds - currentTimeInSeconds).toFloat() / 60 / 60
+        val currentProgressInHours: Float =
+            (thinkingTimeInSeconds - currentTimeInSeconds).toFloat() / 60 / 60
 
         var thinkingText: String
 
@@ -349,7 +351,7 @@ class DetailPurchaseFragment : ScopedFragment() {
         val itemDecoration = SimpleDividerItemDecorationLastExcluded(10)
 
         if (toDoQuestions.isEmpty()) {
-            mBinding.wellDoneToIncrease.isVisible = true
+            mBinding.toDoBlock.isVisible = false
         } else {
             val toDoPotentialItemList = convertQuestionListToPotentialItems(toDoQuestions)
 
@@ -398,25 +400,6 @@ class DetailPurchaseFragment : ScopedFragment() {
         mBinding.toIncreasePotentialProgress.isVisible = false
     }
 
-    private fun convertQuestionListToPotentialItems(questionsItemList: List<QuestionsItem>?): MutableList<PotentialItem> {
-
-        val potentialItemsListResult = mutableListOf<PotentialItem>()
-
-        if (questionsItemList != null) {
-            for (questionItem in questionsItemList) {
-                potentialItemsListResult.add(
-                    convertQuestionItemToPotentialItem(
-                        true,
-                        questionItem,
-                        questionItem.purchaseQuestion?.text
-                    )
-                )
-            }
-        }
-
-        return potentialItemsListResult
-    }
-
     private fun startAnswerBR() {
         requireContext().applicationContext.registerReceiver(
             answerBroadcastReceiver, IntentFilter(
@@ -434,6 +417,7 @@ class DetailPurchaseFragment : ScopedFragment() {
             val stringAnswer: String? = intent.getStringExtra(STRING_ANSWER_EXTRA)
             val booleanAnswer = intent.getBooleanExtra(BOOLEAN_ANSWER_EXTRA, false)
             val questionId = intent.getIntExtra(QUESTION_ID_EXTRA, 0)
+            val questionIndexInArray = intent.getIntExtra(QUESTION_INDEX_IN_ARRAY_EXTRA, 0)
 
             val isUpdate = intent.getBooleanExtra(UPDATE_EXTRA, false)
 
@@ -450,9 +434,11 @@ class DetailPurchaseFragment : ScopedFragment() {
                         val answeredQuestion: QuestionsItem =
                             toDoQuestions.first { it.id == questionId }
 
-                        val answeredQuestionId = toDoQuestions.indexOf(answeredQuestion)
+                        toIncreasePotentialAdapter?.removeItemAt(questionIndexInArray)
 
-                        toIncreasePotentialAdapter?.removeItemAt(answeredQuestionId)
+                        if (toIncreasePotentialAdapter?.itemCount == 0) {
+                            mBinding.toDoBlock.isVisible = false
+                        }
 
                         val potentialItem = convertQuestionItemToPotentialItem(
                             false,

@@ -165,6 +165,25 @@ fun convertAccountResponseToUserEntity(accountResponse: AccountResponse): UserEn
     }
 }
 
+fun convertQuestionListToPotentialItems(questionsItemList: List<QuestionsItem>?): MutableList<PotentialItem> {
+
+    val potentialItemsListResult = mutableListOf<PotentialItem>()
+
+    if (questionsItemList != null) {
+        for (questionItem in questionsItemList) {
+            potentialItemsListResult.add(
+                convertQuestionItemToPotentialItem(
+                    true,
+                    questionItem,
+                    questionItem.purchaseQuestion?.text
+                )
+            )
+        }
+    }
+
+    return potentialItemsListResult
+}
+
 fun convertQuestionItemToPotentialItem(
     isDone: Boolean,
     questionsItem: QuestionsItem,
@@ -265,8 +284,6 @@ fun updatePurchasesData(
                     userBalance = 0f
                 }
 
-                Log.d(TAG, "priceWithBalance $priceWithBalance balance: $userBalance")
-
                 if (index == 0) {
 
                     val currentPeriod: Double =
@@ -300,8 +317,6 @@ fun updatePurchasesData(
                     element.realPeriod = productPeriod + previousProduct.realPeriod
 
                 }
-
-                Log.d(TAG, "realPeriod: ${element.realPeriod}")
 
                 newPurchaseList.add(element)
             }

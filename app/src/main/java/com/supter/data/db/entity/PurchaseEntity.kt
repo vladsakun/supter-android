@@ -29,7 +29,11 @@ data class PurchaseEntity(
     @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
     var image: ByteArray?
 
-): Serializable
+): Serializable{
+    override fun toString(): String {
+        return "PurchaseEntity(id=$id, title='$title', price=$price, order=$order, stage='$stage', potential=$potential, description=$description, remind=$remind, realPeriod=$realPeriod, thinkingTime='$thinkingTime', createdAt='$createdAt', link=$link, image=${image?.contentToString()})"
+    }
+}
 
 
 

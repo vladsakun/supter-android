@@ -1,8 +1,12 @@
 package com.supter.ui.main
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
+import android.view.KeyEvent
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -10,6 +14,7 @@ import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.observe
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -26,6 +31,7 @@ import com.supter.data.response.purchase.CreatePurchaseResponse
 import com.supter.databinding.ActivityMainBinding
 import com.supter.ui.main.purchase.create.AddPurchaseViewModel
 import com.supter.utils.SystemUtils.Companion.hideKeyboard
+import com.supter.utils.SystemUtils.Companion.showKeyboard
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 
@@ -91,7 +97,13 @@ class MainActivity : AppCompatActivity() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
 //                binding.myAppBarMain.fab.isVisible = newState != BottomSheetBehavior.STATE_EXPANDED
                 if (newState == BottomSheetBehavior.STATE_EXPANDED) {
-
+                    binding.myAppBarMain.addPurchase.purchaseTitle.editText?.showKeyboard()
+//                    val imm = view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+//
+//                    // here is one more tricky issue
+//                    // imm.showSoftInputMethod doesn't work well
+//                    // and imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0) doesn't work well for all cases too
+//                    imm?.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
                 } else {
                     hideKeyboard(this@MainActivity)
                     clearAddPurchaseFocus()
@@ -105,7 +117,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun bindAddPurchaseViews() {
-        viewModel.createPurchaseResponse.observe(this) { result ->
+        viewModel.createPurchaseResponse.observe(this, Observer { result ->
             when (result) {
                 is ResultWrapper.Success -> handleSuccessResult(result)
                 is ResultWrapper.NetworkError -> showErrorToast(getString(R.string.no_internet_connection))
@@ -114,36 +126,31 @@ class MainActivity : AppCompatActivity() {
                         ?: getString(R.string.no_internet_connection)
                 )
             }
-        }
+        })
 
         binding.myAppBarMain.addPurchase.save.setOnClickListener {
-            binding.myAppBarMain.addPurchase.run {
-                if (purchaseTitle.editText?.text.toString().isNotBlank()
-                    && purchasePrice.editText?.text.toString().isNotBlank()
-                ) {
+            save()
+        }
 
-                    val title = purchaseTitle.editText?.text.toString()
-                    val price = purchasePrice.editText?.text.toString().toDouble()
-                    val usability = purchaseUsability.editText?.text.toString()
+        binding.myAppBarMain.addPurchase.run {
+            collapseSheet.setOnClickListener {
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            }
 
-                    val questionsMap = mapOf(
-                        getString(R.string.how_would_the_purchase_be_useful)
-                                to usability
-                    )
+            purchasePrice.editText?.setImeActionLabel(
+                getString(R.string.save),
+                KeyEvent.KEYCODE_ENTER
+            )
 
-                    viewModel.upsertPurchase(
-                        title,
-                        price,
-                    )
-                } else {
-                    showErrorToast(getString(R.string.some_fields_are_empty))
+            purchasePrice.editText?.setOnEditorActionListener { _, actionId, _ ->
+                if(actionId == 6){
+                    save()
+                    return@setOnEditorActionListener true
                 }
+                return@setOnEditorActionListener false
             }
         }
 
-        binding.myAppBarMain.addPurchase.collapseSheet.setOnClickListener {
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-        }
     }
 
     private fun showErrorToast(message: String) {
@@ -153,6 +160,34 @@ class MainActivity : AppCompatActivity() {
     private fun handleSuccessResult(result: ResultWrapper.Success<CreatePurchaseResponse>) {
         Toasty.success(this, "Successfully created ${result.value.data.title}").show()
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+    }
+
+    private fun save() {
+        binding.myAppBarMain.addPurchase.run {
+            if (purchaseTitle.editText?.text.toString().isNotBlank()
+                && purchasePrice.editText?.text.toString().isNotBlank()
+            ) {
+
+                val title = purchaseTitle.editText?.text.toString()
+                val price = purchasePrice.editText?.text.toString().toDouble()
+                val usability = purchaseUsability.editText?.text.toString()
+
+                val questionsMap = mapOf(
+                    getString(R.string.how_would_the_purchase_be_useful)
+                            to usability
+                )
+
+                viewModel.upsertPurchase(
+                    title,
+                    price,
+                )
+
+                purchaseTitle.editText?.setText("")
+                purchasePrice.editText?.setText("")
+            } else {
+                showErrorToast(getString(R.string.some_fields_are_empty))
+            }
+        }
     }
 
     private fun clearAddPurchaseFocus() {
@@ -189,10 +224,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START)
-        } else {
-            super.onBackPressed()
+        when {
+            drawerLayout.isDrawerOpen(GravityCompat.START) -> {
+                drawerLayout.closeDrawer(GravityCompat.START)
+            }
+            bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED -> {
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            }
+            else -> {
+                super.onBackPressed()
+            }
         }
     }
 
@@ -202,6 +243,11 @@ class MainActivity : AppCompatActivity() {
 
     fun hideAddBtn() {
         binding.myAppBarMain.fab.visibility = View.INVISIBLE
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        hideKeyboard(this@MainActivity)
     }
 
 }

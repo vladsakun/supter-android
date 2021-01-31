@@ -1,6 +1,11 @@
 package com.supter.repository
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.Drawable
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import com.supter.R
 import com.supter.data.body.ChangeStageBody
 import com.supter.data.body.PurchaseBody
@@ -9,7 +14,8 @@ import com.supter.data.db.PurchaseDao
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.db.entity.UserEntity
 import com.supter.data.network.PurchaseNetworkDataSource
-import com.supter.data.response.*
+import com.supter.data.response.MessageResponse
+import com.supter.data.response.ResultWrapper
 import com.supter.data.response.account.AccountResponse
 import com.supter.data.response.purchase.*
 import com.supter.utils.*
@@ -21,6 +27,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.MultipartBody
+import java.io.ByteArrayOutputStream
 import javax.inject.Inject
 
 

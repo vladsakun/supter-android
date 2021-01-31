@@ -73,9 +73,20 @@ class SystemUtils {
         }
 
         fun hideKeyboard(activity: Activity) {
-            val view:View? = activity.findViewById<View>(android.R.id.content)
+            val view:View? = activity.findViewById(android.R.id.content)
             val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(view?.windowToken, 0)
+        }
+
+        fun View.showKeyboard(){
+            if(this.requestFocus()){
+                val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+
+                // here is one more tricky issue
+                // imm.showSoftInputMethod doesn't work well
+                // and imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0) doesn't work well for all cases too
+                imm?.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0)
+            }
         }
     }
 }

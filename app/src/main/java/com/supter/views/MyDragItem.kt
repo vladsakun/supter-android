@@ -8,10 +8,13 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.core.view.isVisible
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
 import com.google.android.material.card.MaterialCardView
 import com.supter.R
 import com.woxthebox.draglistview.DragItem
+import de.hdodenhof.circleimageview.CircleImageView
+import org.w3c.dom.Text
 
 class MyDragItem(val context: Context, layoutId: Int) :
     DragItem(context, layoutId) {
@@ -20,18 +23,33 @@ class MyDragItem(val context: Context, layoutId: Int) :
 
     override fun onBindDragView(clickedView: View, dragView: View) {
 
+        val realPeriodView = clickedView.findViewById(R.id.real_period) as TextView
+        val availabilityTimeFinishedView =
+            clickedView.findViewById(R.id.availability_time_finished_emoji) as ImageView
+
         val name = (clickedView.findViewById(R.id.purchase_title) as TextView).text
         val cost = (clickedView.findViewById(R.id.purchase_cost) as TextView).text
         val realPeriod = (clickedView.findViewById(R.id.real_period) as TextView).text
         val potential = (clickedView.findViewById(R.id.potential) as ProgressBar).progress
-        val purchaseDrawable = (clickedView.findViewById(R.id.purchase_image) as ImageView).drawable
+        val purchaseDrawable =
+            (clickedView.findViewById(R.id.purchase_image) as CircleImageView).drawable
+        val availabilityPeriodFinished = availabilityTimeFinishedView.drawable
 
-        (dragView.findViewById<View>(R.id.purchase_title) as TextView).text = name
-        (dragView.findViewById<View>(R.id.purchase_cost) as TextView).text = cost
-        (dragView.findViewById<View>(R.id.real_period) as TextView).text = realPeriod
-        (dragView.findViewById<View>(R.id.potential) as ProgressBar).progress = potential
-        (dragView.findViewById<ImageView>(R.id.purchase_image)).setImageDrawable(purchaseDrawable)
+        if (realPeriodView.isVisible) {
+            (dragView.findViewById(R.id.real_period) as TextView).text = realPeriod
+        } else {
+            availabilityTimeFinishedView.isVisible = true
+            (dragView.findViewById<ImageView>(R.id.availability_time_finished_emoji)).setImageDrawable(
+                availabilityPeriodFinished
+            )
+        }
 
+        (dragView.findViewById(R.id.purchase_title) as TextView).text = name
+        (dragView.findViewById(R.id.purchase_cost) as TextView).text = cost
+        (dragView.findViewById(R.id.potential) as ProgressBar).progress = potential
+        (dragView.findViewById<CircleImageView>(R.id.purchase_image)).setImageDrawable(
+            purchaseDrawable
+        )
 
         val dragCard: MaterialCardView = dragView.findViewById(R.id.card)
         val clickedCard: MaterialCardView = clickedView.findViewById(R.id.card)

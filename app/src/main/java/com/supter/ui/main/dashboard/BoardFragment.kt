@@ -12,8 +12,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.ethanhua.skeleton.Skeleton
-import com.faltenreich.skeletonlayout.applySkeleton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.supter.R
 import com.supter.data.db.entity.PurchaseEntity
@@ -46,6 +44,7 @@ class BoardFragment : ScopedFragment(), OnItemClick {
 
     private val viewModel: DashboardViewModel by viewModels()
     private var isBoardInitted = false
+    private var isBoardScrolled = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -104,6 +103,12 @@ class BoardFragment : ScopedFragment(), OnItemClick {
                                 itemAdapters[2].updateList(doneList)
 
                                 updateColumnItemsCount()
+
+                                if (processList.isNotEmpty() && !isBoardScrolled) { // Decided column is not empty
+                                    mBoardView.scrollToColumn(1, true)
+                                    isBoardScrolled = true
+                                }
+
                             }
                         })
                 } else {
@@ -136,6 +141,7 @@ class BoardFragment : ScopedFragment(), OnItemClick {
             STATUS_DONE to purchaseList.filter { it.stage == STATUS_DONE }
         )
 
+        // fill adapters
         for ((key, value) in sortedPurchaseMap) {
 
             val itemAdapter = ItemAdapter(
@@ -145,7 +151,8 @@ class BoardFragment : ScopedFragment(), OnItemClick {
                 true,
                 this,
                 period,
-                salaryDate
+                salaryDate,
+                requireContext()
             )
 
             addColumn(
@@ -157,23 +164,13 @@ class BoardFragment : ScopedFragment(), OnItemClick {
 
         }
 
+        // remove overScroll animations
         for (i in 0..2) {
             with(mBoardView.getRecyclerView(i)) {
                 overScrollMode = View.OVER_SCROLL_NEVER
                 isTransitionGroup = true
-
             }
         }
-
-//       Skeleton.bind(mBoardView.rootView)
-//            .shimmer(true)
-//            .angle(20)
-//            .duration(1200)
-//            .load(R.layout.skeleton_column)
-//            .show() //default count is 10
-//
-//        mBoardView.rootView
-
     }
 
     private fun initBoard() {
@@ -191,19 +188,18 @@ class BoardFragment : ScopedFragment(), OnItemClick {
         mBoardView.setBoardListener(object : BoardListener {
             override fun onItemDragStarted(column: Int, row: Int) {
                 dragItem = mBoardView.getAdapter(column).itemList[row] as PurchaseEntity
-                if (column == 0) {
-                    dragItem?.let {
-                        if (it.potential < 70f) {
-                            Toasty.warning(
-                                requireContext(),
-                                requireContext().getString(R.string.potential_less_70, it.title)
-                            ).show()
-                        }
-                    }
-                }
             }
 
             override fun onItemDragEnded(fromColumn: Int, fromRow: Int, toColumn: Int, toRow: Int) {
+
+            }
+
+            override fun onItemChangedPosition(
+                fromColumn: Int,
+                fromRow: Int,
+                toColumn: Int,
+                toRow: Int
+            ) {
                 if ((fromColumn != toColumn || fromRow != toRow)) {
                     val copyList = ArrayList<PurchaseEntity>()
 
@@ -244,14 +240,6 @@ class BoardFragment : ScopedFragment(), OnItemClick {
                 }
             }
 
-            override fun onItemChangedPosition(
-                oldColumn: Int,
-                oldRow: Int,
-                newColumn: Int,
-                newRow: Int
-            ) {
-            }
-
             override fun onItemChangedColumn(oldColumn: Int, newColumn: Int) {
 
                 val itemCount1 =
@@ -261,6 +249,17 @@ class BoardFragment : ScopedFragment(), OnItemClick {
                 val itemCount2 =
                     mBoardView.getHeaderView(newColumn).findViewById<TextView>(R.id.item_count)
                 itemCount2.text = mBoardView.getAdapter(newColumn).itemCount.toString()
+
+                if (newColumn == 1) {
+                    dragItem?.let {
+                        if (it.potential < 70f) {
+                            Toasty.warning(
+                                requireContext(),
+                                requireContext().getString(R.string.potential_less_70, it.title)
+                            ).show()
+                        }
+                    }
+                }
             }
 
             override fun onFocusedColumnChanged(oldColumn: Int, newColumn: Int) {
@@ -279,6 +278,7 @@ class BoardFragment : ScopedFragment(), OnItemClick {
                 //Toast.makeText(getContext(), "Column drag ended at " + position, Toast.LENGTH_SHORT).show();
             }
         })
+
         mBoardView.setBoardCallback(object : BoardCallback {
             override fun canDragItemAtPosition(column: Int, dragPosition: Int): Boolean {
                 // Add logic here to prevent an item to be dragged
