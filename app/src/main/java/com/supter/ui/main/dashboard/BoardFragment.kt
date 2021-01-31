@@ -17,6 +17,7 @@ import com.faltenreich.skeletonlayout.applySkeleton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.supter.R
 import com.supter.data.db.entity.PurchaseEntity
+import com.supter.data.response.ResultWrapper
 import com.supter.databinding.FragmentDashboardBinding
 import com.supter.utils.STATUS_DONE
 import com.supter.utils.STATUS_DECIDED
@@ -77,36 +78,42 @@ class BoardFragment : ScopedFragment(), OnItemClick {
         launch {
             val user = viewModel.fetchUser()
 
-            if (user?.period != null &&
-                user.incomeRemainder != null
-            ) {
+            if (user is ResultWrapper.NetworkError) {
+                showErrorMessage(requireContext().getString(R.string.no_internet_connection))
+            } else if (user is ResultWrapper.Success) {
 
-                viewModel.getPurchaseLiveData().observe(viewLifecycleOwner,
-                    Observer<List<PurchaseEntity>> { purchaseList ->
-                        if (purchaseList != null) {
+                if (user.value?.data?.period != null &&
+                    user.value.data.incomeRemainder != null
+                ) {
 
-                            val wantList = purchaseList.filter { it.stage == STATUS_WANT }
-                            val processList = purchaseList.filter { it.stage == STATUS_DECIDED }
-                            val doneList = purchaseList.filter { it.stage == STATUS_DONE }
+                    viewModel.getPurchaseLiveData().observe(viewLifecycleOwner,
+                        Observer<List<PurchaseEntity>> { purchaseList ->
+                            if (purchaseList != null) {
 
-                            itemAdapters.forEach {
-                                it.period = user.period
-                                it.salaryDay = user.salaryDay
+                                val wantList = purchaseList.filter { it.stage == STATUS_WANT }
+                                val processList = purchaseList.filter { it.stage == STATUS_DECIDED }
+                                val doneList = purchaseList.filter { it.stage == STATUS_DONE }
+
+                                itemAdapters.forEach {
+                                    it.period = user.value.data.period
+                                    it.salaryDay = user.value.data.salaryDay
+                                }
+
+                                itemAdapters[0].updateList(wantList)
+                                itemAdapters[1].updateList(processList)
+                                itemAdapters[2].updateList(doneList)
+
+                                updateColumnItemsCount()
                             }
-
-                            itemAdapters[0].updateList(wantList)
-                            itemAdapters[1].updateList(processList)
-                            itemAdapters[2].updateList(doneList)
-
-                            updateColumnItemsCount()
-                        }
-                    })
-            } else {
-                showFillUserDialog()
+                        })
+                } else {
+                    showFillUserDialog()
+                }
             }
         }
 
-        viewModel.errorMessageLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.errorMessageLiveData.observe(viewLifecycleOwner, Observer
+        {
             showErrorMessage(it)
         })
 

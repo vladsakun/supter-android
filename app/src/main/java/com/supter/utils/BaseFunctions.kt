@@ -174,6 +174,7 @@ fun convertQuestionItemToPotentialItem(
         isDone,
         questionsItem.title,
         answer,
+        questionsItem.purchaseQuestion?.isTrue,
         questionsItem.id,
         questionsItem.type
     )
@@ -331,7 +332,7 @@ fun rounder(x: Double): Int {
  */
 fun daysRealPeriod(period: Float, realPeriod: Int, salaryDay: Int): Float {
 
-    if(realPeriod == 0){
+    if (realPeriod == 0) {
         return 0f
     }
 

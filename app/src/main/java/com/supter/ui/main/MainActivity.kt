@@ -25,6 +25,7 @@ import com.supter.data.response.ResultWrapper
 import com.supter.data.response.purchase.CreatePurchaseResponse
 import com.supter.databinding.ActivityMainBinding
 import com.supter.ui.main.purchase.create.AddPurchaseViewModel
+import com.supter.utils.SystemUtils.Companion.hideKeyboard
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 
@@ -92,6 +93,7 @@ class MainActivity : AppCompatActivity() {
                 if (newState == BottomSheetBehavior.STATE_EXPANDED) {
 
                 } else {
+                    hideKeyboard(this@MainActivity)
                     clearAddPurchaseFocus()
                     binding.myAppBarMain.fab.isVisible = true
                 }

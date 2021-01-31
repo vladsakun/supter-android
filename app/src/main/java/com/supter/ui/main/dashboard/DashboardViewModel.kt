@@ -7,6 +7,7 @@ import com.supter.data.body.ChangeStageBody
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.db.entity.UserEntity
 import com.supter.data.response.ResultWrapper
+import com.supter.data.response.account.AccountResponse
 import com.supter.repository.PurchaseRepository
 import com.supter.utils.STATUS_DECIDED
 import com.supter.utils.STATUS_WANT
@@ -99,20 +100,15 @@ class DashboardViewModel @ViewModelInject constructor(
         return _user
     }
 
-    var userEntity: UserEntity? = null
-    suspend fun fetchUser(): UserEntity? {
+    private var userEntity: UserEntity? = null
+
+    suspend fun fetchUser(): ResultWrapper<AccountResponse?>? {
         return withContext(Dispatchers.IO) {
-
-            val accountResponse = repository.fetchUser()
-
-            if (accountResponse is ResultWrapper.Success) {
-                userEntity = convertAccountResponseToUserEntity(accountResponse.value)
-                return@withContext userEntity
-            } else {
-                return@withContext null
+            val resp = repository.fetchUser()
+            if (resp is ResultWrapper.Success) {
+                userEntity = convertAccountResponseToUserEntity(resp.value)
             }
-
+            return@withContext resp
         }
     }
-
 }

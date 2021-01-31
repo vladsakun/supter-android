@@ -58,7 +58,7 @@ class PotentialAdapter(
             val dialogView: View
             val dialogBuilder = MaterialAlertDialogBuilder(activity).create()
 
-            if (potentialItem.answer != null) {
+            if (potentialItem.answer != null || potentialItem.isTrue != null) {
 
                 dialogView = layoutInflater.inflate(R.layout.done_question_alert_dialog, null)
 
@@ -66,7 +66,17 @@ class PotentialAdapter(
                 questionTitle.text = potentialItem.title
 
                 val answerTextView: TextView = dialogView.findViewById(R.id.answer)
-                answerTextView.text = potentialItem.answer
+                if (potentialItem.answer == null && potentialItem.isTrue != null) { // boolean question
+
+                    if (potentialItem.isTrue) {
+                        answerTextView.text = it.context.getString(R.string.yes)
+                    } else {
+                        answerTextView.text = it.context.getString(R.string.no)
+                    }
+
+                } else { // string question
+                    answerTextView.text = potentialItem.answer
+                }
 
                 val okBtn: Button = dialogView.findViewById(R.id.ok_btn)
                 okBtn.setOnClickListener { dialogBuilder.dismiss() }
