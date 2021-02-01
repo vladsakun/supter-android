@@ -153,8 +153,12 @@ class DetailPurchaseFragment : ScopedFragment() {
 
     private fun initPurchaseImage() {
         purchaseEntity.image?.let {
-            val bitmap = BitmapFactory.decodeByteArray(it, 0, it.size)
-            mBinding.purchaseImage.setImageBitmap(bitmap)
+            if(it.contentEquals(getBoxByteArray(requireContext()))){
+                mBinding.purchaseImage.setImageResource(R.drawable.ic_add_photo)
+            }else {
+                val bitmap = BitmapFactory.decodeByteArray(it, 0, it.size)
+                mBinding.purchaseImage.setImageBitmap(bitmap)
+            }
         }
     }
 
@@ -177,6 +181,10 @@ class DetailPurchaseFragment : ScopedFragment() {
 
             link.setEndIconOnClickListener {
                 link.editText?.setText(getTextFromClipboard())
+            }
+
+            ringsParent.setOnClickListener {
+                potentialRing.animate()
             }
         }
     }

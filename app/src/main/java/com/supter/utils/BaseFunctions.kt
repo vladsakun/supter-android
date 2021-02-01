@@ -4,10 +4,12 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Bitmap.createBitmap
 import android.graphics.Canvas
+import android.graphics.drawable.Drawable
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.util.Log
 import androidx.core.content.ContextCompat
+import com.supter.R
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.db.entity.UserEntity
 import com.supter.data.model.PotentialItem
@@ -321,7 +323,8 @@ fun updatePurchasesData(
                 newPurchaseList.add(element)
             }
 
-            newPurchaseList.addAll(purchaseList.filter { it.stage == STAGE_BOUGHT }.sortedBy { it.order })
+            newPurchaseList.addAll(purchaseList.filter { it.stage == STAGE_BOUGHT }
+                .sortedBy { it.order })
 
             return newPurchaseList
 
@@ -362,13 +365,21 @@ fun daysRealPeriod(period: Float, realPeriod: Int, salaryDay: Int): Float {
 
 }
 
-fun Context.vectorToBitmap(drawableId: Int): Bitmap? {
-    val drawable = ContextCompat.getDrawable(this, drawableId) ?: return null
-    val bitmap = createBitmap(
-        drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888
-    ) ?: return null
-    val canvas = Canvas(bitmap)
-    drawable.setBounds(0, 0, canvas.width, canvas.height)
+fun getBoxByteArray(context: Context): ByteArray {
+    val drawable: Drawable? = ContextCompat.getDrawable(context, R.drawable.ic_box)
+    val bmp = Bitmap.createBitmap(
+        drawable!!.getIntrinsicWidth(),
+        drawable.getIntrinsicHeight(),
+        Bitmap.Config.ARGB_8888
+    )
+
+    val canvas = Canvas(bmp)
+
+    drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight())
     drawable.draw(canvas)
-    return bitmap
+
+    val stream = ByteArrayOutputStream()
+    bmp.compress(Bitmap.CompressFormat.PNG, 100, stream)
+    val bitMapData = stream.toByteArray()
+    return bitMapData
 }

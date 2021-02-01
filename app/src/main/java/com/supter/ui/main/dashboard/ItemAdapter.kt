@@ -17,6 +17,7 @@ import com.supter.R
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.utils.STAGE_BOUGHT
 import com.supter.utils.daysRealPeriod
+import com.supter.utils.getBoxByteArray
 import com.supter.utils.getPrettyDate
 import com.woxthebox.draglistview.DragItemAdapter
 import de.hdodenhof.circleimageview.CircleImageView
@@ -93,24 +94,7 @@ internal class ItemAdapter constructor(
             potential.progress = ceil(purchaseEntity.potential.toDouble()).toInt()
 
             if (purchaseEntity.image == null) {
-
-                val drawable: Drawable? = ContextCompat.getDrawable(context, R.drawable.ic_box)
-                val bmp = Bitmap.createBitmap(
-                    drawable!!.getIntrinsicWidth(),
-                    drawable.getIntrinsicHeight(),
-                    Bitmap.Config.ARGB_8888
-                )
-
-                val canvas = Canvas(bmp)
-
-                drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight())
-                drawable.draw(canvas)
-
-                val stream = ByteArrayOutputStream()
-                bmp.compress(Bitmap.CompressFormat.PNG, 100, stream)
-                val bitMapData = stream.toByteArray()
-
-                purchaseEntity.image = bitMapData
+                purchaseEntity.image = getBoxByteArray(context)
             }
 
             purchaseEntity.image?.let {

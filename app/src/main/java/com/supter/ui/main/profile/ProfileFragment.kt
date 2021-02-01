@@ -101,15 +101,15 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         }
 
         mBinding.incomeRemainder.setEndIconOnClickListener {
-            Toasty.info(requireContext(), getString(R.string.hint_income_remainder)).show()
+            Toasty.info(requireContext(), getString(R.string.hint_income_remainder), Toasty.LENGTH_LONG).show()
         }
 
         mBinding.period.setEndIconOnClickListener {
-            Toasty.info(requireContext(), getString(R.string.hint_period)).show()
+            Toasty.info(requireContext(), getString(R.string.hint_period), Toasty.LENGTH_LONG).show()
         }
 
         mBinding.balance.setEndIconOnClickListener {
-            Toasty.info(requireContext(), getString(R.string.hint_balance)).show()
+            Toasty.info(requireContext(), getString(R.string.hint_balance), Toasty.LENGTH_LONG).show()
         }
 
         mBinding.monthly.setOnClickListener {
