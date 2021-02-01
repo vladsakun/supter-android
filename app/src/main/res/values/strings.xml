@@ -81,6 +81,7 @@
     <string name="are_notifications_enabled">Are notifications enabled?</string>
     <string name="choose_purchase_image">Choose purchase image</string>
     <string name="purchase_creating">Purchase creating</string>
+    <string name="retry">Retry</string>
 
     <string-array name="photo_options">
         <item>Take photo</item>

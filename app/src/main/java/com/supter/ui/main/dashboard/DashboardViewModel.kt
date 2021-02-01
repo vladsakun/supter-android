@@ -15,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.reflect.typeOf
 
 class DashboardViewModel @ViewModelInject constructor(
     private val repository: PurchaseRepository,
@@ -29,7 +30,7 @@ class DashboardViewModel @ViewModelInject constructor(
         sendIdsList(purchaseList, stage)
     }
 
-    fun sendIdsList(purchaseList: List<PurchaseEntity>, stage:String) {
+    private fun sendIdsList(purchaseList: List<PurchaseEntity>, stage:String) {
         val idsList = mutableListOf<Int>()
 
         for (purchase in purchaseList) {

@@ -84,7 +84,6 @@ class DetailPurchaseFragment : ScopedFragment() {
         super.onCreate(savedInstanceState)
 
         setHasOptionsMenu(true)
-
     }
 
     override fun onCreateView(

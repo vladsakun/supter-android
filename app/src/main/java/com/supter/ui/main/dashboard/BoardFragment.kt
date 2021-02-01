@@ -1,11 +1,14 @@
 package com.supter.ui.main.dashboard
 
 import android.content.DialogInterface
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnPreDraw
@@ -16,7 +19,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.supter.R
 import com.supter.data.db.entity.PurchaseEntity
+import com.supter.data.db.entity.UserEntity
 import com.supter.data.response.ResultWrapper
+import com.supter.data.response.account.AccountResponse
 import com.supter.databinding.FragmentDashboardBinding
 import com.supter.utils.STAGE_BOUGHT
 import com.supter.utils.STAGE_DECIDED
@@ -78,53 +83,53 @@ class BoardFragment : ScopedFragment(), OnItemClick {
         launch {
             val user = viewModel.fetchUser()
 
-            if (user is ResultWrapper.NetworkError) {
-                showErrorMessage(requireContext().getString(R.string.no_internet_connection))
-            } else if (user is ResultWrapper.Success) {
-
-                if (user.value?.data?.period != null &&
-                    user.value.data.incomeRemainder != null
-                ) {
-
-                    viewModel.getPurchaseLiveData().observe(viewLifecycleOwner,
-                        Observer<List<PurchaseEntity>> { purchaseList ->
-                            if (purchaseList != null) {
-
-                                val wantList = purchaseList.filter { it.stage == STAGE_WANT }
-                                val processList = purchaseList.filter { it.stage == STAGE_DECIDED }
-                                val doneList = purchaseList.filter { it.stage == STAGE_BOUGHT }
-
-                                Log.d(TAG, "wantList: ${wantList.size} processList ${processList.size} doneList ${doneList.size}")
-
-                                itemAdapters.forEach {
-                                    it.period = user.value.data.period
-                                    it.salaryDay = user.value.data.salaryDay
-                                }
-
-                                itemAdapters[0].updateList(wantList)
-                                itemAdapters[1].updateList(processList)
-                                itemAdapters[2].updateList(doneList)
-
-                                updateColumnItemsCount()
-
-                                if (processList.isNotEmpty() && !isBoardScrolled) { // Decided column is not empty
-                                    mBoardView.scrollToColumn(1, true)
-                                    isBoardScrolled = true
-                                }
-
-                            }
-                        })
-                } else {
-                    showFillUserDialog()
-                }
-            }
+            presentPurchases(user)
         }
 
-        viewModel.errorMessageLiveData.observe(viewLifecycleOwner, Observer
-        {
+        viewModel.errorMessageLiveData.observe(viewLifecycleOwner, Observer {
             showErrorMessage(it)
         })
 
+    }
+
+    private fun presentPurchases(user: ResultWrapper<AccountResponse?>?) {
+        if (user is ResultWrapper.NetworkError) {
+            showNoInternetConnectionDialog()
+        } else if (user is ResultWrapper.Success) {
+
+            if (user.value?.data?.period != null &&
+                user.value.data.incomeRemainder != null
+            ) {
+                viewModel.getPurchaseLiveData().observe(viewLifecycleOwner,
+                    Observer<List<PurchaseEntity>> { purchaseList ->
+                        if (purchaseList != null) {
+
+                            val wantList = purchaseList.filter { it.stage == STAGE_WANT }
+                            val processList = purchaseList.filter { it.stage == STAGE_DECIDED }
+                            val doneList = purchaseList.filter { it.stage == STAGE_BOUGHT }
+
+                            itemAdapters.forEach {
+                                it.period = user.value.data.period
+                                it.salaryDay = user.value.data.salaryDay
+                            }
+
+                            itemAdapters[0].updateList(wantList)
+                            itemAdapters[1].updateList(processList)
+                            itemAdapters[2].updateList(doneList)
+
+                            updateColumnItemsCount()
+
+                            if (processList.isNotEmpty() && !isBoardScrolled) { // Decided column is not empty
+                                mBoardView.scrollToColumn(1, true)
+                                isBoardScrolled = true
+                            }
+
+                        }
+                    })
+            } else {
+                showFillUserDialog()
+            }
+        }
     }
 
     private fun resetBoard(purchaseList: List<PurchaseEntity>, period: Number, salaryDate: Int) {
@@ -213,7 +218,7 @@ class BoardFragment : ScopedFragment(), OnItemClick {
                             2 -> STAGE_BOUGHT
                             else -> STAGE_WANT
                         }
-                    }else{
+                    } else {
                         when (toColumn) {
                             0 -> STAGE_WANT
                             1 -> STAGE_DECIDED
@@ -360,22 +365,12 @@ class BoardFragment : ScopedFragment(), OnItemClick {
 
     override fun onItemClick(cardView: View, purchaseEntity: PurchaseEntity) {
 
-        val detailPurchaseTransitionName = getString(R.string.purchase_card_detail_transition_name)
-//        val extras = FragmentNavigatorExtras(cardView to detailPurchaseTransitionName)
-
         val direction = BoardFragmentDirections.actionNavDashboardToDetailPurchaseFragment(
             purchaseEntity.title,
             purchaseEntity
         )
 
         findNavController().navigate(direction)
-//        exitTransition = MaterialElevationScale(false).apply {
-//            duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
-//        }
-//
-//        reenterTransition = MaterialElevationScale(true).apply {
-//            duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
-//        }
     }
 
     private fun showFillUserDialog() {
@@ -388,6 +383,32 @@ class BoardFragment : ScopedFragment(), OnItemClick {
             }
             .setCancelable(false)
 
+        dialog.show()
+    }
+
+    private fun showNoInternetConnectionDialog() {
+        val dialogView = requireActivity().layoutInflater.inflate(
+            R.layout.no_internet_connection_alert_dialog,
+            null
+        )
+        val retryBtn: Button = dialogView.findViewById(R.id.retry_btn)
+
+        val dialog = MaterialAlertDialogBuilder(requireActivity())
+            .setCancelable(false)
+            .create()
+
+        retryBtn.setOnClickListener {
+            launch {
+                val user = viewModel.fetchUser()
+                if (user is ResultWrapper.Success) {
+                    dialog.dismiss()
+                    presentPurchases(user)
+                }
+            }
+        }
+
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.setView(dialogView)
         dialog.show()
     }
 
