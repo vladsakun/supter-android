@@ -181,10 +181,6 @@ class DetailPurchaseFragment : ScopedFragment() {
             link.setEndIconOnClickListener {
                 link.editText?.setText(getTextFromClipboard())
             }
-
-            ringsParent.setOnClickListener {
-                potentialRing.animate()
-            }
         }
     }
 

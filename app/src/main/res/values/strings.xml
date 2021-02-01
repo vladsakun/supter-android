@@ -71,7 +71,6 @@
     <string name="available">Available</string>
     <string name="base_url">https://supter-api.demyan.net/</string>
     <string name="are_you_sure_to_delete">Are you sure to delete %s ?</string>
-
     <string name="take_photo">Take photo</string>
     <string name="choose_from_gallery">Choose from Gallery</string>
     <string name="paste">Paste</string>
@@ -82,6 +81,7 @@
     <string name="choose_purchase_image">Choose purchase image</string>
     <string name="purchase_creating">Purchase creating</string>
     <string name="retry">Retry</string>
+    <string name="balance_with_value">Balance: %s</string>
 
     <string-array name="photo_options">
         <item>Take photo</item>

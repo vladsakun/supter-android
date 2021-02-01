@@ -4,12 +4,12 @@ import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.viewModels
@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.supter.R
 import com.supter.data.db.entity.PurchaseEntity
-import com.supter.data.db.entity.UserEntity
 import com.supter.data.response.ResultWrapper
 import com.supter.data.response.account.AccountResponse
 import com.supter.databinding.FragmentDashboardBinding
@@ -35,7 +34,6 @@ import com.woxthebox.draglistview.ColumnProperties
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.launch
-import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
 class BoardFragment : ScopedFragment(), OnItemClick {
@@ -93,6 +91,7 @@ class BoardFragment : ScopedFragment(), OnItemClick {
     }
 
     private fun presentPurchases(user: ResultWrapper<AccountResponse?>?) {
+
         if (user is ResultWrapper.NetworkError) {
             showNoInternetConnectionDialog()
         } else if (user is ResultWrapper.Success) {
@@ -100,6 +99,12 @@ class BoardFragment : ScopedFragment(), OnItemClick {
             if (user.value?.data?.period != null &&
                 user.value.data.incomeRemainder != null
             ) {
+                (requireActivity() as AppCompatActivity).supportActionBar?.title =
+                    requireContext().getString(
+                        R.string.balance_with_value,
+                        user.value.data.balance?.replace(".00", "")
+                    )
+
                 viewModel.getPurchaseLiveData().observe(viewLifecycleOwner,
                     Observer<List<PurchaseEntity>> { purchaseList ->
                         if (purchaseList != null) {
