@@ -38,6 +38,7 @@ interface PurchaseNetworkDataSource {
     suspend fun postPurchaseIdsList(
         token: String,
         purchaseIdsList: List<Int>,
+        stage:String
     ): ResultWrapper<MessageResponse>
 
     suspend fun postPurchaseStage(

@@ -15,7 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.supter.R
 import com.supter.data.db.entity.PurchaseEntity
-import com.supter.utils.STATUS_DONE
+import com.supter.utils.STAGE_BOUGHT
 import com.supter.utils.daysRealPeriod
 import com.supter.utils.getPrettyDate
 import com.woxthebox.draglistview.DragItemAdapter
@@ -118,7 +118,7 @@ internal class ItemAdapter constructor(
                 purchaseImage.setImageBitmap(bitmap)
             }
 
-            if (mColumnStage != STATUS_DONE) {
+            if (mColumnStage != STAGE_BOUGHT) {
 
                 val realPeriod = daysRealPeriod(
                     period.toFloat(),
@@ -127,11 +127,8 @@ internal class ItemAdapter constructor(
                 ) // in days
 
                 if (realPeriod == 0f) {
-                    completeAvailabilityTime.isVisible = true
-                    realPeriodTextView.isVisible = false
+                    realPeriodTextView.text = context.getString(R.string.available)
                 } else {
-                    completeAvailabilityTime.isVisible = false
-                    realPeriodTextView.isVisible = true
                     realPeriodTextView.text = getPrettyDate(realPeriod)
                 }
             }

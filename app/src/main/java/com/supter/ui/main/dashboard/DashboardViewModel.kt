@@ -9,18 +9,12 @@ import com.supter.data.db.entity.UserEntity
 import com.supter.data.response.ResultWrapper
 import com.supter.data.response.account.AccountResponse
 import com.supter.repository.PurchaseRepository
-import com.supter.utils.STATUS_DECIDED
-import com.supter.utils.STATUS_WANT
 import com.supter.utils.convertAccountResponseToUserEntity
 import com.supter.utils.updatePurchasesData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.math.BigDecimal
-import java.math.RoundingMode
-import kotlin.math.ceil
-import kotlin.math.round
 
 class DashboardViewModel @ViewModelInject constructor(
     private val repository: PurchaseRepository,
@@ -31,11 +25,11 @@ class DashboardViewModel @ViewModelInject constructor(
     private val _errorMessageMutableLiveData = MutableLiveData<String?>()
     val errorMessageLiveData get() = _errorMessageMutableLiveData
 
-    fun upsertPurchaseList(purchaseList: List<PurchaseEntity>) {
-        sendIdsList(purchaseList)
+    fun upsertPurchaseList(purchaseList: List<PurchaseEntity>, stage: String) {
+        sendIdsList(purchaseList, stage)
     }
 
-    fun sendIdsList(purchaseList: List<PurchaseEntity>) {
+    fun sendIdsList(purchaseList: List<PurchaseEntity>, stage:String) {
         val idsList = mutableListOf<Int>()
 
         for (purchase in purchaseList) {
@@ -43,7 +37,8 @@ class DashboardViewModel @ViewModelInject constructor(
         }
 
         viewModelScope.launch(Dispatchers.IO) {
-            val resp = repository.putPurchasesOrder(idsList)
+            Log.d(TAG, "sendIdsList: $idsList")
+            val resp = repository.putPurchasesOrder(idsList, stage)
             when (resp) {
                 is ResultWrapper.Success -> {
                     repository.upsertPurchaseList(updatePurchasesData(purchaseList, userEntity))

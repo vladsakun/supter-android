@@ -116,8 +116,15 @@ class PurchaseRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun putPurchasesOrder(purchaseIdsList: List<Int>): ResultWrapper<MessageResponse> {
-        return networkDataSource.postPurchaseIdsList(SystemUtils.getToken(context), purchaseIdsList)
+    override suspend fun putPurchasesOrder(
+        purchaseIdsList: List<Int>,
+        stage: String
+    ): ResultWrapper<MessageResponse> {
+        return networkDataSource.postPurchaseIdsList(
+            SystemUtils.getToken(context),
+            purchaseIdsList,
+            stage
+        )
     }
 
     override suspend fun changePurchaseStage(

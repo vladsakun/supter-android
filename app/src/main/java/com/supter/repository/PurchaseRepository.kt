@@ -26,7 +26,7 @@ interface PurchaseRepository {
 
     fun deleteAllPurchases()
 
-    suspend fun putPurchasesOrder(purchaseIdsList: List<Int>): ResultWrapper<MessageResponse>
+    suspend fun putPurchasesOrder(purchaseIdsList: List<Int>, stage: String): ResultWrapper<MessageResponse>
 
     suspend fun changePurchaseStage(purchaseId: Int, changeStageBody: ChangeStageBody): ResultWrapper<CreatePurchaseResponse>
 

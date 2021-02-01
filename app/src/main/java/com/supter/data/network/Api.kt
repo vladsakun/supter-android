@@ -77,7 +77,7 @@ interface Api {
     @PUT("purchases/order")
     suspend fun putPurchasesOrder(
         @Header(Authorization) token: String,
-        @Body ids: HashMap<String, List<Int>>
+        @Body ids: HashMap<String, Any>,
     ): MessageResponse
 
     // Change purchase stage

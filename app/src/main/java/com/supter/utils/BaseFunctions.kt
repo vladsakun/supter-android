@@ -262,11 +262,11 @@ fun updatePurchasesData(
             val newPurchaseList = mutableListOf<PurchaseEntity>()
             val purchaseListWithoutDoneAndSortedByStage = mutableListOf<PurchaseEntity>()
 
-            purchaseListWithoutDoneAndSortedByStage.addAll(purchaseList.filter { it.stage == STATUS_DECIDED }
+            purchaseListWithoutDoneAndSortedByStage.addAll(purchaseList.filter { it.stage == STAGE_DECIDED }
                 .sortedBy { it.order }
             )
 
-            purchaseListWithoutDoneAndSortedByStage.addAll(purchaseList.filter { it.stage == STATUS_WANT }
+            purchaseListWithoutDoneAndSortedByStage.addAll(purchaseList.filter { it.stage == STAGE_WANT }
                 .sortedBy { it.order }
             )
 
@@ -320,6 +320,8 @@ fun updatePurchasesData(
 
                 newPurchaseList.add(element)
             }
+
+            newPurchaseList.addAll(purchaseList.filter { it.stage == STAGE_BOUGHT }.sortedBy { it.order })
 
             return newPurchaseList
 

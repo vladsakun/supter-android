@@ -2,6 +2,7 @@ package com.supter.ui.main.dashboard
 
 import android.content.DialogInterface
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,9 +18,9 @@ import com.supter.R
 import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.response.ResultWrapper
 import com.supter.databinding.FragmentDashboardBinding
-import com.supter.utils.STATUS_DONE
-import com.supter.utils.STATUS_DECIDED
-import com.supter.utils.STATUS_WANT
+import com.supter.utils.STAGE_BOUGHT
+import com.supter.utils.STAGE_DECIDED
+import com.supter.utils.STAGE_WANT
 import com.supter.utils.ScopedFragment
 import com.supter.views.MyDragItem
 import com.woxthebox.draglistview.BoardView
@@ -89,9 +90,11 @@ class BoardFragment : ScopedFragment(), OnItemClick {
                         Observer<List<PurchaseEntity>> { purchaseList ->
                             if (purchaseList != null) {
 
-                                val wantList = purchaseList.filter { it.stage == STATUS_WANT }
-                                val processList = purchaseList.filter { it.stage == STATUS_DECIDED }
-                                val doneList = purchaseList.filter { it.stage == STATUS_DONE }
+                                val wantList = purchaseList.filter { it.stage == STAGE_WANT }
+                                val processList = purchaseList.filter { it.stage == STAGE_DECIDED }
+                                val doneList = purchaseList.filter { it.stage == STAGE_BOUGHT }
+
+                                Log.d(TAG, "wantList: ${wantList.size} processList ${processList.size} doneList ${doneList.size}")
 
                                 itemAdapters.forEach {
                                     it.period = user.value.data.period
@@ -136,9 +139,9 @@ class BoardFragment : ScopedFragment(), OnItemClick {
         )
 
         val sortedPurchaseMap = linkedMapOf(
-            STATUS_WANT to purchaseList.filter { it.stage == STATUS_WANT },
-            STATUS_DECIDED to purchaseList.filter { it.stage == STATUS_DECIDED },
-            STATUS_DONE to purchaseList.filter { it.stage == STATUS_DONE }
+            STAGE_WANT to purchaseList.filter { it.stage == STAGE_WANT },
+            STAGE_DECIDED to purchaseList.filter { it.stage == STAGE_DECIDED },
+            STAGE_BOUGHT to purchaseList.filter { it.stage == STAGE_BOUGHT }
         )
 
         // fill adapters
@@ -191,16 +194,7 @@ class BoardFragment : ScopedFragment(), OnItemClick {
             }
 
             override fun onItemDragEnded(fromColumn: Int, fromRow: Int, toColumn: Int, toRow: Int) {
-
-            }
-
-            override fun onItemChangedPosition(
-                fromColumn: Int,
-                fromRow: Int,
-                toColumn: Int,
-                toRow: Int
-            ) {
-                if ((fromColumn != toColumn || fromRow != toRow)) {
+                if (fromColumn != toColumn || fromRow != toRow) {
                     val copyList = ArrayList<PurchaseEntity>()
 
                     val fromColumnAdapter = mBoardView.getAdapter(fromColumn) as ItemAdapter
@@ -212,8 +206,23 @@ class BoardFragment : ScopedFragment(), OnItemClick {
                         copyList.add(newItem)
                     }
 
-                    if (fromColumn != toColumn) {
+                    val stage: String = if (fromColumn == toColumn) {
+                        when (fromColumn) {
+                            0 -> STAGE_WANT
+                            1 -> STAGE_DECIDED
+                            2 -> STAGE_BOUGHT
+                            else -> STAGE_WANT
+                        }
+                    }else{
+                        when (toColumn) {
+                            0 -> STAGE_WANT
+                            1 -> STAGE_DECIDED
+                            2 -> STAGE_BOUGHT
+                            else -> STAGE_WANT
+                        }
+                    }
 
+                    if (fromColumn != toColumn) {
                         val toColumnAdapter = mBoardView.getAdapter(toColumn) as ItemAdapter
                         val toColumnStage = toColumnAdapter.mColumnStage
                         toColumnAdapter.itemList.forEachIndexed { index, item ->
@@ -222,10 +231,9 @@ class BoardFragment : ScopedFragment(), OnItemClick {
                             newItem.stage = toColumnStage
                             copyList.add(newItem)
                         }
-
                     }
 
-                    viewModel.upsertPurchaseList(copyList)
+                    viewModel.upsertPurchaseList(copyList, stage)
                 }
 
                 if (fromColumn != toColumn) { // Move to another column
@@ -238,6 +246,15 @@ class BoardFragment : ScopedFragment(), OnItemClick {
                         )
                     }
                 }
+            }
+
+            override fun onItemChangedPosition(
+                fromColumn: Int,
+                fromRow: Int,
+                toColumn: Int,
+                toRow: Int
+            ) {
+
             }
 
             override fun onItemChangedColumn(oldColumn: Int, newColumn: Int) {
@@ -281,7 +298,11 @@ class BoardFragment : ScopedFragment(), OnItemClick {
 
         mBoardView.setBoardCallback(object : BoardCallback {
             override fun canDragItemAtPosition(column: Int, dragPosition: Int): Boolean {
-                // Add logic here to prevent an item to be dragged
+
+//                if(column == 2) { // Column done index
+//                    return false
+//                }
+
                 return true
             }
 

@@ -60,9 +60,11 @@ class PurchaseNetworkDataSourceImpl @Inject constructor(
 
     override suspend fun postPurchaseIdsList(
         token: String,
-        purchaseIdsList: List<Int>
+        purchaseIdsList: List<Int>,
+        stage:String
     ): ResultWrapper<MessageResponse> {
-        val ids = hashMapOf("ids" to purchaseIdsList)
+        val ids:HashMap<String, Any> = hashMapOf("ids" to purchaseIdsList)
+        ids["stage"] = stage
         return safeApiCall(Dispatchers.IO) { api.putPurchasesOrder(token, ids) }
     }
 
