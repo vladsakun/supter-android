@@ -67,7 +67,6 @@ class UserRepositoryImpl @Inject constructor(
     ): ResultWrapper<AccountResponse> {
 
         val account = networkDataSource.putUser(
-            SystemUtils.getToken(context.applicationContext),
             AccountBody(name, incomeRemainder, savings, period, salaryDay)
         )
 

@@ -2,13 +2,17 @@ package com.supter.ui.auth.login
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.text.Editable
+import android.text.InputFilter
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.Observer
 import com.supter.R
 import com.supter.data.response.ResultWrapper
 import com.supter.databinding.LoginFragmentBinding
@@ -18,6 +22,7 @@ import com.supter.ui.main.MainActivity
 import com.supter.utils.logException
 import dagger.hilt.android.AndroidEntryPoint
 import es.dmoral.toasty.Toasty
+
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
@@ -43,19 +48,18 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-//        viewModel = ViewModelProvider(this, loginViewModelFactory).get(LoginViewModel::class.java)
         bindViews()
     }
 
     private fun bindViews() {
         binding.signInBtn.setOnClickListener(signInClickListener)
         binding.signUpBtn.setOnClickListener(signUpClickListener)
+
         initObservers()
     }
 
     private fun initObservers() {
-        viewModel.loginResult.observe(viewLifecycleOwner, { result ->
+        viewModel.loginResult.observe(viewLifecycleOwner , Observer{ result ->
 
             when (result) {
                 is ResultWrapper.Success -> startMainActivity()
@@ -88,7 +92,7 @@ class LoginFragment : Fragment() {
 
     private var signInClickListener: View.OnClickListener = View.OnClickListener {
         viewModel.loginUser(
-            binding.username.text.toString().trim(),
+            binding.email.text.toString().trim(),
             binding.password.text.toString().trim()
         )
     }

@@ -69,7 +69,7 @@ class PurchaseRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getPurchaseFromApiById(purchaseEntity: PurchaseEntity): ResultWrapper<DetailPurchaseResponse> {
-        return networkDataSource.fetchPurchaseById(SystemUtils.getToken(context), purchaseEntity.id)
+        return networkDataSource.fetchPurchaseById(purchaseEntity.id)
     }
 
     override suspend fun getPurchaseById(purchaseId: Int): PurchaseEntity {
@@ -82,7 +82,7 @@ class PurchaseRepositoryImpl @Inject constructor(
     private fun fetchPurchaseList() {
         GlobalScope.launch(Dispatchers.IO) {
             val fetchedPurchaseList = networkDataSource.fetchPurchaseList(
-                SystemUtils.getToken(context)
+                
             )
 
             if (fetchedPurchaseList is ResultWrapper.Success) {
@@ -107,7 +107,6 @@ class PurchaseRepositoryImpl @Inject constructor(
 
     override suspend fun deletePurchase(purchaseEntity: PurchaseEntity) {
         val deleteResponse = networkDataSource.deletePurchase(
-            SystemUtils.getToken(context),
             purchaseId = purchaseEntity.id
         )
 
@@ -121,7 +120,6 @@ class PurchaseRepositoryImpl @Inject constructor(
         stage: String
     ): ResultWrapper<MessageResponse> {
         return networkDataSource.postPurchaseIdsList(
-            SystemUtils.getToken(context),
             purchaseIdsList,
             stage
         )
@@ -132,7 +130,6 @@ class PurchaseRepositoryImpl @Inject constructor(
         changeStageBody: ChangeStageBody
     ): ResultWrapper<CreatePurchaseResponse> {
         return networkDataSource.postPurchaseStage(
-            SystemUtils.getToken(context),
             purchaseId,
             changeStageBody
         )
@@ -141,7 +138,6 @@ class PurchaseRepositoryImpl @Inject constructor(
     override suspend fun updateRemotePurchase(purchaseEntity: PurchaseEntity): ResultWrapper<UpdatePurchaseResponse> {
 
         val updateResponse = networkDataSource.updatePurchase(
-            SystemUtils.getToken(context),
             purchaseEntity.id,
             UpdatePurchaseBody(
                 purchaseEntity.title,
@@ -172,7 +168,7 @@ class PurchaseRepositoryImpl @Inject constructor(
 
     override suspend fun fetchUser(): ResultWrapper<AccountResponse> {
         return withContext(Dispatchers.IO) {
-            return@withContext networkDataSource.fetchUser(SystemUtils.getToken(context))
+            return@withContext networkDataSource.fetchUser()
         }
     }
 
@@ -182,7 +178,6 @@ class PurchaseRepositoryImpl @Inject constructor(
         answer: String
     ): ResultWrapper<AnswerQuestionResponse> {
         return networkDataSource.postStringAnswer(
-            SystemUtils.getToken(context),
             purchaseId,
             questionId,
             answer
@@ -195,7 +190,6 @@ class PurchaseRepositoryImpl @Inject constructor(
         answer: Boolean
     ): ResultWrapper<AnswerQuestionResponse> {
         return networkDataSource.postBooleanAnswer(
-            SystemUtils.getToken(context),
             purchaseId,
             questionId,
             answer
@@ -208,7 +202,7 @@ class PurchaseRepositoryImpl @Inject constructor(
     ): ResultWrapper<PurchaseData> {
 
         val resp =
-            networkDataSource.postPurchaseImage(SystemUtils.getToken(context), purchaseId, body)
+            networkDataSource.postPurchaseImage(purchaseId, body)
 
         if (resp is ResultWrapper.Success) {
             GlobalScope.launch(Dispatchers.IO) {
@@ -227,7 +221,7 @@ class PurchaseRepositoryImpl @Inject constructor(
 
     override suspend fun createPurchase(createPurchaseBody: PurchaseBody): ResultWrapper<CreatePurchaseResponse> {
         val createPurchaseResponse =
-            networkDataSource.createPurchase(SystemUtils.getToken(context), createPurchaseBody)
+            networkDataSource.createPurchase(createPurchaseBody)
 
         if (createPurchaseResponse is ResultWrapper.Success) {
             createPurchaseResponse.value.data.apply {

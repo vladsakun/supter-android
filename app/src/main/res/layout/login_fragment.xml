@@ -14,14 +14,15 @@
         android:orientation="vertical">
 
         <EditText
-            android:id="@+id/username"
+            android:id="@+id/email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:autofillHints="Enter your email"
             android:background="@android:color/transparent"
             android:hint="@string/email"
+            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890@._/"
             android:imeActionLabel="@string/email"
-            android:inputType="textEmailAddress|textVisiblePassword"
+            android:inputType="textEmailAddress|textFilter"
             android:minWidth="300dp"
             android:padding="15dp"
             android:textColor="?android:attr/textColorSecondary"

@@ -12,37 +12,37 @@ import com.supter.data.response.purchase.*
 import okhttp3.MultipartBody
 
 interface PurchaseNetworkDataSource {
-    suspend fun fetchPurchaseList(token: String): ResultWrapper<GetPurchasesResponse>
+    suspend fun fetchPurchaseList(): ResultWrapper<GetPurchasesResponse>
 
     suspend fun fetchPurchaseById(
-        token: String,
+        
         purchaseId: Int
     ): ResultWrapper<DetailPurchaseResponse>
 
     suspend fun createPurchase(
-        token: String,
+        
         createPurchaseBody: PurchaseBody,
     ): ResultWrapper<CreatePurchaseResponse>
 
     suspend fun updatePurchase(
-        token: String,
+        
         purchaseId: Int,
         updatePurchaseBody: UpdatePurchaseBody,
     ): ResultWrapper<UpdatePurchaseResponse>
 
     suspend fun deletePurchase(
-        token: String,
+        
         purchaseId: Int,
     ): ResultWrapper<MessageResponse>
 
     suspend fun postPurchaseIdsList(
-        token: String,
+        
         purchaseIdsList: List<Int>,
-        stage:String
+        stage: String
     ): ResultWrapper<MessageResponse>
 
     suspend fun postPurchaseStage(
-        token: String,
+        
         purchaseId: Int,
         changeStageBody: ChangeStageBody
     ): ResultWrapper<CreatePurchaseResponse>
@@ -59,27 +59,28 @@ interface PurchaseNetworkDataSource {
     ): ResultWrapper<LoginResponse>
 
     suspend fun putUser(
-        token: String,
         accountParams: AccountBody,
     ): ResultWrapper<AccountResponse>
 
     suspend fun fetchUser(
-        token: String
     ): ResultWrapper<AccountResponse>
 
     suspend fun postStringAnswer(
-        token: String,
         purchaseId: Int,
         questionId: Int,
         text: String,
     ): ResultWrapper<AnswerQuestionResponse>
 
     suspend fun postBooleanAnswer(
-        token: String,
+        
         purchaseId: Int,
         questionId: Int,
         isTrue: Boolean,
     ): ResultWrapper<AnswerQuestionResponse>
 
-    suspend fun postPurchaseImage(token:String, purchaseId: Int, body: MultipartBody.Part): ResultWrapper<PurchaseData>
+    suspend fun postPurchaseImage(
+        
+        purchaseId: Int,
+        body: MultipartBody.Part
+    ): ResultWrapper<PurchaseData>
 }

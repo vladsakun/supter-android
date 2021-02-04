@@ -18,33 +18,31 @@ class PurchaseNetworkDataSourceImpl @Inject constructor(
     private val TAG = "PurchaseNetworkDataSour"
 
     override suspend fun fetchPurchaseList(
-        token: String
     ): ResultWrapper<GetPurchasesResponse> {
-        return safeApiCall(Dispatchers.IO) { api.getPurchasesList(token) }
+        return safeApiCall(Dispatchers.IO) { api.getPurchasesList() }
     }
 
     override suspend fun fetchPurchaseById(
-        token: String,
+
         purchaseId: Int
     ): ResultWrapper<DetailPurchaseResponse> {
-        return safeApiCall(Dispatchers.IO) { api.getPurchase(token, purchaseId) }
+        return safeApiCall(Dispatchers.IO) { api.getPurchase(purchaseId) }
     }
 
     override suspend fun createPurchase(
-        token: String,
+
         createPurchaseBody: PurchaseBody
     ): ResultWrapper<CreatePurchaseResponse> {
-        return safeApiCall(Dispatchers.IO) { api.createPurchase(token, createPurchaseBody) }
+        return safeApiCall(Dispatchers.IO) { api.createPurchase(createPurchaseBody) }
     }
 
     override suspend fun updatePurchase(
-        token: String,
+
         purchaseId: Int,
         updatePurchaseBody: UpdatePurchaseBody
     ): ResultWrapper<UpdatePurchaseResponse> {
         return safeApiCall(Dispatchers.IO) {
             api.updatePurchase(
-                token,
                 purchaseId,
                 updatePurchaseBody
             )
@@ -52,30 +50,30 @@ class PurchaseNetworkDataSourceImpl @Inject constructor(
     }
 
     override suspend fun deletePurchase(
-        token: String,
+
         purchaseId: Int
     ): ResultWrapper<MessageResponse> {
-        return safeApiCall(Dispatchers.IO) { api.deletePurchase(token, purchaseId) }
+        return safeApiCall(Dispatchers.IO) { api.deletePurchase(purchaseId) }
     }
 
     override suspend fun postPurchaseIdsList(
-        token: String,
+
         purchaseIdsList: List<Int>,
-        stage:String
+        stage: String
     ): ResultWrapper<MessageResponse> {
-        val ids:HashMap<String, Any> = hashMapOf("ids" to purchaseIdsList)
+        val ids: HashMap<String, Any> = hashMapOf("ids" to purchaseIdsList)
         ids["stage"] = stage
-        return safeApiCall(Dispatchers.IO) { api.putPurchasesOrder(token, ids) }
+        return safeApiCall(Dispatchers.IO) { api.putPurchasesOrder(ids) }
     }
 
     override suspend fun postPurchaseStage(
-        token: String,
+
         purchaseId: Int,
         changeStageBody: ChangeStageBody
     ): ResultWrapper<CreatePurchaseResponse> {
         return safeApiCall(Dispatchers.IO) {
             api.updatePurchaseStage(
-                token,
+
                 purchaseId,
                 changeStageBody
             )
@@ -103,25 +101,23 @@ class PurchaseNetworkDataSourceImpl @Inject constructor(
     }
 
     override suspend fun putUser(
-        token: String,
         accountParams: AccountBody
     ): ResultWrapper<AccountResponse> {
-        return safeApiCall(Dispatchers.IO) { api.putUser(token, accountParams) }
+        return safeApiCall(Dispatchers.IO) { api.putUser(accountParams) }
     }
 
-    override suspend fun fetchUser(token: String): ResultWrapper<AccountResponse> {
-        return safeApiCall(Dispatchers.IO) { api.fetchUser(token) }
+    override suspend fun fetchUser(): ResultWrapper<AccountResponse> {
+        return safeApiCall(Dispatchers.IO) { api.fetchUser() }
     }
 
     override suspend fun postStringAnswer(
-        token: String,
+
         purchaseId: Int,
         questionId: Int,
         text: String
     ): ResultWrapper<AnswerQuestionResponse> {
         return safeApiCall(Dispatchers.IO) {
             api.postStringAnswer(
-                token,
                 purchaseId,
                 questionId,
                 text
@@ -130,14 +126,13 @@ class PurchaseNetworkDataSourceImpl @Inject constructor(
     }
 
     override suspend fun postBooleanAnswer(
-        token: String,
+
         purchaseId: Int,
         questionId: Int,
         isTrue: Boolean
     ): ResultWrapper<AnswerQuestionResponse> {
         return safeApiCall(Dispatchers.IO) {
             api.postBooleanAnswer(
-                token,
                 purchaseId,
                 questionId,
                 isTrue
@@ -146,12 +141,10 @@ class PurchaseNetworkDataSourceImpl @Inject constructor(
     }
 
     override suspend fun postPurchaseImage(
-        token: String,
+
         purchaseId: Int,
         body: MultipartBody.Part
     ): ResultWrapper<PurchaseData> {
-        return safeApiCall(Dispatchers.IO) { api.postPurchaseImage(token, purchaseId, body) }
+        return safeApiCall(Dispatchers.IO) { api.postPurchaseImage(purchaseId, body) }
     }
-
-
 }

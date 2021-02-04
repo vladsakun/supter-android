@@ -1,8 +1,6 @@
 package com.supter
 
-import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.db.entity.UserEntity
-import com.supter.utils.STAGE_WANT
 import com.supter.utils.rounder
 import org.junit.Test
 import java.math.BigDecimal
@@ -80,30 +78,6 @@ class PurchaseViewModelTest {
             }
 
             newPurchaseList.add(element)
-        }
-
-        val testList = mutableListOf<PurchaseEntity>()
-
-        for (testPurchase in testPurchaseEntityList) {
-            with(testPurchase) {
-                testList.add(
-                    PurchaseEntity(
-                        0,
-                        "test",
-                        price,
-                        0,
-                        STAGE_WANT,
-                        0f,
-                        "desc",
-                        remind!!,
-                        realPeriod!!,
-                        "think",
-                        "created",
-                        null,
-                        null
-                    )
-                )
-            }
         }
 
         assert(newPurchaseList[0].realPeriod == 3)

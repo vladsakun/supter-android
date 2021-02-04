@@ -168,4 +168,7 @@ dependencies {
 
     // WorkManager
     implementation "androidx.work:work-runtime-ktx:$work_version"
+
+    implementation 'com.github.ybq:Android-SpinKit:1.4.0'
+
 }

@@ -22,6 +22,7 @@ import com.supter.data.db.entity.PurchaseEntity
 import com.supter.data.response.ResultWrapper
 import com.supter.data.response.account.AccountResponse
 import com.supter.databinding.FragmentDashboardBinding
+import com.supter.ui.main.MainActivity
 import com.supter.utils.STAGE_BOUGHT
 import com.supter.utils.STAGE_DECIDED
 import com.supter.utils.STAGE_WANT
@@ -76,6 +77,11 @@ class BoardFragment : ScopedFragment(), OnItemClick {
         bindViews()
     }
 
+    override fun onStart() {
+        super.onStart()
+        (activity as MainActivity).showToolbarProgress()
+    }
+
     private fun bindViews() {
 
         launch {
@@ -128,6 +134,8 @@ class BoardFragment : ScopedFragment(), OnItemClick {
                                 mBoardView.scrollToColumn(1, true)
                                 isBoardScrolled = true
                             }
+
+                            (activity as MainActivity).hideToolbarProgress()
 
                         }
                     })
@@ -360,7 +368,7 @@ class BoardFragment : ScopedFragment(), OnItemClick {
         }
     }
 
-    fun updateColumnItemsCount() {
+    private fun updateColumnItemsCount() {
         itemAdapters.forEachIndexed { index, itemAdapter ->
             val itemCount1 =
                 mBoardView.getHeaderView(index).findViewById<TextView>(R.id.item_count)

@@ -1,5 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/toolbar"
+<com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize">
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize" />
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize" />
+
+        <com.github.ybq.android.spinkit.SpinKitView
+            android:id="@+id/toolbar_progress"
+            style="@style/SpinKitView.Large.Circle"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/marginBetweenBigViews"
+            android:visibility="gone"
+            app:SpinKit_Color="?attr/colorPrimary"
+            app:SpinKit_Style="FadingCircle"
+            tools:visibility="visible" />
+
+    </RelativeLayout>
+
+</com.google.android.material.appbar.AppBarLayout>
+

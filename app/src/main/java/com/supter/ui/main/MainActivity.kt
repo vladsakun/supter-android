@@ -1,12 +1,9 @@
 package com.supter.ui.main
 
-import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.KeyEvent
 import android.view.MenuItem
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -15,7 +12,6 @@ import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.observe
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -23,6 +19,7 @@ import androidx.navigation.ui.NavigationUI.navigateUp
 import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupWithNavController
+import com.github.ybq.android.spinkit.SpinKitView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.navigation.NavigationView
 import com.supter.R
@@ -49,6 +46,8 @@ class MainActivity : AppCompatActivity() {
     private val viewModel: AddPurchaseViewModel by viewModels()
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
 
+    private lateinit var toolbarProgress:SpinKitView
+
     private val currentNavigationFragment: Fragment?
         get() = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
             ?.childFragmentManager
@@ -63,6 +62,7 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(view)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
+        toolbarProgress = binding.myAppBarMain.toolbarProgress
 
         setSupportActionBar(toolbar)
 
@@ -248,6 +248,14 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         hideKeyboard(this@MainActivity)
+    }
+
+    fun showToolbarProgress(){
+        toolbarProgress.isVisible = true
+    }
+
+    fun hideToolbarProgress(){
+        toolbarProgress.isVisible = false
     }
 
 }

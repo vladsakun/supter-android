@@ -23,7 +23,7 @@ class LoginActivity : AppCompatActivity() {
         mBinding = LoginActivityBinding.inflate(layoutInflater)
         val view = mBinding.root
         setContentView(view)
-        setSupportActionBar(mBinding.toolbar.toolbar)
+        setSupportActionBar(mBinding.toolbar)
 
         presentFragment(LoginFragment(), LoginFragment::class.java.simpleName)
     }
