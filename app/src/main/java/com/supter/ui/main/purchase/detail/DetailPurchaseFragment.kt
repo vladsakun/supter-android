@@ -152,9 +152,9 @@ class DetailPurchaseFragment : ScopedFragment() {
 
     private fun initPurchaseImage() {
         purchaseEntity.image?.let {
-            if(it.contentEquals(getBoxByteArray(requireContext()))){
+            if (it.contentEquals(getBoxByteArray(requireContext()))) {
                 mBinding.purchaseImage.setImageResource(R.drawable.ic_add_photo)
-            }else {
+            } else {
                 val bitmap = BitmapFactory.decodeByteArray(it, 0, it.size)
                 mBinding.purchaseImage.setImageBitmap(bitmap)
             }
@@ -216,8 +216,16 @@ class DetailPurchaseFragment : ScopedFragment() {
     private fun bindObservers() {
         viewModel.getPurchaseFromApi(purchaseEntity).observe(viewLifecycleOwner,
             Observer<ResultWrapper<DetailPurchaseResponse>> { purchaseResponse ->
-                if (purchaseResponse is ResultWrapper.Success) {
-                    initQuestionsList(purchaseResponse.value)
+                when (purchaseResponse) {
+
+                    is ResultWrapper.Success -> initQuestionsList(purchaseResponse.value)
+
+                    is ResultWrapper.NetworkError -> showErrorMessage(requireContext().getString(R.string.no_internet_connection))
+
+                    is ResultWrapper.GenericError -> showErrorMessage(
+                        purchaseResponse.error?.message
+                            ?: requireContext().getString(R.string.no_internet_connection)
+                    )
                 }
             })
 
@@ -225,16 +233,19 @@ class DetailPurchaseFragment : ScopedFragment() {
             viewLifecycleOwner,
             Observer<ResultWrapper<UpdatePurchaseResponse>> { updateResult ->
                 when (updateResult) {
+
                     is ResultWrapper.Success -> {
                         refreshView(convertDataItemToPurchaseEntity(updateResult.value.data))
                         showSuccessMessage()
                     }
+
                     is ResultWrapper.GenericError -> {
                         showErrorMessage(
                             updateResult.error?.message
                                 ?: requireContext().getString(R.string.no_internet_connection)
                         )
                     }
+
                     is ResultWrapper.NetworkError -> {
                         showErrorMessage()
                     }

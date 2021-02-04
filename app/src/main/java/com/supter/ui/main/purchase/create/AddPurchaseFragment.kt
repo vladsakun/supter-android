@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.transition.Slide
@@ -80,7 +81,7 @@ class AddPurchaseFragment : Fragment() {
     }
 
     private fun bindViews() {
-        viewModel.createPurchaseResponse.observe(viewLifecycleOwner) { result ->
+        viewModel.createPurchaseResponse.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is ResultWrapper.Success -> handleSuccessResult(result)
                 is ResultWrapper.NetworkError -> showErrorToast(requireContext().getString(R.string.no_internet_connection))
@@ -89,14 +90,15 @@ class AddPurchaseFragment : Fragment() {
                         ?: requireContext().getString(R.string.no_internet_connection)
                 )
             }
-        }
+        })
 
         mBinding.save.setOnClickListener {
 
             mBinding.run {
 
-                if(purchaseTitle.editText?.text.toString().isNotBlank()
-                    && purchasePrice.editText?.text.toString().isNotBlank()){
+                if (purchaseTitle.editText?.text.toString().isNotBlank()
+                    && purchasePrice.editText?.text.toString().isNotBlank()
+                ) {
 
                     val title = purchaseTitle.editText?.text.toString()
                     val price = purchasePrice.editText?.text.toString().toDouble()
@@ -111,7 +113,7 @@ class AddPurchaseFragment : Fragment() {
                         title,
                         price,
                     )
-                }else{
+                } else {
                     showErrorToast(requireContext().getString(R.string.some_fields_are_empty))
                 }
 

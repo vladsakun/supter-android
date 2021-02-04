@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import com.supter.R
 import com.supter.data.response.account.RegistrationResponse
 import com.supter.data.response.ResultWrapper
@@ -44,7 +45,7 @@ class SignUpFragment : Fragment() {
     }
 
     private fun bindViews() {
-        viewModel.signUp.observe(viewLifecycleOwner, { result ->
+        viewModel.signUp.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
 
                 is ResultWrapper.NetworkError -> {
